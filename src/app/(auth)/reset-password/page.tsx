@@ -75,10 +75,10 @@ export default function ResetPasswordPage() {
         <div className="bg-[#12121a] rounded-lg border border-[#1e1e2e] p-8 shadow-2xl">
           <div className="mb-8 text-center">
             <h1 className="font-bold text-2xl tracking-tight mb-1">
-              <span className="text-[#06b6d4]">Medical</span><span className="text-[#e8e8f0]">CFO</span>
+              <span className="text-[#8b5cf6]">Seller</span><span className="text-[#e8e8f0]">CFO</span>
             </h1>
             <p className="text-sm text-[#8888a0] mb-2">
-              Financial Dashboard for Healthcare
+              Financial Dashboard for E-commerce
             </p>
           </div>
           <p className="text-center text-[#8888a0]">Loading...</p>
@@ -93,10 +93,10 @@ export default function ResetPasswordPage() {
         <div className="bg-[#12121a] rounded-lg border border-[#1e1e2e] p-8 shadow-2xl">
           <div className="mb-8 text-center">
             <h1 className="font-bold text-2xl tracking-tight mb-1">
-              <span className="text-[#06b6d4]">Medical</span><span className="text-[#e8e8f0]">CFO</span>
+              <span className="text-[#8b5cf6]">Seller</span><span className="text-[#e8e8f0]">CFO</span>
             </h1>
             <p className="text-sm text-[#8888a0] mb-2">
-              Financial Dashboard for Healthcare
+              Financial Dashboard for E-commerce
             </p>
           </div>
           <div className="bg-red-900/20 border border-red-700/50 rounded px-4 py-3 text-sm text-red-400 mb-6">
@@ -119,10 +119,10 @@ export default function ResetPasswordPage() {
         {/* Branding */}
         <div className="mb-8 text-center">
           <h1 className="font-bold text-2xl tracking-tight mb-1">
-            <span className="text-[#06b6d4]">Medical</span><span className="text-[#e8e8f0]">CFO</span>
+            <span className="text-[#8b5cf6]">Seller</span><span className="text-[#e8e8f0]">CFO</span>
           </h1>
           <p className="text-sm text-[#8888a0] mb-2">
-            Financial Dashboard for Healthcare
+            Financial Dashboard for E-commerce
           </p>
           <h2 className="text-2xl font-bold text-[#e8e8f0]">
             Set New Password

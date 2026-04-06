@@ -405,7 +405,7 @@ export default function AdvisorPage() {
                 <p className="text-sm text-[#8888a0] max-w-md mx-auto">
                   {dataStatus.hasData
                     ? 'I have access to your QuickBooks data, claim costs, invoices, cash flow, and connected integrations. Ask me anything specific about your numbers.'
-                    : 'Ask me about cash flow, claims tracking, tax strategy, credentialing, Claims Pending accounting, or any healthcare financial topic. Connect QuickBooks for personalized analysis.'}
+                    : 'Ask me about cash flow, order tracking, tax strategy, inventory management, revenue accounting, or any e-commerce financial topic. Connect QuickBooks for personalized analysis.'}
                 </p>
               </div>
 

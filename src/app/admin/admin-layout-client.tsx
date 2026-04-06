@@ -112,7 +112,7 @@ export default function AdminLayoutClient({
       <div className="lg:hidden fixed top-0 left-0 right-0 z-50 h-14 bg-[#12121a] border-b border-[#2a2a3d] flex items-center justify-between px-4">
         <div className="flex items-center gap-2">
           <div className="font-bold text-lg tracking-tight">
-            <span className="text-[#06b6d4]">Medical</span><span className="text-[#e8e8f0]">CFO</span>
+            <span className="text-[#8b5cf6]">Seller</span><span className="text-[#e8e8f0]">CFO</span>
           </div>
           <span className="px-2 py-1 bg-[#ef4444] text-white text-xs font-bold rounded">
             ADMIN
@@ -144,7 +144,7 @@ export default function AdminLayoutClient({
         <div className="h-14 border-b border-[#2a2a3d] flex items-center justify-between px-4">
           <div className="flex items-center gap-2">
             <div className="font-bold text-lg tracking-tight">
-              <span className="text-[#06b6d4]">Medical</span><span className="text-[#e8e8f0]">CFO</span>
+              <span className="text-[#8b5cf6]">Seller</span><span className="text-[#e8e8f0]">CFO</span>
             </div>
             <span className="px-2 py-1 bg-[#ef4444] text-white text-xs font-bold rounded">
               ADMIN
@@ -179,7 +179,7 @@ export default function AdminLayoutClient({
             <>
               <div className="flex items-center gap-2">
                 <div className="font-bold text-lg tracking-tight">
-                  <span className="text-[#06b6d4]">Medical</span><span className="text-[#e8e8f0]">CFO</span>
+                  <span className="text-[#8b5cf6]">Seller</span><span className="text-[#e8e8f0]">CFO</span>
                 </div>
                 <span className="px-2 py-1 bg-[#ef4444] text-white text-xs font-bold rounded">
                   ADMIN

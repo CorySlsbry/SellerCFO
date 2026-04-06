@@ -12,23 +12,23 @@ const plans = [
     key: 'basic',
     name: PLAN_FEATURES.basic.name,
     price: PLAN_FEATURES.basic.price,
-    audience: 'Solo & small practices (1-3 providers)',
-    features: ['Financial dashboard', 'Collections & A/R tracking', 'Cash flow forecasting', 'QuickBooks & EHR sync', 'AI Financial Advisor — unlimited', 'Monthly AI financial brief'],
+    audience: 'Solo sellers & small brands',
+    features: ['Financial dashboard', 'Shopify + Amazon sync', 'Cash flow forecasting', 'QuickBooks integration', 'AI Financial Advisor', 'Unit economics tracking'],
   },
   {
     key: 'pro',
     name: PLAN_FEATURES.pro.name,
     price: PLAN_FEATURES.pro.price,
     popular: true,
-    audience: 'Growing companies ($1M–$10M)',
-    features: ['Everything in Starter', 'athenahealth + NextGen + Stripe', 'Provider productivity tracking', 'Weekly AI financial brief', 'Payer mix analysis', 'Priority support'],
+    audience: 'Growing multi-channel brands',
+    features: ['Everything in Essential', 'Etsy + WooCommerce + TikTok Shop', 'Inventory forecasting', 'Custom reports & API access', 'Channel profitability analysis', 'Priority support'],
   },
   {
     key: 'enterprise',
     name: PLAN_FEATURES.enterprise.name,
     price: PLAN_FEATURES.enterprise.price,
-    audience: '$10M+ with multiple PMs',
-    features: ['Everything in Professional', 'NextGen + Salesforce + Open Dental', 'AI Toolkit — all 24 + custom', 'Quarterly strategy call', 'Dedicated account manager', 'Medical Chart of Accounts'],
+    audience: 'Scaling brands & agencies',
+    features: ['Everything in Professional', 'Walmart + all sales channels', 'Multi-store support', 'Custom integrations', 'Dedicated account manager', 'Advanced AI insights'],
   },
 ];
 
@@ -126,10 +126,10 @@ function SignupContent() {
         {/* Branding */}
         <div className="mb-6 text-center">
           <h1 className="font-bold text-2xl tracking-tight mb-1">
-            <span className="text-[#06b6d4]">Medical</span><span className="text-[#e8e8f0]">CFO</span>
+            <span className="text-[#8b5cf6]">Seller</span><span className="text-[#e8e8f0]">CFO</span>
           </h1>
           <p className="text-sm text-[#8888a0] mb-3">
-            Financial Dashboard for Healthcare
+            Financial Dashboard for E-commerce
           </p>
           <h2 className="text-lg font-semibold text-[#e8e8f0]">
             Start Your 14-Day Free Trial
@@ -148,12 +148,12 @@ function SignupContent() {
               onClick={() => setSelectedPlan(plan.key)}
               className={`relative p-3 rounded-lg border text-left transition-all ${
                 selectedPlan === plan.key
-                  ? 'border-[#06b6d4] bg-[#06b6d4]/10'
+                  ? 'border-[#8b5cf6] bg-[#8b5cf6]/10'
                   : 'border-[#2a2a3d] bg-[#0a0a0f] hover:border-[#3a3a4d]'
               }`}
             >
               {plan.popular && (
-                <div className="absolute -top-2 left-3 bg-[#06b6d4] text-white text-[9px] font-bold px-2 py-0.5 rounded-full">
+                <div className="absolute -top-2 left-3 bg-[#8b5cf6] text-white text-[9px] font-bold px-2 py-0.5 rounded-full">
                   POPULAR
                 </div>
               )}
@@ -173,7 +173,7 @@ function SignupContent() {
             <div className="grid grid-cols-2 gap-2">
               {selectedPlanData.features.map((feature, idx) => (
                 <div key={idx} className="flex items-center gap-2">
-                  <Check size={14} className="text-[#06b6d4] flex-shrink-0" />
+                  <Check size={14} className="text-[#8b5cf6] flex-shrink-0" />
                   <span className="text-xs text-[#b0b0c8]">{feature}</span>
                 </div>
               ))}
@@ -196,23 +196,23 @@ function SignupContent() {
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="John Doe"
                 required
-                className="w-full px-4 py-2 rounded bg-[#0a0a0f] border border-[#1e1e2e] text-[#e8e8f0] placeholder-[#8888a0] focus:outline-none focus:border-[#06b6d4] transition"
+                className="w-full px-4 py-2 rounded bg-[#0a0a0f] border border-[#1e1e2e] text-[#e8e8f0] placeholder-[#8888a0] focus:outline-none focus:border-[#8b5cf6] transition"
               />
             </div>
 
             {/* Company Name */}
             <div>
               <label htmlFor="companyName" className="block text-sm font-medium text-[#e8e8f0] mb-1.5">
-                Company Name
+                Brand / Company
               </label>
               <input
                 id="companyName"
                 type="text"
                 value={companyName}
                 onChange={(e) => setCompanyName(e.target.value)}
-                placeholder="Your Company"
+                placeholder="Your Brand"
                 required
-                className="w-full px-4 py-2 rounded bg-[#0a0a0f] border border-[#1e1e2e] text-[#e8e8f0] placeholder-[#8888a0] focus:outline-none focus:border-[#06b6d4] transition"
+                className="w-full px-4 py-2 rounded bg-[#0a0a0f] border border-[#1e1e2e] text-[#e8e8f0] placeholder-[#8888a0] focus:outline-none focus:border-[#8b5cf6] transition"
               />
             </div>
           </div>
@@ -228,9 +228,9 @@ function SignupContent() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@company.com"
+                placeholder="you@brand.com"
                 required
-                className="w-full px-4 py-2 rounded bg-[#0a0a0f] border border-[#1e1e2e] text-[#e8e8f0] placeholder-[#8888a0] focus:outline-none focus:border-[#06b6d4] transition"
+                className="w-full px-4 py-2 rounded bg-[#0a0a0f] border border-[#1e1e2e] text-[#e8e8f0] placeholder-[#8888a0] focus:outline-none focus:border-[#8b5cf6] transition"
               />
             </div>
 
@@ -247,7 +247,7 @@ function SignupContent() {
                 placeholder="••••••••"
                 required
                 minLength={6}
-                className="w-full px-4 py-2 rounded bg-[#0a0a0f] border border-[#1e1e2e] text-[#e8e8f0] placeholder-[#8888a0] focus:outline-none focus:border-[#06b6d4] transition"
+                className="w-full px-4 py-2 rounded bg-[#0a0a0f] border border-[#1e1e2e] text-[#e8e8f0] placeholder-[#8888a0] focus:outline-none focus:border-[#8b5cf6] transition"
               />
             </div>
           </div>
@@ -263,7 +263,7 @@ function SignupContent() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full px-4 py-3 rounded-lg font-semibold text-white bg-[#06b6d4] hover:bg-[#0891b2] disabled:opacity-50 disabled:cursor-not-allowed transition"
+            className="w-full px-4 py-3 rounded-lg font-semibold text-white bg-[#8b5cf6] hover:bg-[#7c3aed] disabled:opacity-50 disabled:cursor-not-allowed transition"
           >
             {loading ? loadingStep || 'Processing...' : `Start Free Trial — ${selectedPlanData?.name} Plan`}
           </button>
@@ -278,7 +278,7 @@ function SignupContent() {
           <span className="text-[#8888a0]">Already have an account? </span>
           <Link
             href="/login"
-            className="text-[#06b6d4] hover:text-[#22d3ee] font-medium transition"
+            className="text-[#8b5cf6] hover:text-[#a78bfa] font-medium transition"
           >
             Sign In
           </Link>

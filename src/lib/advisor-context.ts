@@ -153,7 +153,7 @@ Last synced: ${d.last_updated ? new Date(d.last_updated).toLocaleDateString('en-
     }
   }
 
-  // ── Integration Data (projects, deals, patient balance) ──
+  // ── Integration Data (projects, deals, pipeline) ──
   if (ctx.integrations) {
     const intg = ctx.integrations;
 
@@ -176,7 +176,7 @@ Sources: ${intg.connectedSources.join(', ')}`);
 - Total AR: ${formatCurrency(m.totalAR)}
 - Retainage Receivable: ${formatCurrency(m.totalRetainageReceivable)}
 - Retainage Payable: ${formatCurrency(m.totalRetainagePayable)}
-- Net Patient Balance Position: ${formatCurrency(m.totalRetainageReceivable - m.totalRetainagePayable)}`);
+- Net Retainage Position: ${formatCurrency(m.totalRetainageReceivable - m.totalRetainagePayable)}`);
     }
 
     // ── Project detail ──
@@ -192,7 +192,7 @@ Sources: ${intg.connectedSources.join(', ')}`);
 
         projBlock += `\n- ${p.name} [${p.source}]: Contract ${formatCurrency(p.contract_amount)}, Cost ${formatCurrency(p.actual_cost)}, ${formatPct(p.percent_complete)} complete, Margin ${formatPct(margin)}, Billing: ${billingStatus}`;
         if (p.retainage_receivable > 0 || p.retainage_payable > 0) {
-          projBlock += ` | Patient Balance: Recv ${formatCurrency(p.retainage_receivable)}, Pay ${formatCurrency(p.retainage_payable)}`;
+          projBlock += ` | Retainage: Recv ${formatCurrency(p.retainage_receivable)}, Pay ${formatCurrency(p.retainage_payable)}`;
         }
       }
       sections.push(projBlock);
@@ -221,8 +221,8 @@ Sources: ${intg.connectedSources.join(', ')}`);
   }
 
   if (sections.length === 0) {
-    return `\n\n---\nNOTE: No financial data is currently loaded. The user has not yet connected QuickBooks or synced their data. Provide general healthcare financial guidance and encourage them to connect QuickBooks for personalized analysis.`;
+    return `\n\n---\nNOTE: No financial data is currently loaded. The user has not yet connected QuickBooks or synced their data. Provide general e-commerce financial guidance and encourage them to connect QuickBooks and their sales channels for personalized analysis.`;
   }
 
-  return `\n\n---\n# THIS USER'S LIVE FINANCIAL DATA\nThe following is real, live financial data from this practice's connected systems. Reference these EXACT numbers when answering questions. Do not make up numbers — use only what is provided below. If data is missing for a specific question, say so and suggest what data would be needed.\n\n${sections.join('\n')}`;
+  return `\n\n---\n# THIS USER'S LIVE FINANCIAL DATA\nThe following is real, live financial data from this brand's connected systems. Reference these EXACT numbers when answering questions. Do not make up numbers — use only what is provided below. If data is missing for a specific question, say so and suggest what data would be needed.\n\n${sections.join('\n')}`;
 }

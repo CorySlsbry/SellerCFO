@@ -302,7 +302,7 @@ export async function POST(request: NextRequest) {
 
         const source = result.provider as LocationSource;
 
-        // Extract locations from project addresses (NextGen, athenahealth)
+        // Extract locations from project addresses (Shopify, Amazon)
         if (result.projects.length > 0 && (source === 'nextgen' || source === 'athenahealth')) {
           const projectRecords = result.projects.map((p: any) => {
             // Parse composite address "123 Main, Denver, CO, 80202" into parts

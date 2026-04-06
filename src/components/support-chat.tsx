@@ -33,29 +33,29 @@ interface KBEntry {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Knowledge Base — MedicalCFO support content
+   Knowledge Base — SellerCFO support content
    ───────────────────────────────────────────────────────────── */
 
 const KNOWLEDGE_BASE: KBEntry[] = [
   {
     keywords: ['setup', 'start', 'begin', 'get started', 'onboard', 'first time', 'new', 'how do i use', 'how does it work', 'how to'],
-    answer: `Welcome to MedicalCFO! Setup takes under 5 minutes:\n\n1. **Connect QuickBooks Online** — Go to Integrations and click "Connect QBO"\n2. **Connect your EHR/PM** — We integrate with athenahealth, NextGen, Open Dental, and Kareo\n3. **Sync your data** — Hit "Sync with QBO" in the top bar\n4. **Explore your dashboard** — Revenue, collections, claims, A/R aging, and payer mix populate automatically\n\nYour QBO connection is **read-only** — MedicalCFO cannot modify your accounting data. All data is encrypted (AES-256 at rest, TLS 1.3 in transit).`,
+    answer: `Welcome to SellerCFO! Setup takes under 5 minutes:\n\n1. **Connect QuickBooks Online** — Go to Integrations and click "Connect QBO"\n2. **Connect your EHR/PM** — We integrate with athenahealth, NextGen, Open Dental, and Kareo\n3. **Sync your data** — Hit "Sync with QBO" in the top bar\n4. **Explore your dashboard** — Revenue, collections, claims, A/R aging, and payer mix populate automatically\n\nYour QBO connection is **read-only** — SellerCFO cannot modify your accounting data. All data is encrypted (AES-256 at rest, TLS 1.3 in transit).`,
   },
   {
     keywords: ['integrate', 'integration', 'integrations', 'connect', 'tools', 'software', 'platform', 'what do you connect'],
-    answer: `**MedicalCFO integrates with 7+ platforms:**\n\n**Accounting:**\n- QuickBooks Online — P&L, balance sheet, invoices, bills, cash flow\n\n**EHR & Practice Management:**\n- athenahealth — Patient records, claims, scheduling, revenue cycle\n- NextGen Healthcare — Demographics, encounters, claims, financial reports\n- Open Dental — Dental claims, treatment plans, billing\n\n**CRM & Billing:**\n- Kareo (Tebra) — Patient records, claims, billing, analytics\n- Salesforce — Leads, contacts, pipeline\n- HubSpot — Contacts, deals, email tracking\n\nAll integrations sync automatically. Go to **Integrations** in the sidebar to connect.`,
+    answer: `**SellerCFO integrates with 7+ platforms:**\n\n**Accounting:**\n- QuickBooks Online — P&L, balance sheet, invoices, bills, cash flow\n\n**EHR & Practice Management:**\n- athenahealth — Patient records, claims, scheduling, revenue cycle\n- NextGen Healthcare — Demographics, encounters, claims, financial reports\n- Open Dental — Dental claims, treatment plans, billing\n\n**CRM & Billing:**\n- Kareo (Tebra) — Patient records, claims, billing, analytics\n- Salesforce — Leads, contacts, pipeline\n- HubSpot — Contacts, deals, email tracking\n\nAll integrations sync automatically. Go to **Integrations** in the sidebar to connect.`,
   },
   {
     keywords: ['quickbooks', 'qbo', 'accounting', 'chart of accounts', 'authorize', 'oauth'],
-    answer: `**QuickBooks Online Integration:**\n\n1. Go to **Integrations** in the sidebar\n2. Click **"Connect QuickBooks Online"**\n3. Sign in to QBO and authorize MedicalCFO (read-only access)\n4. Click **"Sync with QBO"** in the top bar\n\nMedicalCFO pulls your Chart of Accounts, invoices, bills, and transactions from QBO. We recommend using a healthcare-specific COA for best results.\n\nManage multiple practices? Connect each QBO file separately and use the client selector.`,
+    answer: `**QuickBooks Online Integration:**\n\n1. Go to **Integrations** in the sidebar\n2. Click **"Connect QuickBooks Online"**\n3. Sign in to QBO and authorize SellerCFO (read-only access)\n4. Click **"Sync with QBO"** in the top bar\n\nSellerCFO pulls your Chart of Accounts, invoices, bills, and transactions from QBO. We recommend using a e-commerce-specific COA for best results.\n\nManage multiple practices? Connect each QBO file separately and use the client selector.`,
   },
   {
     keywords: ['athenahealth', 'athena', 'ehr'],
-    answer: `**athenahealth Integration:**\n\nMedicalCFO syncs directly with athenahealth:\n\n- Patient records and demographics\n- Claims and revenue cycle data\n- Scheduling and appointments\n- Eligibility verification results\n\nTo connect: Go to **Integrations** and enter your athenahealth API credentials.`,
+    answer: `**athenahealth Integration:**\n\nSellerCFO syncs directly with athenahealth:\n\n- Patient records and demographics\n- Claims and revenue cycle data\n- Scheduling and appointments\n- Eligibility verification results\n\nTo connect: Go to **Integrations** and enter your athenahealth API credentials.`,
   },
   {
     keywords: ['nextgen', 'next gen'],
-    answer: `**NextGen Healthcare Integration:**\n\nMedicalCFO syncs with NextGen EHR/PM:\n\n- Patient demographics and encounters\n- Claims and financial data\n- Scheduling information\n- Financial reports\n\nTo connect: Go to **Integrations** and enter your NextGen API key.`,
+    answer: `**NextGen Healthcare Integration:**\n\nSellerCFO syncs with NextGen EHR/PM:\n\n- Patient demographics and encounters\n- Claims and financial data\n- Scheduling information\n- Financial reports\n\nTo connect: Go to **Integrations** and enter your NextGen API key.`,
   },
   {
     keywords: ['claims', 'billing', 'denial', 'denials', 'collection', 'collections', 'revenue cycle', 'rcm'],
@@ -75,15 +75,15 @@ const KNOWLEDGE_BASE: KBEntry[] = [
   },
   {
     keywords: ['location', 'locations', 'multi-location', 'branch', 'office'],
-    answer: `**Multi-Location Support:**\n\nMedicalCFO supports practices with multiple locations:\n\n- **Location Filter** in the sidebar\n- Locations map from QBO Classes or Departments\n- "All Locations" shows the practice-wide view\n- Switch locations without reloading\n\nIdeal for multi-site medical groups.`,
+    answer: `**Multi-Location Support:**\n\nSellerCFO supports practices with multiple locations:\n\n- **Location Filter** in the sidebar\n- Locations map from QBO Classes or Departments\n- "All Locations" shows the practice-wide view\n- Switch locations without reloading\n\nIdeal for multi-site medical groups.`,
   },
   {
     keywords: ['cfo', 'advisor', 'ai', 'advice', 'recommend'],
-    answer: `**AI Financial Advisor:**\n\nAsk financial questions in plain English:\n\n- "Why did our collection rate drop last month?"\n- "Which payers have the highest denial rate?"\n- "What is our cash position forecast for next quarter?"\n\nThe AI uses MGMA and HFMA benchmarks to give healthcare-specific recommendations.`,
+    answer: `**AI Financial Advisor:**\n\nAsk financial questions in plain English:\n\n- "Why did our collection rate drop last month?"\n- "Which payers have the highest denial rate?"\n- "What is our cash position forecast for next quarter?"\n\nThe AI uses industry and HFMA benchmarks to give e-commerce-specific recommendations.`,
   },
   {
     keywords: ['price', 'pricing', 'cost', 'plan', 'subscription', 'trial'],
-    answer: `**MedicalCFO Pricing:**\n\n**Starter — $199/mo**\n- Financial dashboard, collections tracking, cash flow\n- QuickBooks sync\n- AI Financial Advisor\n\n**Professional — $399/mo** (Most Popular)\n- Everything in Starter\n- athenahealth + NextGen + Kareo integrations\n- Provider productivity tracking\n- Payer mix analysis\n\n**Enterprise — $599/mo**\n- Everything in Professional\n- Open Dental, Salesforce integrations\n- Quarterly strategy call\n- Dedicated account manager\n\n**All plans:** 14-day free trial, cancel anytime.`,
+    answer: `**SellerCFO Pricing:**\n\n**Starter — $199/mo**\n- Financial dashboard, collections tracking, cash flow\n- QuickBooks sync\n- AI Financial Advisor\n\n**Professional — $399/mo** (Most Popular)\n- Everything in Starter\n- athenahealth + NextGen + Kareo integrations\n- Provider productivity tracking\n- Payer mix analysis\n\n**Enterprise — $599/mo**\n- Everything in Professional\n- Open Dental, Salesforce integrations\n- Quarterly strategy call\n- Dedicated account manager\n\n**All plans:** 14-day free trial, cancel anytime.`,
   },
   {
     keywords: ['sync', 'pull', 'refresh', 'update', 'data'],
@@ -95,19 +95,19 @@ const KNOWLEDGE_BASE: KBEntry[] = [
   },
   {
     keywords: ['contact', 'reach', 'talk', 'human', 'about', 'company'],
-    answer: `**About MedicalCFO:**\n\nMedicalCFO is a financial dashboard built for medical and healthcare practices. We help practices optimize their revenue cycle, reduce denials, improve collections, and gain real-time visibility into practice finances.\n\nUse the buttons above to email us or book a call.`,
+    answer: `**About SellerCFO:**\n\nSellerCFO is a financial dashboard built for medical and e-commerce businesses. We help practices optimize their revenue cycle, reduce denials, improve collections, and gain real-time visibility into practice finances.\n\nUse the buttons above to email us or book a call.`,
   },
   {
     keywords: ['security', 'secure', 'data', 'privacy', 'encryption', 'hipaa'],
-    answer: `**Security & Data Privacy:**\n\n- **Read-only access** — MedicalCFO cannot modify your data\n- **OAuth 2.0** — Industry-standard authentication\n- **AES-256 encryption** at rest\n- **TLS 1.3 encryption** in transit\n- **Row-level security** — Each practice's data is isolated\n- **HIPAA-aware architecture** — PHI is handled with appropriate safeguards\n\nYour financial data is never shared or sold.`,
+    answer: `**Security & Data Privacy:**\n\n- **Read-only access** — SellerCFO cannot modify your data\n- **OAuth 2.0** — Industry-standard authentication\n- **AES-256 encryption** at rest\n- **TLS 1.3 encryption** in transit\n- **Row-level security** — Each practice's data is isolated\n- **HIPAA-aware architecture** — PHI is handled with appropriate safeguards\n\nYour financial data is never shared or sold.`,
   },
   {
     keywords: ['what is', 'medicalcfo', 'value', 'why', 'benefit', 'roi'],
-    answer: `**What is MedicalCFO?**\n\nMedicalCFO is a real-time financial dashboard for medical practices. It connects to QuickBooks Online and EHR/PM systems to automate:\n\n- Revenue cycle analytics and collection tracking\n- Claims denial management and payer performance\n- Cash flow forecasting (30/60/90 day)\n- A/R aging and patient balance tracking\n- Provider productivity (wRVU) analysis\n- AI-powered financial insights\n\nPlans start at **$199/mo** with a 14-day free trial.`,
+    answer: `**What is SellerCFO?**\n\nSellerCFO is a real-time financial dashboard for e-commerce brands. It connects to QuickBooks Online and EHR/PM systems to automate:\n\n- Revenue cycle analytics and collection tracking\n- Claims denial management and payer performance\n- Cash flow forecasting (30/60/90 day)\n- A/R aging and patient balance tracking\n- Provider productivity (wRVU) analysis\n- AI-powered financial insights\n\nPlans start at **$199/mo** with a 14-day free trial.`,
   },
   {
     keywords: ['who', 'for whom', 'target', 'practice type'],
-    answer: `**Who is MedicalCFO for?**\n\nMedicalCFO is built for healthcare practices:\n\n- **Primary care** and family medicine practices\n- **Specialty practices** — dermatology, orthopedics, cardiology\n- **Dental practices** (via Open Dental integration)\n- **Multi-provider groups** with 2-50+ providers\n- **Multi-location practices** with multiple offices\n- **Practice management companies** overseeing multiple practices\n\nIf you use QuickBooks Online and want real-time financial visibility, MedicalCFO was built for you.`,
+    answer: `**Who is SellerCFO for?**\n\nSellerCFO is built for e-commerce businesses:\n\n- **Primary care** and family medicine practices\n- **Specialty practices** — dermatology, orthopedics, cardiology\n- **Dental practices** (via Open Dental integration)\n- **Multi-provider groups** with 2-50+ providers\n- **Multi-location practices** with multiple offices\n- **Practice management companies** overseeing multiple practices\n\nIf you use QuickBooks Online and want real-time financial visibility, SellerCFO was built for you.`,
   },
   {
     keywords: ['settings', 'account', 'profile', 'password'],
@@ -122,13 +122,13 @@ const KNOWLEDGE_BASE: KBEntry[] = [
 const WELCOME_MESSAGE: Message = {
   id: 'welcome',
   role: 'assistant',
-  content: `Hi! I'm the MedicalCFO support assistant. I can help with:\n\n- Setup & connecting QuickBooks, athenahealth, NextGen, and more\n- Dashboard features -- collections, claims, cash flow, A/R aging\n- Integrations (we connect 7+ platforms)\n- Pricing and plans\n\nWhat can I help you with?`,
+  content: `Hi! I'm the SellerCFO support assistant. I can help with:\n\n- Setup & connecting QuickBooks, athenahealth, NextGen, and more\n- Dashboard features -- collections, claims, cash flow, A/R aging\n- Integrations (we connect 7+ platforms)\n- Pricing and plans\n\nWhat can I help you with?`,
   timestamp: new Date(),
 };
 
 const QUICK_QUESTIONS = [
   'What integrations do you support?',
-  'How does claims tracking work?',
+  'How does order tracking work?',
   'How do I connect athenahealth?',
   'What are the pricing plans?',
 ];
@@ -160,7 +160,7 @@ function findAnswer(input: string): string {
     return bestMatch.answer;
   }
 
-  return `I'm not sure I have a specific answer for that — but I can help!\n\nHere are some things I know about:\n• **Integrations** — QBO, athenahealth, NextGen, Salesforce, HubSpot, Open Dental, Kareo\n• **Features** — Job costing, Claims Pending, cash flow, AR/AP, AI advisor, reports\n• **Pricing** — Starter ($199), Professional ($399), Enterprise ($599)\n• **MedicalCFO** — Fractional CFO services for practices\n\nOr use the buttons above to **email us** or **book a call** — we'll get back to you within one business day.`;
+  return `I'm not sure I have a specific answer for that — but I can help!\n\nHere are some things I know about:\n• **Integrations** — QBO, athenahealth, NextGen, Salesforce, HubSpot, Open Dental, Kareo\n• **Features** — Job costing, Revenue Recognition, cash flow, AR/AP, AI advisor, reports\n• **Pricing** — Starter ($199), Professional ($399), Enterprise ($599)\n• **SellerCFO** — Fractional CFO services for practices\n\nOr use the buttons above to **email us** or **book a call** — we'll get back to you within one business day.`;
 }
 
 /* ─────────────────────────────────────────────────────────────
@@ -383,7 +383,7 @@ export default function SupportChat() {
   };
 
   const headerTitles: Record<PanelView, string> = {
-    chat: 'MedicalCFO Support',
+    chat: 'SellerCFO Support',
     calendar: 'Book a Call',
     email: 'Email Us',
   };

@@ -3,7 +3,7 @@
  * POST /api/auth/signup
  * Creates user with auto-confirmed email, org, and profile in one transaction
  * Uses service role key to bypass email confirmation and RLS
- * Also creates a GHL contact and enrolls in the MedicalCFO Onboarding Drip workflow
+ * Also creates a GHL contact and enrolls in the SellerCFO Onboarding Drip workflow
  */
 
 import { NextRequest, NextResponse } from "next/server";
@@ -15,7 +15,7 @@ const GHL_ONBOARDING_WORKFLOW_ID = 'dca41be4-9ab1-45ec-b099-976217cf86c4';
 
 /**
  * Create/upsert a GHL contact tagged "medicalcfo-signup" and enroll in the
- * MedicalCFO Onboarding Drip workflow. Non-blocking — failures are logged
+ * SellerCFO Onboarding Drip workflow. Non-blocking — failures are logged
  * but never break the signup flow.
  */
 async function pushToGHLOnboarding(email: string, fullName: string, companyName: string): Promise<void> {
@@ -47,7 +47,7 @@ async function pushToGHLOnboarding(email: string, fullName: string, companyName:
         lastName,
         companyName,
         tags: ['medicalcfo-signup'],
-        source: 'MedicalCFO App Signup',
+        source: 'SellerCFO App Signup',
       }),
     });
 
@@ -61,7 +61,7 @@ async function pushToGHLOnboarding(email: string, fullName: string, companyName:
 
     console.log(`[signup] GHL contact created/updated: ${contactId}`);
 
-    // Step 2: Enroll in the MedicalCFO Onboarding Drip workflow
+    // Step 2: Enroll in the SellerCFO Onboarding Drip workflow
     const enrollRes = await fetch(
       `https://services.leadconnectorhq.com/contacts/${contactId}/workflow/${GHL_ONBOARDING_WORKFLOW_ID}`,
       {
@@ -76,7 +76,7 @@ async function pushToGHLOnboarding(email: string, fullName: string, companyName:
     );
 
     if (enrollRes.ok) {
-      console.log(`[signup] Contact ${contactId} enrolled in MedicalCFO Onboarding Drip`);
+      console.log(`[signup] Contact ${contactId} enrolled in SellerCFO Onboarding Drip`);
     } else {
       const enrollData = await enrollRes.text();
       console.error(`[signup] Workflow enrollment failed (${enrollRes.status}):`, enrollData);

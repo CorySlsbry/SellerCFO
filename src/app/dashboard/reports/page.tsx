@@ -263,7 +263,7 @@ export default function ReportsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold mb-1 text-[#e8e8f0]">Reports</h1>
-        <p className="text-[#8888a0]">Generate and view financial reports for your medical practice</p>
+        <p className="text-[#8888a0]">Generate and view financial reports for your e-commerce brand</p>
       </div>
 
       {/* Error State */}
@@ -994,7 +994,7 @@ function CollectionAnalysisContent({ data }: { data: any[] }) {
       <div className="bg-[#1a1a26] border border-[#2a2a3d] rounded-lg p-8 text-center">
         <Briefcase size={48} className="mx-auto mb-4 text-[#8888a0]" />
         <h3 className="text-lg font-semibold text-[#e8e8f0] mb-2">No Claims Tracking Data</h3>
-        <p className="text-[#8888a0]">Connect a project management integration (NextGen, athenahealth) to see claims tracking data.</p>
+        <p className="text-[#8888a0]">Connect a project management integration (Shopify, Amazon) to see order tracking data.</p>
       </div>
     );
   }
@@ -1070,8 +1070,8 @@ function PayerPerformanceContent({ data }: { data: any[] }) {
     return (
       <div className="bg-[#1a1a26] border border-[#2a2a3d] rounded-lg p-8 text-center">
         <Target size={48} className="mx-auto mb-4 text-[#8888a0]" />
-        <h3 className="text-lg font-semibold text-[#e8e8f0] mb-2">No Claims Pending Data</h3>
-        <p className="text-[#8888a0]">Connect a project management integration (NextGen, athenahealth) to see work-in-progress data.</p>
+        <h3 className="text-lg font-semibold text-[#e8e8f0] mb-2">No Revenue Recognition Data</h3>
+        <p className="text-[#8888a0]">Connect a project management integration (Shopify, Amazon) to see work-in-progress data.</p>
       </div>
     );
   }
@@ -1085,7 +1085,7 @@ function PayerPerformanceContent({ data }: { data: any[] }) {
       {/* Summary */}
       <div className="grid grid-cols-4 gap-4">
         <div className="bg-[#1a1a26] border border-[#2a2a3d] rounded-lg p-4">
-          <p className="text-sm text-[#8888a0] mb-1">Total Claims Pending</p>
+          <p className="text-sm text-[#8888a0] mb-1">Total Revenue Recognition</p>
           <p className="text-xl font-bold text-[#06b6d4]">{formatCurrency(totalWIP)}</p>
         </div>
         <div className="bg-[#1a1a26] border border-[#2a2a3d] rounded-lg p-4">
@@ -1111,7 +1111,7 @@ function PayerPerformanceContent({ data }: { data: any[] }) {
               <tr className="border-b border-[#2a2a3d]">
                 <th className="px-4 py-3 text-left text-[#8888a0] font-semibold">Job #</th>
                 <th className="px-4 py-3 text-left text-[#8888a0] font-semibold">Job Name</th>
-                <th className="px-4 py-3 text-right text-[#8888a0] font-semibold">Claims Pending Inventory</th>
+                <th className="px-4 py-3 text-right text-[#8888a0] font-semibold">Revenue Recognition Inventory</th>
                 <th className="px-4 py-3 text-right text-[#8888a0] font-semibold">Invoiced</th>
                 <th className="px-4 py-3 text-right text-[#8888a0] font-semibold">Total Revenue</th>
                 <th className="px-4 py-3 text-right text-[#8888a0] font-semibold">Remaining</th>
@@ -1233,7 +1233,7 @@ function ProviderProductivityContent({ data }: { data: any[] }) {
       <div className="bg-[#1a1a26] border border-[#2a2a3d] rounded-lg p-8 text-center">
         <PieChart size={48} className="mx-auto mb-4 text-[#8888a0]" />
         <h3 className="text-lg font-semibold text-[#e8e8f0] mb-2">No Patient Balance Data</h3>
-        <p className="text-[#8888a0]">Connect a project management integration (NextGen, athenahealth) to see patient balance data.</p>
+        <p className="text-[#8888a0]">Connect a project management integration (Shopify, Amazon) to see patient balance data.</p>
       </div>
     );
   }

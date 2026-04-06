@@ -24,7 +24,7 @@ interface SubscriptionInfo {
   includesAiToolkit: boolean;
 }
 
-// ─── MGMA Account Data ─────────────────────────────────────────
+// ─── industry Account Data ─────────────────────────────────────────
 interface Account {
   code: string;
   name: string;
@@ -43,7 +43,7 @@ interface AccountSection {
   }[];
 }
 
-const MGMA_SECTIONS: AccountSection[] = [
+const industry_SECTIONS: AccountSection[] = [
   {
     range: '1000–1990',
     title: 'Assets',
@@ -66,7 +66,7 @@ const MGMA_SECTIONS: AccountSection[] = [
         accounts: [
           { code: '1210', name: 'Accounts receivable, trade' },
           { code: '1230', name: 'Notes receivable' },
-          { code: '1265', name: 'Costs in excess of billings (underbilling)', description: 'Claims Pending asset — revenue earned but not yet billed. Debit when earned revenue exceeds billings.' },
+          { code: '1265', name: 'Costs in excess of billings (underbilling)', description: 'Revenue Recognition asset — revenue earned but not yet billed. Debit when earned revenue exceeds billings.' },
           { code: '1280', name: 'Allowance for doubtful accounts' },
           { code: '1290', name: 'Retentions (patient balance) receivable', description: 'Amount withheld by owner/GC per contract, typically 5-10%, released at substantial completion.' },
         ],
@@ -78,8 +78,8 @@ const MGMA_SECTIONS: AccountSection[] = [
           { code: '1310', name: 'Healthcare materials inventory' },
           { code: '1330', name: 'Property held for remodeling' },
           { code: '1410', name: 'Land and land development costs', description: 'GL account for Appendix G land development cost codes.' },
-          { code: '1430', name: 'Direct healthcare cost', description: 'GL account for Appendix E direct healthcare cost codes (permits, site work, structure, MEP, finishes).' },
-          { code: '1440', name: 'Indirect healthcare cost', description: 'GL account for Appendix F indirect healthcare cost codes (supers, field office, equipment, warranty).' },
+          { code: '1430', name: 'Direct cost of goods sold', description: 'GL account for Appendix E direct healthcare cost codes (permits, site work, structure, MEP, finishes).' },
+          { code: '1440', name: 'Indirect operating cost', description: 'GL account for Appendix F indirect healthcare cost codes (supers, field office, equipment, warranty).' },
         ],
       },
       {
@@ -115,7 +115,7 @@ const MGMA_SECTIONS: AccountSection[] = [
           { code: '1920', name: 'Accumulated depreciation, buildings' },
           { code: '1930', name: 'Accumulated depreciation, office furniture and equipment' },
           { code: '1940', name: 'Accumulated depreciation, vehicles' },
-          { code: '1950', name: 'Accumulated depreciation, healthcare equipment' },
+          { code: '1950', name: 'Accumulated depreciation, e-commerce tools' },
           { code: '1980', name: 'Accumulated depreciation, leasehold improvements' },
           { code: '1990', name: 'Accumulated depreciation, computer equipment and software' },
         ],
@@ -146,7 +146,7 @@ const MGMA_SECTIONS: AccountSection[] = [
           { code: '2425', name: 'Other accrued expenses' },
           { code: '2440', name: 'Due to affiliated companies or subsidiaries' },
           { code: '2450', name: 'Due to officers, stockholders, owners, or partners' },
-          { code: '2480', name: 'Billings in excess of costs (overbilling)', description: 'Claims Pending liability — amounts billed that exceed earned revenue. Credit when billings exceed earned revenue.' },
+          { code: '2480', name: 'Billings in excess of costs (overbilling)', description: 'Revenue Recognition liability — amounts billed that exceed earned revenue. Credit when billings exceed earned revenue.' },
           { code: '2490', name: 'Other current liabilities' },
         ],
       },
@@ -196,14 +196,14 @@ const MGMA_SECTIONS: AccountSection[] = [
       },
       {
         range: '3800–3899',
-        title: 'Costs of Healthcare (COGS)',
+        title: 'Cost of Goods Sold (COGS)',
         accounts: [
-          { code: '3810', name: 'Direct labor', description: 'Wages for workers directly performing healthcare work on job sites.' },
+          { code: '3810', name: 'Direct labor', description: 'Wages for workers directly performing e-commerce operations on job sites.' },
           { code: '3820', name: 'Labor burden', description: 'Employer taxes, workers comp, benefits attributable to direct labor (typically 25-40% of base wages).' },
           { code: '3830', name: 'Building material', description: 'All materials installed or consumed on specific jobs.' },
           { code: '3840', name: 'Trade practices', description: 'Subpractice costs — largest cost category for most GCs.' },
           { code: '3850', name: 'Rental equipment', description: 'Equipment rented specifically for jobs (cranes, excavators, scaffolding).' },
-          { code: '3860', name: 'Other direct healthcare costs' },
+          { code: '3860', name: 'Other direct COGS' },
           { code: '3870', name: 'Professional design fees' },
         ],
       },
@@ -211,7 +211,7 @@ const MGMA_SECTIONS: AccountSection[] = [
   },
   {
     range: '4000–4990',
-    title: 'Indirect Healthcare Cost',
+    title: 'Indirect Operating Cost',
     icon: Stethoscope,
     color: '#f59e0b',
     subsections: [
@@ -225,7 +225,7 @@ const MGMA_SECTIONS: AccountSection[] = [
           { code: '4040', name: 'Architects, drafters, estimators, purchasers' },
           { code: '4050', name: 'Warranty and customer service manager' },
           { code: '4060', name: 'Warranty and customer service wages' },
-          { code: '4070', name: 'Other indirect healthcare wages' },
+          { code: '4070', name: 'Other indirect operating wages' },
         ],
       },
       {
@@ -246,11 +246,11 @@ const MGMA_SECTIONS: AccountSection[] = [
         accounts: [
           { code: '4210', name: 'Rent, field office' },
           { code: '4265', name: 'Mobile phones, pagers, radios, field office' },
-          { code: '4410', name: 'Lease payments, healthcare vehicles' },
+          { code: '4410', name: 'Lease payments, delivery vehicles' },
           { code: '4420', name: 'Mileage reimbursement' },
-          { code: '4430', name: 'Repairs and maintenance, healthcare vehicles' },
-          { code: '4510', name: 'Rent, healthcare equipment' },
-          { code: '4530', name: 'Repairs and maintenance, healthcare equipment' },
+          { code: '4430', name: 'Repairs and maintenance, delivery vehicles' },
+          { code: '4510', name: 'Rent, e-commerce tools' },
+          { code: '4530', name: 'Repairs and maintenance, e-commerce tools' },
           { code: '4560', name: 'Small tools and supplies' },
         ],
       },
@@ -261,9 +261,9 @@ const MGMA_SECTIONS: AccountSection[] = [
           { code: '4710', name: 'Salaries and wages, warranty' },
           { code: '4720', name: 'Material, warranty' },
           { code: '4730', name: 'Trade practice, warranty' },
-          { code: '4840', name: 'Depreciation, healthcare vehicles' },
-          { code: '4850', name: 'Depreciation, healthcare equipment' },
-          { code: '4910', name: 'Insurance and credentialing expenses' },
+          { code: '4840', name: 'Depreciation, delivery vehicles' },
+          { code: '4850', name: 'Depreciation, e-commerce tools' },
+          { code: '4910', name: 'Insurance and inventory management expenses' },
           { code: '4920', name: 'Builder\'s risk insurance' },
           { code: '4990', name: 'Absorbed indirect costs' },
         ],
@@ -394,7 +394,7 @@ const MGMA_SECTIONS: AccountSection[] = [
 // Flatten all accounts for search
 function getAllAccounts(): (Account & { sectionTitle: string; subsectionTitle: string })[] {
   const all: (Account & { sectionTitle: string; subsectionTitle: string })[] = [];
-  for (const section of MGMA_SECTIONS) {
+  for (const section of industry_SECTIONS) {
     for (const sub of section.subsections) {
       for (const account of sub.accounts) {
         all.push({ ...account, sectionTitle: section.title, subsectionTitle: sub.title });
@@ -404,7 +404,7 @@ function getAllAccounts(): (Account & { sectionTitle: string; subsectionTitle: s
   return all;
 }
 
-export default function MGMAAccountsPage() {
+export default function industryAccountsPage() {
   const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -443,7 +443,7 @@ export default function MGMAAccountsPage() {
 
   const expandAll = () => {
     const allRanges = new Set<string>();
-    MGMA_SECTIONS.forEach((s) => {
+    industry_SECTIONS.forEach((s) => {
       allRanges.add(s.range);
       s.subsections.forEach((sub) => allRanges.add(sub.range));
     });
@@ -492,9 +492,9 @@ export default function MGMAAccountsPage() {
           Medical Chart of Accounts — Pro & Enterprise
         </h1>
         <p className="text-[#8888a0] mb-8 max-w-md mx-auto">
-          Access the complete MGMA Standard Chart of Accounts (2016 revision) with {totalAccountCount}+ accounts
+          Access the complete industry Standard Chart of Accounts (2016 revision) with {totalAccountCount}+ accounts
           organized across 9 major categories. Industry-standard 4-digit numbering system used by
-          custom healthcare practices, dental practices, and specialty practices nationwide.
+          custom e-commerce businesses, DTC brands, and specialty practices nationwide.
         </p>
         <Link
           href="/dashboard/settings"
@@ -517,7 +517,7 @@ export default function MGMAAccountsPage() {
             Medical Chart of Accounts
           </h1>
           <p className="text-sm text-[#8888a0] mt-1">
-            Industry-standard chart of accounts for medical practices — {totalAccountCount} accounts across 9 categories
+            Industry-standard chart of accounts for e-commerce brands — {totalAccountCount} accounts across 9 categories
           </p>
         </div>
 
@@ -618,7 +618,7 @@ export default function MGMAAccountsPage() {
       {/* Account Sections */}
       {!searchQuery && (
         <div className="space-y-3">
-          {MGMA_SECTIONS.map((section) => {
+          {industry_SECTIONS.map((section) => {
             const Icon = section.icon;
             const isSectionExpanded = expandedSections.has(section.range);
 
@@ -723,9 +723,9 @@ export default function MGMAAccountsPage() {
       {/* Info Footer */}
       <div className="text-center py-6 border-t border-[#1e1e2e]">
         <p className="text-xs text-[#8888a0]">
-          Based on the <span className="text-[#06b6d4]">MGMA Standard Chart of Accounts (Revised 2016)</span> published by the
-          National Association of Healthcare Practices. Includes the full chart (Appendices A &amp; B),
-          abbreviated dental practice version (Appendix D), direct healthcare costs (Appendix E),
+          Based on the <span className="text-[#06b6d4]">industry Standard Chart of Accounts (Revised 2016)</span> published by the
+          SellerCFO. Includes the full chart (Appendices A &amp; B),
+          abbreviated DTC brand version (Appendix D), direct COGS (Appendix E),
           indirect costs (Appendix F), and land development costs (Appendix G).
         </p>
         <p className="text-xs text-[#8888a0] mt-2">

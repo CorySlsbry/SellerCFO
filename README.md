@@ -1,18 +1,20 @@
 # SellerCFO
 
-> Financial dashboard platform for e-commerce/dtc businesses.
-> Built for [object object].
+> Financial dashboard platform for e-commerce and DTC businesses.
 
 ## Overview
 
-SellerCFO is a real-time financial intelligence platform designed specifically for the e-commerce/dtc industry. It connects your accounting software, CRM, and operations data into one unified dashboard.
+SellerCFO is a real-time financial intelligence platform designed specifically for e-commerce and DTC brands. It connects your sales channels, accounting software, CRM, and ad platforms into one unified dashboard.
 
 ## Features
 
-- **Real-Time Dashboard** — Live financial KPIs specific to e-commerce/dtc
+- **Real-Time Dashboard** — Live financial KPIs specific to e-commerce/DTC
 - **AI CFO Advisor** — Ask questions and get industry-specific financial guidance
+- **Sales Channel Integrations** — Shopify, Amazon, Etsy, WooCommerce, Walmart, TikTok Shop
 - **QuickBooks Integration** — Automatic two-way sync with your books
-- **Industry Reports** — Pre-built reports tailored for [object object]
+- **Unit Economics** — Track CAC, LTV, contribution margin, ROAS at the SKU level
+- **Inventory Intelligence** — Turnover, sell-through rate, days of supply
+- **Cash Flow Forecasting** — See your cash position weeks ahead
 - **Stripe Billing** — Subscription management built in
 
 ## Getting Started

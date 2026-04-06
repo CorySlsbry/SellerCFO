@@ -94,7 +94,7 @@ export default function ImpersonateDashboardPage() {
                 This area would contain the full dashboard for {dashboardData.organizationName}
               </p>
               <p className="text-sm text-[#8888a0]">
-                Including KPIs, charts, claims tracking, cash flow, AR/AP, and all other dashboard features
+                Including KPIs, charts, order tracking, cash flow, AR/AP, and all other dashboard features
               </p>
             </div>
           </Card>

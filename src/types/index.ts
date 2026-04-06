@@ -1,10 +1,10 @@
 /**
- * Core TypeScript types for the MedicalCFO Dashboard
+ * Core TypeScript types for the SellerCFO Dashboard
  */
 
 /**
  * Organization (tenant) type
- * Represents a practice company using the platform
+ * Represents a company using the platform
  */
 export interface Organization {
   id: string;
@@ -38,7 +38,7 @@ export interface User {
 
 /**
  * Job/Project data
- * Represents a specific job or project for a practice
+ * Represents a specific job or project
  */
 export interface JobData {
   id: string;

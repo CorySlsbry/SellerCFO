@@ -10,7 +10,7 @@ export default function OfflinePage() {
           </div>
         </div>
 
-        <h1 className="mb-2 text-3xl font-bold text-[#e8e8f0]">MedicalCFO</h1>
+        <h1 className="mb-2 text-3xl font-bold text-[#e8e8f0]">SellerCFO</h1>
 
         <p className="mb-8 max-w-md text-lg text-[#a0a0a8]">
           You're offline. Please check your internet connection and try again.

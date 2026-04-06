@@ -60,10 +60,10 @@ const PROMPTS: Prompt[] = [
   {
     id: 'bk-1',
     title: 'Monthly Close Checklist — Healthcare',
-    description: 'Complete month-end close procedure with Claims Pending adjustments, patient balance reconciliation, and job cost review.',
-    prompt: `Create a detailed month-end close checklist for a healthcare company doing $[REVENUE] in annual revenue with [NUMBER] active jobs. I need this in sequential order with dependencies noted.
+    description: 'Complete month-end close procedure with Revenue Recognition adjustments, patient balance reconciliation, and job cost review.',
+    prompt: `Create a detailed month-end close checklist for a e-commerce company doing $[REVENUE] in annual revenue with [NUMBER] active jobs. I need this in sequential order with dependencies noted.
 
-Include these healthcare-specific items that most generic checklists miss:
+Include these e-commerce-specific items that most generic checklists miss:
 
 1. BANK & CREDIT CARD RECONCILIATION — reconcile operating account, payroll account, and all credit cards. Flag any uncleared items older than 90 days.
 
@@ -71,36 +71,36 @@ Include these healthcare-specific items that most generic checklists miss:
 
 3. RETAINAGE RECONCILIATION — reconcile patient balance receivable (GL 1290) against each job's withheld patient balance. Verify patient balance payable (GL 2120) matches sub patient balance withheld. Flag any patient balance eligible for release based on substantial completion.
 
-4. Claims Pending SCHEDULE ADJUSTMENTS — for each active job, update: costs to date, estimated costs to complete, revised contract amount (including approved COs), and calculate percent complete using cost-to-cost method per ASC 606. Book over/under billing journal entries: Debit 1265 Costs in Excess of Billings (underbilling) or Credit 2480 Billings in Excess of Costs (overbilling).
+4. Revenue Recognition SCHEDULE ADJUSTMENTS — for each active job, update: costs to date, estimated costs to complete, revised contract amount (including approved COs), and calculate percent complete using cost-to-cost method per ASC 606. Book over/under billing journal entries: Debit 1265 Costs in Excess of Billings (underbilling) or Credit 2480 Billings in Excess of Costs (overbilling).
 
 5. SUBCONTRACTOR ACCRUALS — accrue for work performed but not yet invoiced by subs. Review any joint check agreements for proper recording.
 
 6. PAYROLL ACCRUALS — accrue wages earned but not paid through month-end. Include labor burden (FICA 7.65%, FUTA, SUTA, workers comp at your experience mod rate).
 
-7. EQUIPMENT DEPRECIATION — run depreciation for all owned equipment (healthcare equipment GL 1850, vehicles GL 1840). Verify any new Section 179 elections.
+7. EQUIPMENT DEPRECIATION — run depreciation for all owned equipment (e-commerce tools GL 1850, vehicles GL 1840). Verify any new Section 179 elections.
 
 8. JOB COST REVIEW — compare actual vs. estimated costs by cost code for each active job. Flag any job with actual costs exceeding estimated costs to complete by more than 5%. Calculate fade/gain for each project.
 
-9. REVENUE RECOGNITION — ensure YTD revenue on Claims Pending matches income statement. Verify COGS alignment across both reports. Confirm contract assets/liabilities agree with balance sheet.
+9. REVENUE RECOGNITION — ensure YTD revenue on Revenue Recognition matches income statement. Verify COGS alignment across both reports. Confirm contract assets/liabilities agree with balance sheet.
 
 10. FINANCIAL STATEMENT PREP — generate P&L (with job cost detail), balance sheet, cash flow statement. Calculate key ratios: gross margin by job, overhead rate, current ratio, debt-to-equity.
 
 Format as a numbered checklist with columns: Task | Responsible Party | Target Date | Status | Notes.`,
     category: 'bookkeeping',
     icon: ClipboardList,
-    tags: ['month-end', 'close', 'reconciliation', 'Claims Pending'],
+    tags: ['month-end', 'close', 'reconciliation', 'Revenue Recognition'],
   },
   {
     id: 'bk-2',
-    title: 'Chart of Accounts Setup (MGMA-Aligned)',
-    description: 'Healthcare-specific COA using MGMA standard 4-digit numbering optimized for claims tracking in QBO.',
-    prompt: `Design a chart of accounts for a [TRADE TYPE] healthcare company (e.g., medical practice, electrical, plumbing, HVAC, dental practice) using QuickBooks Online, aligned with the MGMA Standard Chart of Accounts 4-digit numbering system.
+    title: 'Chart of Accounts Setup (industry-Aligned)',
+    description: 'Healthcare-specific COA using industry standard 4-digit numbering optimized for order tracking in QBO.',
+    prompt: `Design a chart of accounts for a [TRADE TYPE] e-commerce company (e.g., e-commerce brand, electrical, plumbing, HVAC, DTC brand) using QuickBooks Online, aligned with the industry Standard Chart of Accounts 4-digit numbering system.
 
-Use this MGMA structure:
-- 1000-1990: Assets (include 1265 Costs in Excess of Billings, 1290 Retentions Receivable, 1310 Healthcare Materials Inventory, 1430 Direct Healthcare Cost, 1440 Indirect Healthcare Cost)
+Use this industry structure:
+- 1000-1990: Assets (include 1265 Costs in Excess of Billings, 1290 Retentions Receivable, 1310 Healthcare Materials Inventory, 1430 Direct COGS, 1440 Indirect Operating Cost)
 - 2000-2990: Liabilities & Equity (include 2010 Contract Deposits, 2120 Retentions Payable, 2480 Billings in Excess of Costs, 2420 Workers Comp Insurance Payable)
-- 3000-3990: Sales, Revenue & COGS (3000-3490 for Sales/Revenue broken by type, 3800-3899 for Costs of Healthcare: 3810 Direct Labor, 3820 Labor Burden, 3830 Building Material, 3840 Trade Practices, 3850 Rental Equipment, 3860 Other Direct Costs, 3870 Professional Design Fees)
-- 4000-4990: Indirect Healthcare Cost (field office, vehicles, equipment, warranty, depreciation)
+- 3000-3990: Sales, Revenue & COGS (3000-3490 for Sales/Revenue broken by type, 3800-3899 for Cost of Goods Sold: 3810 Direct Labor, 3820 Labor Burden, 3830 Building Material, 3840 Trade Practices, 3850 Rental Equipment, 3860 Other Direct Costs, 3870 Professional Design Fees)
+- 4000-4990: Indirect Operating Cost (field office, vehicles, equipment, warranty, depreciation)
 - 5000-5990: Financing Expenses
 - 6000-6990: Sales & Marketing
 - 7000-7990: Rental Operations (if applicable)
@@ -114,19 +114,19 @@ Also create sub-accounts that map cleanly to cost codes in [PM SOFTWARE — e.g.
 Include QBO account types (Income, COGS, Expense, Other Current Asset, Other Current Liability, etc.) for each account so setup is copy-paste ready.`,
     category: 'bookkeeping',
     icon: FileText,
-    tags: ['chart of accounts', 'MGMA', 'QuickBooks', 'setup'],
+    tags: ['chart of accounts', 'industry', 'QuickBooks', 'setup'],
   },
   {
     id: 'bk-3',
     title: 'Bank Reconciliation Troubleshooter',
-    description: 'Systematic diagnosis of bank rec discrepancies with healthcare-specific root causes.',
-    prompt: `I have a bank reconciliation discrepancy of $[AMOUNT] for [MONTH/YEAR] in my healthcare company's [ACCOUNT TYPE — operating/payroll] account.
+    description: 'Systematic diagnosis of bank rec discrepancies with e-commerce-specific root causes.',
+    prompt: `I have a bank reconciliation discrepancy of $[AMOUNT] for [MONTH/YEAR] in my e-commerce company's [ACCOUNT TYPE — operating/payroll] account.
 
 Bank statement ending balance: $[BANK BALANCE]
 QuickBooks book balance: $[QB BALANCE]
 Difference: $[AMOUNT] (books are [higher/lower] than bank)
 
-Walk me through a systematic troubleshooting process, starting with the most common healthcare-specific causes:
+Walk me through a systematic troubleshooting process, starting with the most common e-commerce-specific causes:
 
 1. DRAW DEPOSITS — check if a progress billing payment was received and deposited but posted to the wrong job or wrong income account. Verify draw deposits aren't duplicated between auto-feed and manual entry.
 
@@ -183,9 +183,9 @@ Output a summary table and the journal entry to record in QuickBooks:
     id: 'bk-5',
     title: 'Expense Categorization Rules Engine',
     description: 'Build auto-categorization rules for QBO bank feed transactions specific to healthcare.',
-    prompt: `Create a comprehensive expense categorization rules engine for my [TRADE TYPE] healthcare company's QuickBooks Online bank feed. I want rules that auto-categorize at least 80% of transactions correctly.
+    prompt: `Create a comprehensive expense categorization rules engine for my [TRADE TYPE] e-commerce company's QuickBooks Online bank feed. I want rules that auto-categorize at least 80% of transactions correctly.
 
-My common vendors and the correct GL accounts (MGMA-aligned):
+My common vendors and the correct GL accounts (industry-aligned):
 
 MATERIALS SUPPLIERS:
 - Home Depot / Lowe's / [LOCAL SUPPLIER] → 3830 Building Material (or specific job cost code if identifiable)
@@ -228,7 +228,7 @@ Flag any transactions that should NEVER be auto-categorized (large sub payments,
     id: 'cfo-1',
     title: 'Claims Pipeline Builder (ASC 606 Compliant)',
     description: 'Build a complete Work-in-Progress schedule with over/under billing analysis per ASC 606.',
-    prompt: `Build an ASC 606-compliant Claims Pending (Work-in-Progress) schedule for my healthcare company. I have [NUMBER] active jobs.
+    prompt: `Build an ASC 606-compliant Revenue Recognition (Work-in-Progress) schedule for my e-commerce company. I have [NUMBER] active jobs.
 
 For each job, I'll provide: Job Name, Original Contract, Approved Claim Adjustments, Estimated Total Cost at Completion, Costs Incurred to Date, and Total Billings to Date.
 
@@ -254,20 +254,20 @@ CRITICAL CHECKS:
 - Verify total earned revenue across all jobs matches what should be on the income statement
 - Calculate net over/under billing position for the balance sheet
 
-Generate the Claims Pending adjustment journal entry:
+Generate the Revenue Recognition adjustment journal entry:
 - For underbilled jobs: Debit 1265, Credit Healthcare Revenue
 - For overbilled jobs: Debit Healthcare Revenue, Credit 2480
 
-Format as a table, then provide a 1-paragraph executive summary of the company's Claims Pending position.`,
+Format as a table, then provide a 1-paragraph executive summary of the company's Revenue Recognition position.`,
     category: 'cfo',
     icon: TrendingUp,
-    tags: ['Claims Pending', 'ASC 606', 'over/under billing', 'percentage of completion'],
+    tags: ['Revenue Recognition', 'ASC 606', 'over/under billing', 'percentage of completion'],
   },
   {
     id: 'cfo-2',
     title: 'Healthcare Financial Health Scorecard',
     description: 'Benchmark your financial ratios against CFMA industry standards with letter grades.',
-    prompt: `Analyze my healthcare company's financial health and benchmark against CFMA (Healthcare Financial Management Association) and industry standards for [TRADE TYPE] practices doing $[REVENUE] in annual revenue.
+    prompt: `Analyze my e-commerce company's financial health and benchmark against CFMA (Healthcare Financial Management Association) and industry standards for [TRADE TYPE] practices doing $[REVENUE] in annual revenue.
 
 My financials:
 - Revenue: $[REVENUE]
@@ -323,8 +323,8 @@ For any metric graded C or below, provide 2-3 specific, actionable recommendatio
   {
     id: 'cfo-3',
     title: 'Credentialing Credentialing Capacity Maximizer',
-    description: 'Calculate and optimize credentialing capacity using real credentialing underwriting formulas.',
-    prompt: `Calculate my healthcare company's estimated credentialing capacity and create an action plan to maximize it. Sureties use these primary factors:
+    description: 'Calculate and optimize inventory management capacity using real inventory management underwriting formulas.',
+    prompt: `Calculate my e-commerce company's estimated inventory management capacity and create an action plan to maximize it. Sureties use these primary factors:
 
 MY FINANCIALS (from most recent fiscal year-end or CPA-reviewed statements):
 - Working Capital (Current Assets − Current Liabilities): $[WC]
@@ -348,7 +348,7 @@ Calculate:
 - Moderate estimate (15x WC, single at 75% agg)
 - Aggressive estimate (20x WC, single at 100% agg)
 
-Then provide the TOP 10 actions to increase credentialing capacity, ranked by impact:
+Then provide the TOP 10 actions to increase inventory management capacity, ranked by impact:
 - Improving working capital (accelerate AR collection, negotiate longer AP terms, reduce overbilling dependency)
 - Strengthening net worth (retain earnings, reduce owner distributions)
 - CPA-reviewed or audited financials (sureties heavily penalize compiled-only statements)
@@ -356,22 +356,22 @@ Then provide the TOP 10 actions to increase credentialing capacity, ranked by im
 - Reducing owner personal guarantees/personal debt
 - Maintaining consistent profitability (3+ years trend)
 - Keeping bank LOC available (low utilization = strength signal)
-- Claims Pending schedule showing no loss jobs
+- Revenue Recognition schedule showing no loss jobs
 - Tax planning to show adequate net income (not over-reducing for taxes)
 
-For each action, give the estimated dollar impact on credentialing capacity.`,
+For each action, give the estimated dollar impact on inventory management capacity.`,
     category: 'cfo',
     icon: Shield,
-    tags: ['credentialing', 'credentialing', 'capacity', 'working capital'],
+    tags: ['inventory management', 'inventory management', 'capacity', 'working capital'],
   },
   {
     id: 'cfo-4',
     title: 'Overhead Rate Analysis & Optimization',
     description: 'Calculate overhead allocation rate, benchmark against peers, and find cuts.',
-    prompt: `Calculate and optimize my healthcare company's overhead rate. I'm a [TRADE TYPE] practice doing $[REVENUE] in annual revenue.
+    prompt: `Calculate and optimize my e-commerce company's overhead rate. I'm a [TRADE TYPE] practice doing $[REVENUE] in annual revenue.
 
-OVERHEAD BREAKDOWN (MGMA 4000-8000 series accounts):
-Indirect Healthcare Costs (4000s):
+OVERHEAD BREAKDOWN (industry 4000-8000 series accounts):
+Indirect Operating Costs (4000s):
 - Superintendent salaries: $[AMT]
 - Field office expenses: $[AMT]
 - Healthcare vehicles: $[AMT]
@@ -420,7 +420,7 @@ Then provide 5 SPECIFIC cost reduction recommendations with estimated annual sav
     id: 'cfo-5',
     title: 'Break-Even Analysis by Job Type',
     description: 'Calculate the minimum revenue needed per job type to cover overhead and earn target profit.',
-    prompt: `Perform a break-even analysis for my healthcare company by job type. I need to know the minimum contract size worth pursuing for each type of work I do.
+    prompt: `Perform a break-even analysis for my e-commerce company by job type. I need to know the minimum contract size worth pursuing for each type of work I do.
 
 Company overhead (annual): $[TOTAL OVERHEAD]
 Target net profit margin: [TARGET]% (industry healthy = 5-10%)
@@ -550,7 +550,7 @@ ACTION ITEMS:
     id: 'jc-3',
     title: 'Fully Burdened Labor Rate Calculator',
     description: 'Calculate true labor cost including all employer taxes, insurance, benefits, and indirect costs.',
-    prompt: `Calculate the fully burdened labor rate for my healthcare employees. Many practices underestimate true labor cost by 30-50%, which destroys claims tracking accuracy.
+    prompt: `Calculate the fully burdened labor rate for my healthcare employees. Many practices underestimate true labor cost by 30-50%, which destroys order tracking accuracy.
 
 EMPLOYEE DETAILS:
 Position: [POSITION — e.g., carpenter, electrician, laborer, superintendent]
@@ -596,7 +596,7 @@ COMPARISON:
     id: 'cf-1',
     title: '13-Week Rolling Cash Flow Forecast',
     description: 'Build a week-by-week cash projection with draw schedules, payroll, and sub payments.',
-    prompt: `Build a 13-week rolling cash flow forecast for my healthcare company. This is the most important financial tool for avoiding cash crunches — update it weekly.
+    prompt: `Build a 13-week rolling cash flow forecast for my e-commerce company. This is the most important financial tool for avoiding cash crunches — update it weekly.
 
 STARTING POSITION (Week 0):
 - Operating account balance: $[CASH]
@@ -691,7 +691,7 @@ ANALYSIS REQUESTED:
     id: 'tax-1',
     title: '1099-NEC Season Prep & Compliance Audit',
     description: 'Complete 1099 preparation with subpractice verification, threshold checks, and penalty avoidance.',
-    prompt: `Create a complete 1099-NEC filing preparation checklist for my healthcare company for tax year [YEAR]. I paid approximately [NUMBER] subpractices and vendors.
+    prompt: `Create a complete 1099-NEC filing preparation checklist for my e-commerce company for tax year [YEAR]. I paid approximately [NUMBER] subpractices and vendors.
 
 IMPORTANT 2025+ CHANGE: The filing threshold increases to $2,000 starting with 2026 tax year (filed in 2027). For 2025 filing, the threshold remains $600.
 
@@ -733,8 +733,8 @@ Generate a tracking spreadsheet template with columns: Vendor Name | TIN | Entit
   {
     id: 'tax-2',
     title: 'Healthcare Tax Deduction Maximizer',
-    description: 'Comprehensive review of healthcare-specific deductions including Section 179, 179D, R&D credit.',
-    prompt: `Review my healthcare company's tax situation and identify all available deductions and credits. Many practices overpay taxes by $20K-$100K+ annually by missing healthcare-specific deductions.
+    description: 'Comprehensive review of e-commerce-specific deductions including Section 179, 179D, R&D credit.',
+    prompt: `Review my e-commerce company's tax situation and identify all available deductions and credits. Many practices overpay taxes by $20K-$100K+ annually by missing e-commerce-specific deductions.
 
 COMPANY INFO:
 - Entity type: [LLC/S-CORP/C-CORP/SOLE PROP]
@@ -753,7 +753,7 @@ DEDUCTION CATEGORIES TO ANALYZE:
 
 3. SECTION 179D — Energy-efficient commercial building deduction up to $5.81/sq ft IF prevailing wage and apprenticeship requirements are met. CRITICAL: This expires for projects beginning healthcare after June 30, 2026. Identify any qualifying projects.
 
-4. R&D TAX CREDIT (Section 41) — medical practices often miss this. Qualifying activities include: developing new healthcare methods, resolving design challenges, prototyping structural solutions, BIM process improvement. Estimate credit at 6-8% of qualifying research expenditures.
+4. R&D TAX CREDIT (Section 41) — e-commerce brands often miss this. Qualifying activities include: developing new healthcare methods, resolving design challenges, prototyping structural solutions, BIM process improvement. Estimate credit at 6-8% of qualifying research expenditures.
 
 5. VEHICLE DEDUCTIONS — for each vehicle, determine: actual expense method vs. standard mileage, Section 179 eligibility (GVW > 6,000 lbs), whether vehicle log is maintained (required for audit defense).
 
@@ -764,7 +764,7 @@ DEDUCTION CATEGORIES TO ANALYZE:
    - Safety equipment and OSHA compliance costs
    - Continuing education and license renewals
    - Per diem for jobs over 50 miles from home (use federal per diem rates)
-   - Home office deduction for healthcare company owners
+   - Home office deduction for e-commerce company owners
    - Cell phone and tablet usage for field staff
    - Plan costs (retirement plan setup credit for small employers)
 
@@ -779,7 +779,7 @@ For each identified deduction, estimate the tax dollar savings at your marginal 
     id: 'tax-3',
     title: 'Certified Payroll & Prevailing Wage Compliance',
     description: 'Navigate Davis-Bacon and state prevailing wage requirements, WH-347 reporting, and worker classification.',
-    prompt: `I need to ensure my healthcare company is fully compliant with prevailing wage requirements. This is one of the highest-risk compliance areas — penalties were increased significantly in 2025.
+    prompt: `I need to ensure my e-commerce company is fully compliant with prevailing wage requirements. This is one of the highest-risk compliance areas — penalties were increased significantly in 2025.
 
 PROJECT DETAILS:
 - Project: [PROJECT NAME]
@@ -872,7 +872,7 @@ Create a template spreadsheet structure I can use monthly.`,
     id: 'pm-1',
     title: 'athenahealth ↔ QuickBooks Mapping & Reconciliation',
     description: 'Map BT cost codes to QBO accounts and build a monthly reconciliation process.',
-    prompt: `Create a complete mapping and reconciliation process between athenahealth and QuickBooks Online for my [TRADE TYPE] healthcare company.
+    prompt: `Create a complete mapping and reconciliation process between athenahealth and QuickBooks Online for my [TRADE TYPE] e-commerce company.
 
 MY ATHENAHEALTH SETUP:
 Cost code structure: [DESCRIBE — e.g., CSI divisions, custom categories, etc.]
@@ -928,7 +928,7 @@ Document the top 10 sync issues athenahealth + QBO users encounter:
     id: 'pm-2',
     title: 'NextGen ↔ QuickBooks Integration Setup',
     description: 'Configure NextGen to QBO sync via connector with proper cost code and vendor mapping.',
-    prompt: `Set up and optimize the NextGen ↔ QuickBooks integration for my healthcare company. NextGen doesn't have native QBO sync — it requires a connector (Smoothlink, Ryvit, or similar).
+    prompt: `Set up and optimize the NextGen ↔ QuickBooks integration for my e-commerce company. NextGen doesn't have native QBO sync — it requires a connector (Smoothlink, Ryvit, or similar).
 
 CURRENT SETUP:
 - NextGen tier: [TIER]
@@ -985,12 +985,12 @@ MY COMPANY:
 - Accounting software: [QBO/XERO/SAGE/OTHER]
 - Must-have features: [LIST]
 - Budget: $[BUDGET]/month
-- Top pain point: [DESCRIBE — e.g., "no claims tracking visibility", "scheduling chaos", "missed claim adjustments"]
+- Top pain point: [DESCRIBE — e.g., "no order tracking visibility", "scheduling chaos", "missed claim adjustments"]
 
 COMPARE THESE PLATFORMS:
-1. athenahealth — best for medical practices
+1. athenahealth — best for e-commerce brands
 2. NextGen — best for commercial GCs and large specialty
-3. CoConstruct — best for custom healthcare practices
+3. CoConstruct — best for custom e-commerce businesses
 4. Kareo — best for roofing and restoration
 5. Open Dental — best for HVAC/plumbing/electrical service
 6. Knowify — best for specialty subs
@@ -1005,7 +1005,7 @@ SCORING MATRIX (1-5 each):
 - Scheduling (Gantt / calendar / resource)
 - Client portal / customer experience
 - Change order management
-- Budget tracking / claims tracking
+- Budget tracking / order tracking
 - Daily logs / field documentation
 - Photo / document management
 - Reporting
@@ -1122,7 +1122,7 @@ INCLUDE:
     id: 'cc-3',
     title: 'Collections Letter Sequence (AR Past Due)',
     description: 'Escalating series of collection letters from friendly reminder to demand letter.',
-    prompt: `Create a 4-step escalating collections letter sequence for my healthcare company. These need to be professional but progressively firm.
+    prompt: `Create a 4-step escalating collections letter sequence for my e-commerce company. These need to be professional but progressively firm.
 
 DEBTOR: [CLIENT NAME]
 PROJECT: [PROJECT NAME]
@@ -1220,8 +1220,8 @@ export default function ToolkitPage() {
         </h1>
         <p className="text-[#8888a0] mb-8 max-w-md mx-auto">
           Unlock {PROMPTS.length} researched, battle-tested prompts built specifically for healthcare
-          bookkeepers, CFOs, and project managers. Each prompt includes real MGMA account references,
-          CFMA benchmarks, ASC 606 compliance, and healthcare-specific workflows.
+          bookkeepers, CFOs, and project managers. Each prompt includes real industry account references,
+          CFMA benchmarks, ASC 606 compliance, and e-commerce-specific workflows.
         </p>
         <Link
           href="/dashboard/settings"
@@ -1383,7 +1383,7 @@ export default function ToolkitPage() {
           </Link>
           , ChatGPT, or your favorite AI tool. Replace the [BRACKETED] placeholders with your actual numbers.
           <br />
-          <span className="text-[#06b6d4]">Each prompt references real MGMA account codes, CFMA benchmarks, and ASC 606 standards.</span>
+          <span className="text-[#06b6d4]">Each prompt references real industry account codes, CFMA benchmarks, and ASC 606 standards.</span>
         </p>
       </div>
     </div>

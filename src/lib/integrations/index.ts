@@ -18,24 +18,28 @@ import type {
   IntegrationConnector,
 } from '@/types/integrations';
 
-import { nextgenConnector } from './nextgen';
-import { athenahealthConnector } from './athenahealth';
-import { serviceTitanConnector } from './opendental';
+import { shopifyConnector } from './shopify';
+import { amazonConnector } from './amazon';
+import { etsyConnector } from './etsy';
+import { woocommerceConnector } from './woocommerce';
+import { walmartConnector } from './walmart';
+import { tiktokShopConnector } from './tiktok-shop';
 import { salesforceConnector } from './salesforce';
 import { hubspotConnector } from './hubspot';
-import { jobNimbusConnector } from './kareo';
 
 // ============================================================
 // Connector Registry
 // ============================================================
 
 const connectors: Record<string, any> = {
-  nextgen: nextgenConnector,
-  athenahealth: athenahealthConnector,
-  opendental: serviceTitanConnector,
+  shopify: shopifyConnector,
+  amazon: amazonConnector,
+  etsy: etsyConnector,
+  woocommerce: woocommerceConnector,
+  walmart: walmartConnector,
+  tiktok_shop: tiktokShopConnector,
   salesforce: salesforceConnector,
   hubspot: hubspotConnector,
-  kareo: jobNimbusConnector,
 };
 
 /**
@@ -154,12 +158,12 @@ export async function syncIntegration(
       result.projects = await connector.syncProjects(connection);
     }
 
-    // Sync contacts (CRMs)
+    // Sync contacts (CRMs & sales channels)
     if (connector.syncContacts) {
       result.contacts = await connector.syncContacts(connection);
     }
 
-    // Sync deals/opportunities (CRMs)
+    // Sync deals/orders (CRMs & sales channels)
     if (connector.syncDeals) {
       result.deals = await connector.syncDeals(connection);
     }
@@ -169,7 +173,7 @@ export async function syncIntegration(
       result.activities = await connector.syncActivities(connection);
     }
 
-    // Sync service jobs (Open Dental, etc.)
+    // Sync service jobs (if supported)
     if (connector.syncServiceJobs) {
       result.serviceJobs = await connector.syncServiceJobs(connection);
     }
@@ -186,7 +190,7 @@ export async function syncIntegration(
       }
     }
 
-    // Sync claim adjustments for each project (if supported)
+    // Sync change orders for each project (if supported)
     if (connector.syncChangeOrders) {
       for (const project of result.projects) {
         try {
@@ -273,9 +277,11 @@ export function aggregateDeals(results: SyncResult[]): NormalizedDeal[] {
 }
 
 // Re-export everything
-export { nextgenConnector } from './nextgen';
-export { athenahealthConnector } from './athenahealth';
-export { serviceTitanConnector } from './opendental';
+export { shopifyConnector } from './shopify';
+export { amazonConnector } from './amazon';
+export { etsyConnector } from './etsy';
+export { woocommerceConnector } from './woocommerce';
+export { walmartConnector } from './walmart';
+export { tiktokShopConnector } from './tiktok-shop';
 export { salesforceConnector } from './salesforce';
 export { hubspotConnector } from './hubspot';
-export { jobNimbusConnector } from './kareo';

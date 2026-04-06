@@ -45,7 +45,7 @@ export default function LandingPage() {
             "Don't trust automated calculations → Full audit trail and reconciliation features",
             "Need my bookkeeper to agree → Bookkeeper-friendly features and training"
           ],
-          "description": "Bootstrapped or lightly-funded DTC brands and Amazon sellers who have achieved product-market fit and are scaling from $500K to $10M in annual revenue. They're typically selling physical products with 40-70% gross margins and struggling to understand true profitability after all fees and ad costs.",
+          "description": "Bootstrapped or lightly-funded DTC brands and Amazon sellers who have achieved product-market fit and are scaling their annual revenue. They're typically selling physical products with 40-70% gross margins and struggling to understand true profitability after all fees and ad costs.",
           "pain_points": [
             "Can't calculate true profit margins after all platform fees and ad costs",
             "Running out of cash despite showing 'profit' due to inventory investments",
@@ -62,7 +62,7 @@ export default function LandingPage() {
             "Expanding to new channels and losing visibility",
             "Tax season revealed how messy their books are",
             "Inventory mistake caused major cash crunch",
-            "Scaling past $1M and Excel breaking down"
+            "Scaling fast and Excel breaking down"
           ],
           "decision_makers": [
             "Founder/CEO",
@@ -70,7 +70,7 @@ export default function LandingPage() {
             "Head of Finance",
             "Operations Manager"
           ],
-          "company_size_revenue": "$500K - $10M annual revenue",
+          "company_size_revenue": "All revenue levels",
           "company_size_employees": "3-25 employees (founder + small team)"
         }
       },
@@ -285,7 +285,7 @@ export default function LandingPage() {
             "Don't trust automated calculations → Full audit trail and reconciliation features",
             "Need my bookkeeper to agree → Bookkeeper-friendly features and training"
           ],
-          "description": "Bootstrapped or lightly-funded DTC brands and Amazon sellers who have achieved product-market fit and are scaling from $500K to $10M in annual revenue. They're typically selling physical products with 40-70% gross margins and struggling to understand true profitability after all fees and ad costs.",
+          "description": "Bootstrapped or lightly-funded DTC brands and Amazon sellers who have achieved product-market fit and are scaling their annual revenue. They're typically selling physical products with 40-70% gross margins and struggling to understand true profitability after all fees and ad costs.",
           "pain_points": [
             "Can't calculate true profit margins after all platform fees and ad costs",
             "Running out of cash despite showing 'profit' due to inventory investments",
@@ -302,7 +302,7 @@ export default function LandingPage() {
             "Expanding to new channels and losing visibility",
             "Tax season revealed how messy their books are",
             "Inventory mistake caused major cash crunch",
-            "Scaling past $1M and Excel breaking down"
+            "Scaling fast and Excel breaking down"
           ],
           "decision_makers": [
             "Founder/CEO",
@@ -310,7 +310,7 @@ export default function LandingPage() {
             "Head of Finance",
             "Operations Manager"
           ],
-          "company_size_revenue": "$500K - $10M annual revenue",
+          "company_size_revenue": "All revenue levels",
           "company_size_employees": "3-25 employees (founder + small team)"
         }
       },

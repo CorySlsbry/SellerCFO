@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
   if (!stripeWebhookSecret) criticalIssues.push('STRIPE_WEBHOOK_SECRET is missing — webhook signature verification will fail (using empty string fallback)');
   if (!appUrl) criticalIssues.push('NEXT_PUBLIC_APP_URL is missing — checkout success/cancel URLs will be undefined');
   if (appUrl && appUrl.includes('toolkit.salisburybookkeeping.com')) {
-    criticalIssues.push(`NEXT_PUBLIC_APP_URL points to toolkit.salisburybookkeeping.com (no DNS) — should be https://topmedicalcfo.com`);
+    criticalIssues.push(`NEXT_PUBLIC_APP_URL points to toolkit.salisburybookkeeping.com (no DNS) — should be https://sellercfo.com`);
   }
 
   results.criticalIssues = criticalIssues.length > 0 ? criticalIssues : 'None — all critical vars are set';

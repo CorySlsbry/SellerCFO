@@ -34,12 +34,12 @@ export async function POST(request: NextRequest) {
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY);
-    const FROM_EMAIL = process.env.EMAIL_FROM || 'MedicalCFO <hello@topmedicalcfo.com>';
+    const FROM_EMAIL = process.env.EMAIL_FROM || 'SellerCFO <hello@sellercfo.com>';
 
     const { error: resendError } = await resend.emails.send({
       from: FROM_EMAIL,
       to: ['support@medicalcfo.com'],
-      subject: `MedicalCFO Bug Report from ${userName || 'a user'}${companyName ? ` at ${companyName}` : ''}`,
+      subject: `SellerCFO Bug Report from ${userName || 'a user'}${companyName ? ` at ${companyName}` : ''}`,
       html: `
 <!DOCTYPE html>
 <html>
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
       </div>
     </div>
     <p style="color:#555;font-size:11px;text-align:center;margin-top:16px;">
-      MedicalCFO Financial Dashboard for Healthcare
+      SellerCFO Financial Dashboard for E-commerce
     </p>
   </div>
 </body>

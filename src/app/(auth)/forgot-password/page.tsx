@@ -45,10 +45,10 @@ export default function ForgotPasswordPage() {
         {/* Branding */}
         <div className="mb-8 text-center">
           <h1 className="font-bold text-2xl tracking-tight mb-1">
-            <span className="text-[#06b6d4]">Medical</span><span className="text-[#e8e8f0]">CFO</span>
+            <span className="text-[#8b5cf6]">Seller</span><span className="text-[#e8e8f0]">CFO</span>
           </h1>
           <p className="text-sm text-[#8888a0] mb-2">
-            Financial Dashboard for Healthcare
+            Financial Dashboard for E-commerce
           </p>
           <h2 className="text-2xl font-bold text-[#e8e8f0]">
             Reset Password

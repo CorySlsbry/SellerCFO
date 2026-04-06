@@ -166,16 +166,16 @@ async function createCalendarEvent(accessToken: string, payload: BookingPayload)
     const blockEnd = `${datePart}T${String(endH).padStart(2, '0')}:${String(endM).padStart(2, '0')}:00`;
 
     const eventBody = {
-      summary: `MedicalCFO Scope Call — ${payload.name}${companyStr}`,
+      summary: `SellerCFO Scope Call — ${payload.name}${companyStr}`,
       description: [
-        `Scope call booked via topmedicalcfo.com`,
+        `Scope call booked via sellercfo.com`,
         ``,
         `Name: ${payload.name}`,
         `Email: ${payload.email}`,
         payload.company ? `Company: ${payload.company}` : null,
         ``,
         `30-minute scope call + 30-minute buffer.`,
-        `Review their QuickBooks and show what MedicalCFO can do.`,
+        `Review their QuickBooks and show what SellerCFO can do.`,
       ].filter(Boolean).join('\n'),
       start: {
         dateTime: payload.start,
@@ -287,7 +287,7 @@ async function pushToGHL(payload: BookingPayload): Promise<{ success: boolean; e
         email: payload.email,
         companyName: payload.company || undefined,
         tags: ['scope-call-booked', 'medicalcfo-landing'],
-        source: 'MedicalCFO Website',
+        source: 'SellerCFO Website',
       }),
     });
 

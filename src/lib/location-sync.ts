@@ -129,7 +129,7 @@ async function upsertLocation(
 
 /**
  * Extracts unique city+state locations from an array of records
- * that have address/city/state fields. Used by NextGen, athenahealth,
+ * that have address/city/state fields. Used by Shopify, Amazon,
  * Salesforce, and HubSpot to discover locations from project/contact data.
  */
 export function extractCityStateLocations(

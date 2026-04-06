@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
             email: cleanEmail,
             firstName: cleanName || undefined,
             tags: ['medicalcfo-lead-magnet'],
-            source: 'MedicalCFO Lead Magnet',
+            source: 'SellerCFO Lead Magnet',
           }),
         });
       }

@@ -66,7 +66,7 @@ export interface ChartTheme {
 }
 
 export const chartThemes: Record<ChartThemeKey, ChartTheme> = {
-  // ── 1. Classic (MedicalCFO default) ──────────────────────
+  // ── 1. Classic (SellerCFO default) ──────────────────────
   default: {
     key: 'default',
     name: 'Classic',

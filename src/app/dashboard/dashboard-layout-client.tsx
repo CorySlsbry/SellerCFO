@@ -264,8 +264,8 @@ export default function DashboardLayoutClient({
         >
           {sidebarOpen ? (
             <div className="font-bold text-lg tracking-tight">
-              <span className="text-[#06b6d4]">Medical</span><span className="text-[#e8e8f0]">CFO</span>
-              <div className="text-[10px] text-[#8888a0] font-normal">Financial Dashboard for Healthcare</div>
+              <span className="text-[#8b5cf6]">Seller</span><span className="text-[#e8e8f0]">CFO</span>
+              <div className="text-[10px] text-[#8888a0] font-normal">Financial Dashboard for E-commerce</div>
             </div>
           ) : (
             <div className="w-10 h-10 rounded-lg bg-[#06b6d4] flex items-center justify-center font-bold text-sm">
@@ -359,7 +359,7 @@ export default function DashboardLayoutClient({
             {/* Mobile Header */}
             <div className="h-16 border-b border-[#2a2a3d] flex items-center justify-between px-4">
               <div className="font-bold text-lg tracking-tight">
-                <span className="text-[#06b6d4]">Medical</span><span className="text-[#e8e8f0]">CFO</span>
+                <span className="text-[#8b5cf6]">Seller</span><span className="text-[#e8e8f0]">CFO</span>
               </div>
               <button
                 onClick={() => setMobileMenuOpen(false)}

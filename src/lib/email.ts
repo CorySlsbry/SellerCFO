@@ -1,6 +1,6 @@
 /**
  * Email Service via Resend
- * Handles all transactional emails for MedicalCFO
+ * Handles all transactional emails for SellerCFO
  */
 
 import { Resend } from 'resend';
@@ -15,8 +15,8 @@ function getResend(): Resend {
   return _resend;
 }
 
-const FROM_EMAIL = process.env.EMAIL_FROM || 'MedicalCFO <hello@topmedicalcfo.com>';
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://topmedicalcfo.com';
+const FROM_EMAIL = process.env.EMAIL_FROM || 'SellerCFO <hello@sellercfo.com>';
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://sellercfo.com';
 
 // ── Email Templates ─────────────────────────────────────
 
@@ -33,7 +33,7 @@ function welcomeEmailHtml(name: string): string {
     <div style="background:#12121a;border:1px solid #1e1e2e;border-radius:12px;padding:32px;">
       <h1 style="color:#e8e8f0;font-size:22px;margin:0 0 12px;">Your dashboard is ready, ${name}.</h1>
       <p style="color:#b0b0c8;font-size:14px;line-height:1.6;margin:0 0 20px;">
-        Welcome to MedicalCFO. Connect your QuickBooks to see your real numbers — claim costs, Claims Pending, cash flow, and AR/AP — in one place. It takes about 2 minutes.
+        Welcome to SellerCFO. Connect your QuickBooks to see your real numbers — claim costs, Revenue Recognition, cash flow, and AR/AP — in one place. It takes about 2 minutes.
       </p>
       <div style="text-align:center;margin:24px 0;">
         <a href="${APP_URL}/dashboard/integrations" style="display:inline-block;background:#06b6d4;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;font-weight:600;font-size:15px;">
@@ -45,11 +45,11 @@ function welcomeEmailHtml(name: string): string {
       </p>
       <hr style="border:none;border-top:1px solid #1e1e2e;margin:24px 0;" />
       <p style="color:#8888a0;font-size:12px;margin:0;">
-        We're constantly improving MedicalCFO based on practice feedback. If there's something you'd like to see, just reply — we take every suggestion seriously.
+        We're constantly improving SellerCFO based on practice feedback. If there's something you'd like to see, just reply — we take every suggestion seriously.
       </p>
     </div>
     <p style="color:#555;font-size:11px;text-align:center;margin-top:20px;">
-      MedicalCFO Financial Dashboard for Healthcare · <a href="${APP_URL}" style="color:#06b6d4;">topmedicalcfo.com</a>
+      SellerCFO Financial Dashboard for E-commerce · <a href="${APP_URL}" style="color:#06b6d4;">sellercfo.com</a>
     </p>
   </div>
 </body>
@@ -69,7 +69,7 @@ function nudgeQuickBooksHtml(name: string): string {
     <div style="background:#12121a;border:1px solid #1e1e2e;border-radius:12px;padding:32px;">
       <h1 style="color:#e8e8f0;font-size:22px;margin:0 0 12px;">Your dashboard is waiting, ${name}.</h1>
       <p style="color:#b0b0c8;font-size:14px;line-height:1.6;margin:0 0 20px;">
-        You signed up for MedicalCFO but haven't connected QuickBooks yet. Without it, your dashboard can't show your real numbers.
+        You signed up for SellerCFO but haven't connected QuickBooks yet. Without it, your dashboard can't show your real numbers.
       </p>
       <p style="color:#b0b0c8;font-size:14px;line-height:1.6;margin:0 0 20px;">
         The connection is read-only (we can't touch your books), encrypted, and takes under 2 minutes.
@@ -84,7 +84,7 @@ function nudgeQuickBooksHtml(name: string): string {
       </p>
     </div>
     <p style="color:#555;font-size:11px;text-align:center;margin-top:20px;">
-      MedicalCFO Financial Dashboard for Healthcare · <a href="${APP_URL}" style="color:#06b6d4;">topmedicalcfo.com</a>
+      SellerCFO Financial Dashboard for E-commerce · <a href="${APP_URL}" style="color:#06b6d4;">sellercfo.com</a>
     </p>
   </div>
 </body>
@@ -102,9 +102,9 @@ function weekOneValueHtml(name: string): string {
       <span style="color:#06b6d4;font-size:24px;font-weight:bold;">Medical</span><span style="color:#e8e8f0;font-size:24px;font-weight:bold;">CFO</span>
     </div>
     <div style="background:#12121a;border:1px solid #1e1e2e;border-radius:12px;padding:32px;">
-      <h1 style="color:#e8e8f0;font-size:22px;margin:0 0 12px;">Here's what MedicalCFO catches in the first week.</h1>
+      <h1 style="color:#e8e8f0;font-size:22px;margin:0 0 12px;">Here's what SellerCFO catches in the first week.</h1>
       <p style="color:#b0b0c8;font-size:14px;line-height:1.6;margin:0 0 16px;">
-        Hey ${name}, here's what practices typically find in their first 7 days on MedicalCFO:
+        Hey ${name}, here's what practices typically find in their first 7 days on SellerCFO:
       </p>
       <div style="background:#0a0a0f;border:1px solid #2a2a3d;border-radius:8px;padding:16px;margin:0 0 20px;">
         <p style="color:#06b6d4;font-size:15px;font-weight:bold;margin:0 0 8px;">$140K in over-billing caught before job close</p>
@@ -121,7 +121,7 @@ function weekOneValueHtml(name: string): string {
       </div>
     </div>
     <p style="color:#555;font-size:11px;text-align:center;margin-top:20px;">
-      MedicalCFO Financial Dashboard for Healthcare · <a href="${APP_URL}" style="color:#06b6d4;">topmedicalcfo.com</a>
+      SellerCFO Financial Dashboard for E-commerce · <a href="${APP_URL}" style="color:#06b6d4;">sellercfo.com</a>
     </p>
   </div>
 </body>
@@ -142,10 +142,10 @@ function trialEndingHtml(name: string, daysLeft: number): string {
     <div style="background:#12121a;border:1px solid #1e1e2e;border-radius:12px;padding:32px;">
       <h1 style="color:#e8e8f0;font-size:22px;margin:0 0 12px;">${urgency}</h1>
       <p style="color:#b0b0c8;font-size:14px;line-height:1.6;margin:0 0 16px;">
-        Hey ${name}, your MedicalCFO trial ${daysLeft <= 1 ? 'ends today' : `ends in ${daysLeft} days`}. After that, you'll lose access to:
+        Hey ${name}, your SellerCFO trial ${daysLeft <= 1 ? 'ends today' : `ends in ${daysLeft} days`}. After that, you'll lose access to:
       </p>
       <div style="background:#0a0a0f;border:1px solid #2a2a3d;border-radius:8px;padding:16px;margin:0 0 20px;">
-        <p style="color:#e8e8f0;font-size:13px;margin:0 0 8px;">✓ Real-time claims tracking & Claims Pending tracking</p>
+        <p style="color:#e8e8f0;font-size:13px;margin:0 0 8px;">✓ Real-time order tracking & revenue recognition</p>
         <p style="color:#e8e8f0;font-size:13px;margin:0 0 8px;">✓ Cash flow forecasting (30/60/90 day)</p>
         <p style="color:#e8e8f0;font-size:13px;margin:0 0 8px;">✓ AR/AP aging by job</p>
         <p style="color:#e8e8f0;font-size:13px;margin:0 0 8px;">✓ AI CFO Advisor</p>
@@ -165,7 +165,7 @@ function trialEndingHtml(name: string, daysLeft: number): string {
       </p>
     </div>
     <p style="color:#555;font-size:11px;text-align:center;margin-top:20px;">
-      MedicalCFO Financial Dashboard for Healthcare · <a href="${APP_URL}" style="color:#06b6d4;">topmedicalcfo.com</a>
+      SellerCFO Financial Dashboard for E-commerce · <a href="${APP_URL}" style="color:#06b6d4;">sellercfo.com</a>
     </p>
   </div>
 </body>
@@ -179,7 +179,7 @@ export async function sendWelcomeEmail(to: string, name: string) {
     await getResend().emails.send({
       from: FROM_EMAIL,
       to,
-      subject: 'Your MedicalCFO dashboard is ready.',
+      subject: 'Your SellerCFO dashboard is ready.',
       html: welcomeEmailHtml(name),
     });
   } catch (err) {
@@ -205,7 +205,7 @@ export async function sendWeekOneValue(to: string, name: string) {
     await getResend().emails.send({
       from: FROM_EMAIL,
       to,
-      subject: "Here's what MedicalCFO catches in the first week for most practices",
+      subject: "Here's what SellerCFO catches in the first week for most practices",
       html: weekOneValueHtml(name),
     });
   } catch (err) {
@@ -216,7 +216,7 @@ export async function sendWeekOneValue(to: string, name: string) {
 export async function sendTrialEnding(to: string, name: string, daysLeft: number) {
   try {
     const subject = daysLeft <= 1
-      ? 'Your MedicalCFO trial ends today'
+      ? 'Your SellerCFO trial ends today'
       : `Your free trial ends in ${daysLeft} days — here's what you'll lose access to`;
     await getResend().emails.send({
       from: FROM_EMAIL,

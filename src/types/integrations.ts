@@ -1,5 +1,5 @@
 /**
- * Integration types for the MedicalCFO Dashboard
+ * Integration types for the SellerCFO Dashboard
  * Covers all supported third-party integrations
  */
 
@@ -9,14 +9,16 @@
 
 export type IntegrationProvider =
   | 'quickbooks'
-  | 'nextgen'
-  | 'athenahealth'
-  | 'opendental'
+  | 'shopify'
+  | 'amazon'
+  | 'etsy'
+  | 'woocommerce'
+  | 'walmart'
+  | 'tiktok_shop'
   | 'salesforce'
-  | 'hubspot'
-  | 'kareo';
+  | 'hubspot';
 
-export type IntegrationCategory = 'accounting' | 'project_management' | 'crm'; // project_management = EHR/PM systems
+export type IntegrationCategory = 'accounting' | 'sales_channel' | 'crm';
 
 export type IntegrationAuthType = 'oauth2' | 'api_key' | 'oauth2_client_credentials';
 
@@ -52,9 +54,9 @@ export interface IntegrationConnection {
   refresh_token: string | null;
   token_expires_at: string | null;
   api_key: string | null;
-  external_account_id: string | null; // e.g., NextGen company ID, SF org ID
+  external_account_id: string | null;
   external_account_name: string | null;
-  config: Record<string, any>; // Provider-specific config
+  config: Record<string, any>; // Provider-specific config (e.g., shop domain, store URL)
   last_sync_at: string | null;
   last_sync_status: SyncStatus;
   last_sync_error: string | null;
@@ -84,7 +86,7 @@ export interface SyncJob {
 // ============================================================
 
 /**
- * Normalized project/job from any field management tool
+ * Normalized product/SKU from any sales channel
  */
 export interface NormalizedProject {
   id: string;
@@ -105,12 +107,10 @@ export interface NormalizedProject {
   change_orders_amount: number;
   budget_remaining: number;
   profit_margin: number;
-  // Claims Pending tracking
   costs_to_date: number;
   billings_to_date: number;
   earned_revenue: number;
   over_under_billing: number;
-  // Patient Balance
   retainage_receivable: number;
   retainage_payable: number;
   last_synced: string;
@@ -237,11 +237,11 @@ export interface NormalizedActivity {
 }
 
 // ============================================================
-// Open Dental-specific normalized types
+// E-commerce Normalized Types
 // ============================================================
 
 /**
- * Normalized service job (from Open Dental, Jobber, HousecallPro)
+ * Normalized order from any sales channel
  */
 export interface NormalizedServiceJob {
   id: string;
@@ -250,7 +250,7 @@ export interface NormalizedServiceJob {
   job_number: string;
   customer_name: string;
   address: string;
-  job_type: string; // HVAC, Plumbing, Electrical, etc.
+  job_type: string;
   status: 'scheduled' | 'in_progress' | 'completed' | 'cancelled';
   scheduled_date: string;
   completed_date?: string;
@@ -321,44 +321,80 @@ export const INTEGRATION_PROVIDERS: IntegrationProviderConfig[] = [
     authType: 'oauth2',
     icon: 'BookOpen',
     color: '#2CA01C',
-    features: ['P&L Reports', 'Balance Sheet', 'Invoices & Bills', 'Cash Flow', 'Accounts'],
+    features: ['P&L Reports', 'Balance Sheet', 'Invoices & Bills', 'Cash Flow', 'Chart of Accounts'],
     docsUrl: 'https://developer.intuit.com',
     tier: 'essential',
   },
   {
-    id: 'athenahealth',
-    name: 'athenahealth',
-    description: 'Sync patient records, claims, scheduling, and revenue cycle data from athenahealth',
-    category: 'project_management',
+    id: 'shopify',
+    name: 'Shopify',
+    description: 'Sync orders, products, customers, and inventory from your Shopify store',
+    category: 'sales_channel',
     authType: 'oauth2',
-    icon: 'Building2',
-    color: '#00B4D8',
-    features: ['Patient Records', 'Claims', 'Scheduling', 'Revenue Cycle', 'Eligibility Verification'],
-    docsUrl: 'https://developer.athenahealth.com',
+    icon: 'ShoppingBag',
+    color: '#96BF48',
+    features: ['Orders & Revenue', 'Product Analytics', 'Customer Data', 'Inventory Levels', 'Discount Tracking'],
+    docsUrl: 'https://shopify.dev',
     tier: 'essential',
   },
   {
-    id: 'nextgen',
-    name: 'NextGen Healthcare',
-    description: 'Pull patient demographics, encounters, claims, and financial data from NextGen EHR/PM',
-    category: 'project_management',
+    id: 'amazon',
+    name: 'Amazon Seller Central',
+    description: 'Pull orders, FBA fees, inventory, and advertising data from Amazon SP-API',
+    category: 'sales_channel',
+    authType: 'oauth2',
+    icon: 'Package',
+    color: '#FF9900',
+    features: ['Order History', 'FBA Fees & Settlement', 'Inventory & Restock', 'Advertising Metrics', 'Buy Box Tracking'],
+    docsUrl: 'https://developer-docs.amazon.com/sp-api',
+    tier: 'essential',
+  },
+  {
+    id: 'etsy',
+    name: 'Etsy',
+    description: 'Import orders, listings, shop stats, and reviews from your Etsy shop',
+    category: 'sales_channel',
+    authType: 'oauth2',
+    icon: 'Palette',
+    color: '#F1641E',
+    features: ['Receipts & Orders', 'Listing Performance', 'Shop Revenue', 'Review Analytics', 'Fee Tracking'],
+    docsUrl: 'https://developers.etsy.com',
+    tier: 'essential',
+  },
+  {
+    id: 'woocommerce',
+    name: 'WooCommerce',
+    description: 'Connect your WordPress/WooCommerce store for order and customer data',
+    category: 'sales_channel',
     authType: 'api_key',
-    icon: 'Stethoscope',
-    color: '#F47E20',
-    features: ['Patient Demographics', 'Encounters', 'Claims', 'Financial Reports', 'Scheduling'],
-    docsUrl: 'https://developer.nextgen.com',
-    tier: 'essential',
+    icon: 'Globe',
+    color: '#96588A',
+    features: ['Orders & Revenue', 'Customer Data', 'Product Analytics', 'Coupon Tracking', 'Tax Reports'],
+    docsUrl: 'https://woocommerce.github.io/woocommerce-rest-api-docs',
+    tier: 'pro',
   },
   {
-    id: 'opendental',
-    name: 'Open Dental',
-    description: 'Import patient records, dental claims, treatment plans, and billing data from Open Dental',
-    category: 'project_management',
+    id: 'walmart',
+    name: 'Walmart Marketplace',
+    description: 'Sync orders, items, and returns from your Walmart Marketplace seller account',
+    category: 'sales_channel',
     authType: 'oauth2_client_credentials',
-    icon: 'Wrench',
-    color: '#002B5C',
-    features: ['Patient Records', 'Dental Claims', 'Treatment Plans', 'Billing', 'Insurance Verification'],
-    docsUrl: 'https://opendental.com/site/apikeys.html',
+    icon: 'Store',
+    color: '#0071CE',
+    features: ['Orders & Revenue', 'Item Performance', 'Returns & Refunds', 'Inventory Sync', 'Commission Tracking'],
+    docsUrl: 'https://developer.walmart.com',
+    tier: 'pro',
+  },
+  {
+    id: 'tiktok_shop',
+    name: 'TikTok Shop',
+    description: 'Import orders, product data, and shop performance from TikTok Shop',
+    category: 'sales_channel',
+    authType: 'oauth2',
+    icon: 'Video',
+    color: '#000000',
+    features: ['Orders & Revenue', 'Product Performance', 'Shop Analytics', 'Fulfillment Data', 'Commission Tracking'],
+    docsUrl: 'https://partner.tiktokshop.com',
     tier: 'pro',
   },
   {
@@ -383,18 +419,6 @@ export const INTEGRATION_PROVIDERS: IntegrationProviderConfig[] = [
     color: '#FF7A59',
     features: ['Contacts', 'Deals', 'Pipeline', 'Activities', 'Email Tracking'],
     docsUrl: 'https://developers.hubspot.com',
-    tier: 'essential',
-  },
-  {
-    id: 'kareo',
-    name: 'Kareo (Tebra)',
-    description: 'Sync patient records, claims, billing, and practice analytics from Kareo/Tebra',
-    category: 'crm',
-    authType: 'api_key',
-    icon: 'ClipboardList',
-    color: '#4CAF50',
-    features: ['Patient Records', 'Claims', 'Billing', 'Analytics', 'Scheduling'],
-    docsUrl: 'https://developer.kareo.com',
     tier: 'essential',
   },
 ];
