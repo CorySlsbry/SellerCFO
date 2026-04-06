@@ -41,7 +41,7 @@ function welcomeEmailHtml(name: string): string {
         </a>
       </div>
       <p style="color:#8888a0;font-size:13px;line-height:1.6;margin:20px 0 0;">
-        Need help? Reply to this email or message us at support@medicalcfo.com — we'll set it up for you at no extra charge.
+        Need help? Reply to this email or message us at support@sellercfo.com — we'll set it up for you at no extra charge.
       </p>
       <hr style="border:none;border-top:1px solid #1e1e2e;margin:24px 0;" />
       <p style="color:#8888a0;font-size:12px;margin:0;">
@@ -161,7 +161,7 @@ function trialEndingHtml(name: string, daysLeft: number): string {
       </div>
       <hr style="border:none;border-top:1px solid #1e1e2e;margin:24px 0;" />
       <p style="color:#8888a0;font-size:12px;margin:0;">
-        Questions? Reply to this email or reach us at support@medicalcfo.com. Remember: 30-day money-back guarantee on every plan.
+        Questions? Reply to this email or reach us at support@sellercfo.com. Remember: 30-day money-back guarantee on every plan.
       </p>
     </div>
     <p style="color:#555;font-size:11px;text-align:center;margin-top:20px;">

@@ -17,7 +17,7 @@ export const dynamic = 'force-dynamic';
 
 const TIMEZONE = 'America/Denver';
 const CALENDAR_ID = 'cory.salisbury@gmail.com';
-const OWNER_EMAIL = 'support@medicalcfo.com';
+const OWNER_EMAIL = 'cory.salisbury@gmail.com';
 const BLOCK_MINUTES = 60; // 30 min call + 30 min buffer
 
 interface BookingPayload {
@@ -168,14 +168,14 @@ async function createCalendarEvent(accessToken: string, payload: BookingPayload)
     const eventBody = {
       summary: `SellerCFO Scope Call — ${payload.name}${companyStr}`,
       description: [
-        `Scope call booked via sellercfo.com`,
+        `Scope call booked via sellercfo.vercel.app`,
         ``,
         `Name: ${payload.name}`,
         `Email: ${payload.email}`,
-        payload.company ? `Company: ${payload.company}` : null,
+        payload.company ? `Brand: ${payload.company}` : null,
         ``,
         `30-minute scope call + 30-minute buffer.`,
-        `Review their QuickBooks and show what SellerCFO can do.`,
+        `Review their sales channels and show what SellerCFO can do for their e-commerce profitability.`,
       ].filter(Boolean).join('\n'),
       start: {
         dateTime: payload.start,
@@ -189,13 +189,13 @@ async function createCalendarEvent(accessToken: string, payload: BookingPayload)
       // Adding the calendar owner as attendee causes responseStatus=needsAction
       // which makes the event invisible to free/busy checks.
       attendees: [
-        { email: OWNER_EMAIL },            // support@medicalcfo.com (business email — gets invite)
+        { email: OWNER_EMAIL },            // cory.salisbury@gmail.com (owner — gets invite)
         { email: payload.email, displayName: payload.name }, // prospect
       ],
       conferenceData: {
         createRequest: {
           conferenceSolutionKey: { type: 'hangoutsMeet' },
-          requestId: `medicalcfo-${Date.now()}`,
+          requestId: `sellercfo-${Date.now()}`,
         },
       },
       reminders: {
@@ -286,7 +286,7 @@ async function pushToGHL(payload: BookingPayload): Promise<{ success: boolean; e
         lastName,
         email: payload.email,
         companyName: payload.company || undefined,
-        tags: ['scope-call-booked', 'medicalcfo-landing'],
+        tags: ['scope-call-booked', 'sellercfo-landing'],
         source: 'SellerCFO Website',
       }),
     });

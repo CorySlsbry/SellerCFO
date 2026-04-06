@@ -311,12 +311,12 @@ export const chartThemes: Record<ChartThemeKey, ChartTheme> = {
 // Helper to get the current theme from localStorage (or default)
 export function getStoredThemeKey(): ChartThemeKey {
   if (typeof window === 'undefined') return 'default';
-  const stored = localStorage.getItem('medicalcfo-chart-theme') as string;
+  const stored = localStorage.getItem('sellercfo-chart-theme') as string;
   if (stored && stored in chartThemes) return stored as ChartThemeKey;
   return 'default';
 }
 
 export function storeThemeKey(key: ChartThemeKey): void {
   if (typeof window === 'undefined') return;
-  localStorage.setItem('medicalcfo-chart-theme', key);
+  localStorage.setItem('sellercfo-chart-theme', key);
 }

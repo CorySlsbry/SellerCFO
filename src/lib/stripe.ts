@@ -200,13 +200,14 @@ export class StripeService {
     if (byId) return byId;
 
     // Fallback: match by price amount (in cents)
+    // SellerCFO: Essential $199, Professional $399, Enterprise $799
     const amountCents = item.price.unit_amount;
-    if (amountCents === 59900) return "enterprise";
+    if (amountCents === 79900) return "enterprise";
     if (amountCents === 39900) return "pro";
     if (amountCents === 19900) return "basic";
 
     // Fallback: match by price amount ranges (handles minor variations)
-    if (amountCents && amountCents >= 50000) return "enterprise";
+    if (amountCents && amountCents >= 60000) return "enterprise";
     if (amountCents && amountCents >= 30000) return "pro";
     return "basic";
   }

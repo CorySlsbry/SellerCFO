@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
             locationId: ghlLocationId,
             email: cleanEmail,
             firstName: cleanName || undefined,
-            tags: ['medicalcfo-lead-magnet'],
+            tags: ['sellercfo-lead-magnet'],
             source: 'SellerCFO Lead Magnet',
           }),
         });

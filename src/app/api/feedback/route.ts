@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
 
     const { error: resendError } = await resend.emails.send({
       from: FROM_EMAIL,
-      to: ['support@medicalcfo.com'],
+      to: ['support@sellercfo.com'],
       subject: `SellerCFO Bug Report from ${userName || 'a user'}${companyName ? ` at ${companyName}` : ''}`,
       html: `
 <!DOCTYPE html>

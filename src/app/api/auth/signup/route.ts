@@ -14,7 +14,7 @@ import { sendWelcomeEmail } from "@/lib/email";
 const GHL_ONBOARDING_WORKFLOW_ID = 'dca41be4-9ab1-45ec-b099-976217cf86c4';
 
 /**
- * Create/upsert a GHL contact tagged "medicalcfo-signup" and enroll in the
+ * Create/upsert a GHL contact tagged "sellercfo-signup" and enroll in the
  * SellerCFO Onboarding Drip workflow. Non-blocking — failures are logged
  * but never break the signup flow.
  */
@@ -46,7 +46,7 @@ async function pushToGHLOnboarding(email: string, fullName: string, companyName:
         firstName,
         lastName,
         companyName,
-        tags: ['medicalcfo-signup'],
+        tags: ['sellercfo-signup'],
         source: 'SellerCFO App Signup',
       }),
     });

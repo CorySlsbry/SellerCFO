@@ -73,7 +73,7 @@ export default function TermsOfServicePage() {
 
             <section>
               <h2 className="text-lg font-semibold text-[#e8e8f0] mb-2">10. Contact</h2>
-              <p>For questions about these terms, contact us at <a href="mailto:support@medicalcfo.com" className="text-[#06b6d4] hover:text-[#22d3ee] transition">support@medicalcfo.com</a>.</p>
+              <p>For questions about these terms, contact us at <a href="mailto:support@sellercfo.com" className="text-[#06b6d4] hover:text-[#22d3ee] transition">support@sellercfo.com</a>.</p>
             </section>
 
             <section>

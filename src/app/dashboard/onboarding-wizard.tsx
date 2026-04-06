@@ -179,8 +179,8 @@ export function OnboardingWizard({ orgName }: OnboardingWizardProps) {
         {step !== 3 && (
           <p className="text-center text-xs text-[#555] mt-6">
             Need help? Email{' '}
-            <a href="mailto:support@medicalcfo.com" className="text-[#06b6d4] hover:text-[#22d3ee]">
-              support@medicalcfo.com
+            <a href="mailto:support@sellercfo.com" className="text-[#06b6d4] hover:text-[#22d3ee]">
+              support@sellercfo.com
             </a>{' '}
             — we&apos;ll set it up for you.
           </p>

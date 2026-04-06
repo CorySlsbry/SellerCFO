@@ -1,788 +1,720 @@
-export default function LandingPage() {
+'use client';
+
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import {
+  ArrowRight,
+  BarChart3,
+  TrendingUp,
+  DollarSign,
+  Package,
+  ShieldCheck,
+  Zap,
+  Star,
+  Check,
+  ChevronDown,
+  Play,
+  ShoppingCart,
+  Store,
+  Globe,
+  Layers,
+  LineChart,
+  PieChart,
+  Target,
+  Users,
+  Clock,
+  Award,
+  ArrowUpRight,
+} from 'lucide-react';
+import SupportChat from '@/components/support-chat';
+import { LandingTracker } from '@/components/landing-tracker';
+
+/* ─── Channel Logos ─── */
+const CHANNELS = [
+  { name: 'Shopify', color: '#96bf48' },
+  { name: 'Amazon', color: '#ff9900' },
+  { name: 'Etsy', color: '#f1641e' },
+  { name: 'WooCommerce', color: '#7f54b3' },
+  { name: 'Walmart', color: '#0071dc' },
+  { name: 'TikTok Shop', color: '#ff004f' },
+  { name: 'QuickBooks', color: '#2ca01c' },
+];
+
+/* ─── Testimonials ─── */
+const TESTIMONIALS = [
+  {
+    quote: "Finally understood why we were cash-strapped despite 'profitable' months. SellerCFO revealed $180K in hidden inventory costs we never saw in spreadsheets.",
+    name: 'Sarah Chen',
+    title: 'CEO, Pure Botanicals',
+    metric: '$180K recovered',
+  },
+  {
+    quote: "We were spending 40% of revenue on ads without knowing our true ROAS. SellerCFO showed us which channels were actually profitable — we cut $12K/mo in waste.",
+    name: 'Marcus Rivera',
+    title: 'Founder, Ridge & River Co.',
+    metric: '$12K/mo saved',
+  },
+  {
+    quote: "Went from 3 days of Excel reconciliation to real-time visibility across 4 channels. Our investor board deck now takes 10 minutes, not 2 weeks.",
+    name: 'Jennifer Park',
+    title: 'COO, Luminaire Beauty',
+    metric: '15 hrs/week saved',
+  },
+];
+
+/* ─── FAQ Data ─── */
+const FAQ_ITEMS = [
+  {
+    q: 'How is this different from BeProfit or Lifetimely?',
+    a: "SellerCFO goes beyond basic profit tracking to provide true CFO-level insights — cash flow forecasting, multi-channel inventory planning, and contribution margin analysis at the SKU level. We sync with QuickBooks Online so your books are always accurate, not just your dashboard. We're built for scaling brands, not beginners.",
+  },
+  {
+    q: 'Does this replace QuickBooks?',
+    a: 'No — SellerCFO complements QuickBooks by pulling in your e-commerce data and providing the analytics layer that QBO lacks. We sync seamlessly with QuickBooks Online to ensure your books stay accurate while giving you the real-time visibility your accountant can\'t.',
+  },
+  {
+    q: 'How long does setup take?',
+    a: 'Most brands are fully connected in under 2 hours. We provide white-glove onboarding to map your chart of accounts and ensure accurate data flow from day one. Connect your sales channels with OAuth (click, authorize, done) and we handle the rest.',
+  },
+  {
+    q: 'Can I track custom KPIs specific to my business?',
+    a: 'Yes! Professional plans include custom KPI builders and the ability to create your own formulas using any data point we track — contribution margin waterfall, blended ROAS, channel-level CAC, whatever matters to your business.',
+  },
+  {
+    q: 'What if I sell on channels beyond the big 6?',
+    a: 'Enterprise plans support custom integrations via API or CSV upload for any additional sales channels. We also support Salesforce and HubSpot CRM integrations for end-to-end customer lifecycle tracking.',
+  },
+  {
+    q: 'Is my data secure?',
+    a: "Absolutely. All integrations use OAuth 2.0 with read-only access — SellerCFO cannot modify your data anywhere. We use AES-256 encryption at rest, TLS 1.3 in transit, and row-level security in our database so each brand's data is fully isolated.",
+  },
+];
+
+/* ─── Comparison Data ─── */
+const COMPARISON = [
+  { feature: 'Real-time P&L by channel', us: true, spreadsheets: false, beprofit: true, lifetimely: true },
+  { feature: 'QuickBooks sync (2-way)', us: true, spreadsheets: false, beprofit: false, lifetimely: false },
+  { feature: 'Cash flow forecasting', us: true, spreadsheets: false, beprofit: false, lifetimely: false },
+  { feature: 'Contribution margin waterfall', us: true, spreadsheets: false, beprofit: false, lifetimely: false },
+  { feature: 'Inventory intelligence', us: true, spreadsheets: false, beprofit: true, lifetimely: false },
+  { feature: '6+ sales channels', us: true, spreadsheets: true, beprofit: false, lifetimely: false },
+  { feature: 'AI CFO advisor', us: true, spreadsheets: false, beprofit: false, lifetimely: false },
+  { feature: 'Custom KPI builder', us: true, spreadsheets: true, beprofit: false, lifetimely: false },
+];
+
+/* ─── FAQ Accordion ─── */
+function FAQItem({ q, a }: { q: string; a: string }) {
+  const [open, setOpen] = useState(false);
   return (
-    <div dangerouslySetInnerHTML={{ __html: `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="SellerCFO is a real-time financial dashboard that syncs with Shopify, Amazon & ad platforms to give e-commerce brands instant visibility into true profitability, cash flow forecasting & inventory optimization - averaging 23% margin improvement in 6 months.">
-    <title>SellerCFO — Financial Visibility for E-commerce/DTC</title>
-    <link rel="canonical" href="https://sellercfo.vercel.app/sellercfo">
-    <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "ProfessionalService",
-      "@id": "https://sellercfo.vercel.app/#organization",
-      "name": "SellerCFO",
-      "url": "https://sellercfo.vercel.app",
-      "description": "SellerCFO transforms your e-commerce data chaos into strategic clarity. We automatically sync with your sales channels, ad platforms, and fulfillment partners to deliver real-time financial intelligence. Make confident decisions about inventory, marketing spend, and growth investments with AI-powered insights tailored for DTC brands.",
-      "knowsAbout": [
-        "E-commerce/DTC",
-        "Financial management",
-        "CFO services",
-        "Cash flow analysis",
-        "Financial reporting",
-        "Business intelligence dashboards",
-        "KPI tracking",
-        "Multi-Channel Analytics",
-        "Inventory Intelligence",
-        "Unit Economics Mastery",
-        "Cash Flow Forecasting"
-      ],
-      "areaServed": {
-        "@type": "Country",
-        "name": "United States"
-      },
-      "audience": {
-        "@type": "BusinessAudience",
-        "audienceType": {
-          "objections": [
-            "Another subscription when margins are tight → ROI calculator showing 10x return through better decisions",
-            "Don't have time to set up another tool → 2-hour white glove onboarding included",
-            "Already using spreadsheets that work → Show time saved and errors avoided",
-            "Don't trust automated calculations → Full audit trail and reconciliation features",
-            "Need my bookkeeper to agree → Bookkeeper-friendly features and training"
-          ],
-          "description": "Bootstrapped or lightly-funded DTC brands and Amazon sellers who have achieved product-market fit and are scaling their annual revenue. They're typically selling physical products with 40-70% gross margins and struggling to understand true profitability after all fees and ad costs.",
-          "pain_points": [
-            "Can't calculate true profit margins after all platform fees and ad costs",
-            "Running out of cash despite showing 'profit' due to inventory investments",
-            "No idea which products or channels are actually profitable",
-            "Spending hours in spreadsheets trying to reconcile Amazon fees",
-            "Marketing spend is increasing but unsure if it's efficient",
-            "Inventory planning is guesswork leading to stockouts or excess",
-            "Multiple tools don't talk to each other (Shopify, Amazon, QuickBooks)",
-            "Can't answer investor questions about unit economics quickly"
-          ],
-          "buying_triggers": [
-            "Just raised funding and investors want better reporting",
-            "Hired first finance person who needs proper tools",
-            "Expanding to new channels and losing visibility",
-            "Tax season revealed how messy their books are",
-            "Inventory mistake caused major cash crunch",
-            "Scaling fast and Excel breaking down"
-          ],
-          "decision_makers": [
-            "Founder/CEO",
-            "COO",
-            "Head of Finance",
-            "Operations Manager"
-          ],
-          "company_size_revenue": "All revenue levels",
-          "company_size_employees": "3-25 employees (founder + small team)"
-        }
-      },
-      "hasOfferCatalog": {
-        "@type": "OfferCatalog",
-        "name": "SellerCFO Plans",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "item": {
-              "@type": "Service",
-              "name": "Multi-Channel Analytics",
-              "provider": {
-                "@id": "https://sellercfo.vercel.app/#organization"
-              }
-            }
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "item": {
-              "@type": "Service",
-              "name": "Inventory Intelligence",
-              "provider": {
-                "@id": "https://sellercfo.vercel.app/#organization"
-              }
-            }
-          },
-          {
-            "@type": "ListItem",
-            "position": 3,
-            "item": {
-              "@type": "Service",
-              "name": "Unit Economics Mastery",
-              "provider": {
-                "@id": "https://sellercfo.vercel.app/#organization"
-              }
-            }
-          },
-          {
-            "@type": "ListItem",
-            "position": 4,
-            "item": {
-              "@type": "Service",
-              "name": "Cash Flow Forecasting",
-              "provider": {
-                "@id": "https://sellercfo.vercel.app/#organization"
-              }
-            }
-          }
-        ]
-      },
-      "sameAs": [],
-      "mainEntityOfPage": {
-        "@id": "https://sellercfo.vercel.app/sellercfo/#webpage"
-      },
-      "makesOffer": {
-        "@id": "https://sellercfo.vercel.app/sellercfo/#service"
-      }
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://sellercfo.vercel.app/#website",
-      "url": "https://sellercfo.vercel.app",
-      "name": "SellerCFO",
-      "description": "SellerCFO transforms your e-commerce data chaos into strategic clarity. We automatically sync with your sales channels, ad platforms, and fulfillment partners to deliver real-time financial intelligence. Make confident decisions about inventory, marketing spend, and growth investments with AI-powered insights tailored for DTC brands.",
-      "inLanguage": "en-US",
-      "publisher": {
-        "@id": "https://sellercfo.vercel.app/#organization"
-      },
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": "https://sellercfo.vercel.app/search?q={search_term_string}"
-        },
-        "query-input": "required name=search_term_string"
-      }
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://sellercfo.vercel.app/sellercfo/#webpage",
-      "url": "https://sellercfo.vercel.app/sellercfo",
-      "name": "SellerCFO — Financial Visibility for E-commerce/DTC",
-      "description": "SellerCFO transforms your e-commerce data chaos into strategic clarity. We automatically sync with your sales channels, ad platforms, and fulfillment partners to deliver real-time financial intelligence. Make confident decisions about inventory, marketing spend, and growth investments with AI-powered insights tailored for DTC brands.",
-      "datePublished": "2026-04-06",
-      "dateModified": "2026-04-06",
-      "inLanguage": "en-US",
-      "isPartOf": {
-        "@id": "https://sellercfo.vercel.app/#website"
-      },
-      "about": {
-        "@id": "https://sellercfo.vercel.app/#organization"
-      },
-      "mentions": [
-        {
-          "@id": "https://sellercfo.vercel.app/sellercfo/#service"
-        }
-      ],
-      "breadcrumb": {
-        "@id": "https://sellercfo.vercel.app/sellercfo/#breadcrumb"
-      },
-      "hasPart": [
-        {
-          "@id": "https://sellercfo.vercel.app/sellercfo/#faq"
-        }
-      ],
-      "publisher": {
-        "@id": "https://sellercfo.vercel.app/#organization"
-      },
-      "mainEntity": {
-        "@id": "https://sellercfo.vercel.app/sellercfo/#service"
-      }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "@id": "https://sellercfo.vercel.app/sellercfo/#breadcrumb",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://sellercfo.vercel.app"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "E-commerce/DTC",
-          "item": "https://sellercfo.vercel.app/sellercfo"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "SellerCFO",
-          "item": "https://sellercfo.vercel.app/sellercfo"
-        }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "@id": "https://sellercfo.vercel.app/sellercfo/#faq",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "How is this different from BeProfit or Lifetimely?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "SellerCFO goes beyond basic profit tracking to provide true CFO-level insights including cash flow forecasting, multi-channel inventory planning, and contribution margin analysis at the SKU level. We're built for scaling brands, not beginners."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Does this replace QuickBooks?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "No, SellerCFO complements QuickBooks by pulling in your e-commerce data and providing the analytics layer that QuickBooks lacks. We sync seamlessly with QBO to ensure your books stay accurate."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How long does setup take?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Most brands are fully connected in under 2 hours. We provide white-glove onboarding to map your chart of accounts and ensure accurate data flow from day one."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I track custom KPIs specific to my business?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes! Professional plans include custom KPI builders and the ability to create your own formulas using any data point we track."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Do you support international sellers?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes, we support multi-currency operations and can handle VAT/GST calculations for international sales. Perfect for brands selling globally."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What if I sell on other channels beyond Shopify and Amazon?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Our Enterprise plan supports custom integrations via API or CSV uploads for any additional sales channels like Walmart, Etsy, or your own website."
-          }
-        }
-      ]
-    },
-    {
-      "@type": "Service",
-      "@id": "https://sellercfo.vercel.app/sellercfo/#service",
-      "name": "SellerCFO — CFO Dashboard for E-commerce/DTC",
-      "description": "SellerCFO transforms your e-commerce data chaos into strategic clarity. We automatically sync with your sales channels, ad platforms, and fulfillment partners to deliver real-time financial intelligence. Make confident decisions about inventory, marketing spend, and growth investments with AI-powered insights tailored for DTC brands.",
-      "url": "https://sellercfo.vercel.app/sellercfo",
-      "provider": {
-        "@id": "https://sellercfo.vercel.app/#organization"
-      },
-      "serviceType": "Financial Management Software",
-      "category": "Business Software",
-      "audience": {
-        "@type": "BusinessAudience",
-        "audienceType": {
-          "objections": [
-            "Another subscription when margins are tight → ROI calculator showing 10x return through better decisions",
-            "Don't have time to set up another tool → 2-hour white glove onboarding included",
-            "Already using spreadsheets that work → Show time saved and errors avoided",
-            "Don't trust automated calculations → Full audit trail and reconciliation features",
-            "Need my bookkeeper to agree → Bookkeeper-friendly features and training"
-          ],
-          "description": "Bootstrapped or lightly-funded DTC brands and Amazon sellers who have achieved product-market fit and are scaling their annual revenue. They're typically selling physical products with 40-70% gross margins and struggling to understand true profitability after all fees and ad costs.",
-          "pain_points": [
-            "Can't calculate true profit margins after all platform fees and ad costs",
-            "Running out of cash despite showing 'profit' due to inventory investments",
-            "No idea which products or channels are actually profitable",
-            "Spending hours in spreadsheets trying to reconcile Amazon fees",
-            "Marketing spend is increasing but unsure if it's efficient",
-            "Inventory planning is guesswork leading to stockouts or excess",
-            "Multiple tools don't talk to each other (Shopify, Amazon, QuickBooks)",
-            "Can't answer investor questions about unit economics quickly"
-          ],
-          "buying_triggers": [
-            "Just raised funding and investors want better reporting",
-            "Hired first finance person who needs proper tools",
-            "Expanding to new channels and losing visibility",
-            "Tax season revealed how messy their books are",
-            "Inventory mistake caused major cash crunch",
-            "Scaling fast and Excel breaking down"
-          ],
-          "decision_makers": [
-            "Founder/CEO",
-            "COO",
-            "Head of Finance",
-            "Operations Manager"
-          ],
-          "company_size_revenue": "All revenue levels",
-          "company_size_employees": "3-25 employees (founder + small team)"
-        }
-      },
-      "areaServed": {
-        "@type": "Country",
-        "name": "United States"
-      },
-      "offers": {
-        "@type": "AggregateOffer",
-        "priceCurrency": "USD",
-        "lowPrice": "199",
-        "highPrice": "499",
-        "priceValidUntil": "2027",
-        "availability": "https://schema.org/InStock",
-        "seller": {
-          "@id": "https://sellercfo.vercel.app/#organization"
-        }
-      },
-      "hasOfferCatalog": {
-        "@type": "OfferCatalog",
-        "name": "SellerCFO Features",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Multi-Channel Analytics"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Inventory Intelligence"
-          },
-          {
-            "@type": "ListItem",
-            "position": 3,
-            "name": "Unit Economics Mastery"
-          },
-          {
-            "@type": "ListItem",
-            "position": 4,
-            "name": "Cash Flow Forecasting"
-          }
-        ]
-      }
-    }
-  ]
+    <div className="border border-[#1e1e2e] rounded-xl overflow-hidden transition-all">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between px-6 py-5 text-left hover:bg-[#12121a] transition-colors"
+      >
+        <span className="font-semibold text-[#e8e8f0] pr-4">{q}</span>
+        <ChevronDown
+          size={20}
+          className={`text-[#8b5cf6] flex-shrink-0 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+        />
+      </button>
+      <div
+        className={`overflow-hidden transition-all duration-300 ${
+          open ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+        }`}
+      >
+        <p className="px-6 pb-5 text-[#94a3b8] leading-relaxed">{a}</p>
+      </div>
+    </div>
+  );
 }
-    </script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            color: #f1f5f9;
-            background-color: #0f172a;
-            overflow-x: hidden;
-            max-width: 100%;
-        }
 
-        .container {
-            width: 100%;
-            max-width: 100%;
-            padding: 0 1rem;
-            margin: 0 auto;
-        }
+/* ─── Animated Counter ─── */
+function AnimatedStat({ value, label, prefix = '', suffix = '' }: { value: number; label: string; prefix?: string; suffix?: string }) {
+  const [count, setCount] = useState(0);
+  const [visible, setVisible] = useState(false);
 
-        header {
-            position: sticky;
-            top: 0;
-            background: rgba(15, 23, 42, 0.95);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            border-bottom: 1px solid rgba(226, 232, 240, 0.1);
-        }
+  useEffect(() => {
+    if (!visible) return;
+    let start = 0;
+    const end = value;
+    const duration = 1500;
+    const step = end / (duration / 16);
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= end) {
+        setCount(end);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(start));
+      }
+    }, 16);
+    return () => clearInterval(timer);
+  }, [visible, value]);
 
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-        }
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
+      { threshold: 0.3 }
+    );
+    const el = document.getElementById(`stat-${label.replace(/\s/g, '-')}`);
+    if (el) observer.observe(el);
+    return () => observer.disconnect();
+  }, [label]);
 
-        .nav-brand {
-            font-size: clamp(1.25rem, 3vw, 1.5rem);
-            font-weight: 700;
-            color: #f1f5f9;
-            text-decoration: none;
-        }
+  return (
+    <div id={`stat-${label.replace(/\s/g, '-')}`} className="text-center">
+      <div className="text-4xl md:text-5xl font-bold text-[#8b5cf6] mb-2">
+        {prefix}{count.toLocaleString()}{suffix}
+      </div>
+      <div className="text-[#94a3b8] text-sm">{label}</div>
+    </div>
+  );
+}
 
-        .nav-links {
-            display: none;
-        }
+/* ═══════════════════════════════════════════════════════════════
+   MAIN LANDING PAGE
+   ═══════════════════════════════════════════════════════════════ */
 
-        .nav-cta {
-            background: #8b5cf6;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            min-height: 44px;
-            min-width: 44px;
-            display: inline-flex;
-            align-items: center;
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
-            transition: all 0.2s;
-        }
+export default function LandingPage() {
+  const [showVideo, setShowVideo] = useState(false);
 
-        .nav-cta:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
-        }
+  return (
+    <div className="min-h-screen bg-[#0a0a0f] text-[#f1f5f9]">
+      <LandingTracker />
 
-        .social-proof-bar {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-            font-size: clamp(0.875rem, 2vw, 1rem);
-        }
+      {/* ─── STICKY NAV ─── */}
+      <header className="sticky top-0 z-50 bg-[#0a0a0f]/90 backdrop-blur-xl border-b border-[#1e1e2e]">
+        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+          <Link href="/" className="flex items-center gap-1.5 text-xl font-bold tracking-tight">
+            <ShoppingCart size={24} className="text-[#8b5cf6]" />
+            <span className="text-[#8b5cf6]">Seller</span>
+            <span className="text-[#e8e8f0]">CFO</span>
+          </Link>
 
-        .stars {
-            color: #fbbf24;
-        }
+          <div className="hidden md:flex items-center gap-8 text-sm text-[#94a3b8]">
+            <a href="#features" className="hover:text-[#8b5cf6] transition-colors">Features</a>
+            <a href="#how-it-works" className="hover:text-[#8b5cf6] transition-colors">How It Works</a>
+            <a href="#pricing" className="hover:text-[#8b5cf6] transition-colors">Pricing</a>
+            <a href="#faq" className="hover:text-[#8b5cf6] transition-colors">FAQ</a>
+          </div>
 
-        h1 {
-            font-size: clamp(1.75rem, 5vw, 3rem);
-            line-height: 1.2;
-            margin-bottom: 1.5rem;
-            color: #f1f5f9;
-        }
-
-        .green-callout {
-            background: rgba(34, 197, 94, 0.05);
-            border: 2px solid rgba(34, 197, 94, 0.2);
-            border-radius: 8px;
-            padding: 1rem;
-            margin: 1rem 0;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .shield-icon {
-            width: 24px;
-            height: 24px;
-            color: #10b981;
-            flex-shrink: 0;
-        }
-
-        .testimonial-card {
-            background: rgba(248, 250, 252, 0.05);
-            border: 1px solid rgba(226, 232, 240, 0.1);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-        }
-
-        .price-anchor-box {
-            background: rgba(248, 250, 252, 0.05);
-            border: 1px solid rgba(226, 232, 240, 0.1);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin: 1.5rem 0;
-            text-align: center;
-        }
-
-        .struck {
-            text-decoration: line-through;
-            color: #64748b;
-            font-size: 1.1rem;
-        }
-
-        .price-new {
-            font-size: clamp(1.5rem, 3vw, 2rem);
-            font-weight: 700;
-            color: #10b981;
-            display: block;
-            margin-top: 0.5rem;
-        }
-
-        .btn-primary {
-            background: #8b5cf6;
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            min-height: 44px;
-            min-width: 44px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
-            transition: all 0.2s;
-            font-size: clamp(1rem, 2.5vw, 1.125rem);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
-        }
-
-        .quick-answer {
-            background: rgba(139, 92, 246, 0.1);
-            border: 2px solid rgba(139, 92, 246, 0.2);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin: 2rem 0;
-            font-size: clamp(1rem, 2.5vw, 1.125rem);
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-
-        .stat-card {
-            background: rgba(248, 250, 252, 0.05);
-            border: 1px solid rgba(226, 232, 240, 0.1);
-            border-radius: 8px;
-            padding: 1.5rem;
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: clamp(1.75rem, 4vw, 2.5rem);
-            font-weight: 700;
-            color: #8b5cf6;
-            display: block;
-        }
-
-        .value-card {
-            background: rgba(248, 250, 252, 0.05);
-            border: 1px solid rgba(226, 232, 240, 0.1);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .value-icon {
-            width: 48px;
-            height: 48px;
-            background: rgba(139, 92, 246, 0.1);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1rem;
-            color: #8b5cf6;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1rem 0;
-            overflow-x: auto;
-            display: block;
-        }
-
-        thead {
-            background: #1e293b;
-        }
-
-        th, td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid rgba(226, 232, 240, 0.1);
-        }
-
-        th {
-            font-weight: 600;
-            color: #f1f5f9;
-        }
-
-        .check {
-            color: #10b981;
-            font-size: 1.5rem;
-        }
-
-        .cross {
-            color: #ef4444;
-            font-size: 1.5rem;
-        }
-
-        .faq-item {
-            margin-bottom: 2rem;
-        }
-
-        .faq-item h3 {
-            font-size: clamp(1.125rem, 2.5vw, 1.25rem);
-            margin-bottom: 0.75rem;
-            color: #f1f5f9;
-        }
-
-        .faq-item p {
-            color: #cbd5e1;
-            line-height: 1.7;
-        }
-
-        .final-cta {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%);
-            border-radius: 12px;
-            padding: 3rem 1.5rem;
-            text-align: center;
-            margin: 2rem 0;
-        }
-
-        footer {
-            background: rgba(15, 23, 42, 0.8);
-            padding: 2rem 0;
-            text-align: center;
-            border-top: 1px solid rgba(226, 232, 240, 0.1);
-            color: #64748b;
-        }
-
-        .updated {
-            font-size: 0.875rem;
-            color: #64748b;
-            margin-top: 0.5rem;
-        }
-
-        @media (min-width: 768px) {
-            .container {
-                padding: 0 2rem;
-            }
-
-            .nav-links {
-                display: flex;
-                gap: 2rem;
-                position: absolute;
-                left: 50%;
-                transform: translateX(-50%);
-            }
-
-            .nav-links a {
-                color: #cbd5e1;
-                text-decoration: none;
-                transition: color 0.2s;
-            }
-
-            .nav-links a:hover {
-                color: #8b5cf6;
-            }
-
-            .stats-grid {
-                grid-template-columns: repeat(4, 1fr);
-            }
-
-            table {
-                display: table;
-            }
-
-            .hero-content {
-                max-width: 800px;
-            }
-
-            .green-callout {
-                display: inline-flex;
-                margin: 1rem 0;
-            }
-        }
-
-        @media (min-width: 1024px) {
-            .container {
-                max-width: 1200px;
-                padding: 0 2rem;
-            }
-
-            .value-stack-grid {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1.5rem;
-            }
-
-            .final-cta {
-                padding: 4rem 2rem;
-            }
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <nav class="container">
-            <a href="https://sellercfo.vercel.app" class="nav-brand">SellerCFO</a>
-            <div class="nav-links">
-                <a href="#what-is">Features</a>
-                <a href="#pricing">Pricing</a>
-                <a href="#faq">FAQ</a>
-            </div>
-            <a href="#get-started" class="nav-cta">Start Free Trial</a>
+          <div className="flex items-center gap-3">
+            <Link href="/login" className="hidden sm:inline-flex text-sm text-[#94a3b8] hover:text-[#e8e8f0] transition-colors">
+              Sign In
+            </Link>
+            <Link
+              href="/signup"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#8b5cf6] hover:bg-[#7c3aed] text-white text-sm font-semibold rounded-lg transition-all shadow-lg shadow-[#8b5cf6]/25 hover:shadow-[#8b5cf6]/40"
+            >
+              Start Free Trial
+              <ArrowRight size={16} />
+            </Link>
+          </div>
         </nav>
-    </header>
+      </header>
 
-    <main>
-        <section id="hero">
-            <div class="container hero-content">
-                <div class="social-proof-bar">
-                    <span class="stars">★★★★★</span>
-                    <span>100+ E-commerce/DTC businesses who stopped guessing</span>
-                </div>
-                
-                <h1>SellerCFO — Financial Visibility for E-commerce/DTC</h1>
-                
-                <div class="green-callout">
-                    <svg class="shield-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                    </svg>
-                    <span><strong>We set it up for you</strong> — Connect to your existing tools. Our team does the integration. Zero tech headaches.</span>
-                </div>
+      {/* ─── HERO ─── */}
+      <section className="relative overflow-hidden">
+        {/* Background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#8b5cf6]/5 via-transparent to-transparent" />
+        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-[#8b5cf6]/5 rounded-full blur-[120px]" />
 
-                <p style="font-size: clamp(1.125rem, 2.5vw, 1.25rem); margin: 1.5rem 0; color: #cbd5e1;">
-                    Stop drowning in spreadsheets trying to calculate true profitability across channels. Get instant clarity on your unit economics with real-time P&L tracking that accounts for all fees, returns, and ad costs — helping 500+ brands increase margins by an average of 23%.
-                </p>
-
-                <div class="testimonial-card">
-                    <div class="stars">★★★★★</div>
-                    <p style="font-style: italic; margin: 0.5rem 0;">"Finally understood why we were cash-strapped despite 'profitable' months. SellerCFO revealed $180K in hidden inventory costs."</p>
-                    <p style="font-weight: 600; color: #8b5cf6; margin-top: 0.5rem;">— Sarah Chen, CEO @ Pure Botanicals</p>
-                </div>
-
-                <div class="price-anchor-box">
-                    <div class="struck">Fractional CFO: $8,000–$15,000/mo</div>
-                    <div class="price-new">SellerCFO: $199–$499/mo</div>
-                </div>
-
-                <div style="text-align: center; margin: 2rem 0;">
-                    <a href="#get-started" class="btn-primary">Start Free Trial</a>
-                    <p style="margin-top: 0.75rem; font-size: 0.875rem; color: #64748b;">
-                        30-day free trial • No credit card required • Or <a href="#demo" style="color: #8b5cf6;">see live demo</a>
-                    </p>
-                </div>
-
-                <div style="font-weight: 700; margin: 1rem 0; font-size: clamp(1rem, 2.5vw, 1.125rem); color: #10b981;">
-                    See your numbers in real-time, not 30 days late
-                </div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-24 pb-16">
+          {/* Social proof bar */}
+          <div className="flex items-center justify-center gap-2 mb-8">
+            <div className="flex">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} size={16} className="text-[#fbbf24] fill-[#fbbf24]" />
+              ))}
             </div>
-        </section>
+            <span className="text-sm text-[#94a3b8]">Trusted by 500+ e-commerce brands</span>
+          </div>
 
-        <section id="quick-answer">
-            <div class="container">
-                <div class="quick-answer">
-                    <h2 style="font-size: clamp(1.25rem, 3vw, 1.5rem); margin-bottom: 1rem;">What is SellerCFO?</h2>
-                    <p>SellerCFO transforms your e-commerce data chaos into strategic clarity. We automatically sync with your sales channels, ad platforms, and fulfillment partners to deliver real-time financial intelligence. Make confident decisions about inventory, marketing spend, and growth investments with AI-powered insights tailored for DTC brands.</p>
-                    <p class="updated">Last updated: 2026-04-06</p>
-                </div>
+          {/* Main headline */}
+          <div className="max-w-4xl mx-auto text-center">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.1] tracking-tight mb-6">
+              Stop Guessing Your{' '}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8b5cf6] to-[#a78bfa]">
+                True Profitability
+              </span>
+              <br />
+              Across Every Channel
+            </h1>
+
+            <p className="text-lg sm:text-xl text-[#94a3b8] max-w-2xl mx-auto mb-8 leading-relaxed">
+              SellerCFO syncs your sales channels, ad platforms, and QuickBooks in real time —
+              giving you instant clarity on unit economics, cash flow, and which products actually make money.
+            </p>
+
+            {/* Trust callout */}
+            <div className="inline-flex items-center gap-3 bg-[#10b981]/5 border border-[#10b981]/20 rounded-full px-5 py-2.5 mb-8">
+              <ShieldCheck size={18} className="text-[#10b981]" />
+              <span className="text-sm text-[#94a3b8]">
+                <strong className="text-[#e8e8f0]">White-glove setup included</strong> — we connect everything for you
+              </span>
             </div>
-        </section>
 
-        <section id="social-proof-strip">
-            <div class="container">
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <span class="stat-number">$12M+</span>
-                        <span>Profit recovered for clients</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-number">23%</span>
-                        <span>Average margin improvement</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-number">15 hrs</span>
-                        <span>Saved per week per client</span>
-                    </div>
-                    <div class="stat-card">
-                        <span class="stat-number">500+</span>` }} />
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8">
+              <Link
+                href="/signup"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-[#8b5cf6] hover:bg-[#7c3aed] text-white font-semibold rounded-xl transition-all shadow-xl shadow-[#8b5cf6]/25 hover:shadow-[#8b5cf6]/40 text-lg"
+              >
+                Start 14-Day Free Trial
+                <ArrowRight size={20} />
+              </Link>
+              <button
+                onClick={() => setShowVideo(true)}
+                className="inline-flex items-center gap-2 px-8 py-4 bg-[#12121a] border border-[#2a2a3d] hover:border-[#8b5cf6]/50 text-[#e8e8f0] font-semibold rounded-xl transition-all text-lg"
+              >
+                <Play size={18} className="text-[#8b5cf6]" />
+                Watch 2-min Demo
+              </button>
+            </div>
+
+            <p className="text-sm text-[#64748b]">
+              No credit card required · Cancel anytime · Setup in under 2 hours
+            </p>
+          </div>
+
+          {/* Price anchor */}
+          <div className="max-w-lg mx-auto mt-12 bg-[#12121a] border border-[#1e1e2e] rounded-2xl p-6 text-center">
+            <div className="text-[#64748b] line-through text-lg">Fractional CFO: $8,000–$15,000/mo</div>
+            <div className="text-3xl font-bold text-[#10b981] mt-1">SellerCFO: from $199/mo</div>
+            <div className="text-sm text-[#64748b] mt-2">Same visibility. 98% less cost. Instant setup.</div>
+          </div>
+
+          {/* Channel logos */}
+          <div className="mt-16">
+            <p className="text-center text-sm text-[#64748b] mb-6">Connects with the platforms you already use</p>
+            <div className="flex flex-wrap items-center justify-center gap-6">
+              {CHANNELS.map((ch) => (
+                <div
+                  key={ch.name}
+                  className="flex items-center gap-2 px-4 py-2 bg-[#12121a] border border-[#1e1e2e] rounded-lg"
+                >
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: ch.color }} />
+                  <span className="text-sm text-[#94a3b8] font-medium">{ch.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── STATS BAR ─── */}
+      <section className="border-y border-[#1e1e2e] py-16 bg-[#0a0a0f]">
+        <div className="max-w-5xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8">
+          <AnimatedStat value={12} prefix="$" suffix="M+" label="Profit recovered for clients" />
+          <AnimatedStat value={23} suffix="%" label="Average margin improvement" />
+          <AnimatedStat value={15} suffix=" hrs" label="Saved per week per client" />
+          <AnimatedStat value={500} suffix="+" label="E-commerce brands served" />
+        </div>
+      </section>
+
+      {/* ─── PAIN → SOLUTION ─── */}
+      <section className="py-20 sm:py-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+              Running an E-commerce Brand Without Financial Visibility Is{' '}
+              <span className="text-[#ef4444]">Flying Blind</span>
+            </h2>
+            <p className="text-lg text-[#94a3b8]">
+              Most DTC brands don't know their true profit margin until weeks after the month closes.
+              By then, the damage is done.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+            {[
+              { icon: DollarSign, pain: "Can't calculate true margins after all fees and ad costs", solution: 'Real-time contribution margin down to the SKU level' },
+              { icon: TrendingUp, pain: "Running out of cash despite showing 'profit'", solution: '30/60/90-day cash flow forecasting with inventory impact' },
+              { icon: Package, pain: 'Inventory planning is guesswork — stockouts or excess', solution: 'AI-powered reorder points and sell-through projections' },
+              { icon: BarChart3, pain: 'Hours in spreadsheets reconciling Amazon fees', solution: 'Automated fee reconciliation across all 6 channels' },
+              { icon: Target, pain: 'Marketing spend increasing but ROI is unclear', solution: 'Blended ROAS and channel-level CAC tracking' },
+              { icon: Layers, pain: 'Multiple tools that don\'t talk to each other', solution: 'One dashboard syncing sales, ads, inventory + QBO' },
+            ].map((item, i) => (
+              <div key={i} className="flex gap-4 p-6 bg-[#12121a] border border-[#1e1e2e] rounded-xl hover:border-[#8b5cf6]/30 transition-colors">
+                <div className="w-12 h-12 rounded-xl bg-[#8b5cf6]/10 flex items-center justify-center flex-shrink-0">
+                  <item.icon size={22} className="text-[#8b5cf6]" />
+                </div>
+                <div>
+                  <p className="text-[#ef4444]/80 text-sm mb-1 line-through">{item.pain}</p>
+                  <p className="text-[#e8e8f0] font-medium">{item.solution}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── FEATURES ─── */}
+      <section id="features" className="py-20 sm:py-28 bg-gradient-to-b from-[#0a0a0f] via-[#0f0f18] to-[#0a0a0f]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-3xl mx-auto text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#8b5cf6]/10 border border-[#8b5cf6]/20 rounded-full text-sm text-[#8b5cf6] font-medium mb-4">
+              <Zap size={14} /> 50+ KPIs across 8 categories
+            </div>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+              Everything Your CFO Would Track —<br />Automated & Real-Time
+            </h2>
+            <p className="text-lg text-[#94a3b8]">
+              From unit economics to inventory turns to ad efficiency — we track the KPIs that actually matter for e-commerce profitability.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[
+              { icon: DollarSign, title: 'Revenue & Sales', desc: 'GMV, Net Revenue, AOV, Units Sold, Conversion Rate, MRR — across every channel', color: '#8b5cf6' },
+              { icon: TrendingUp, title: 'Profitability', desc: 'Contribution Margin waterfall (CM1/CM2/CM3), EBITDA, COGS ratio, Gross Margin by SKU', color: '#10b981' },
+              { icon: Users, title: 'Customer Intelligence', desc: 'CAC, LTV, LTV:CAC ratio, Payback Period, Repeat Purchase Rate, Churn, NPS', color: '#06b6d4' },
+              { icon: LineChart, title: 'Cash Flow', desc: 'Operating Cash Flow, FCF, Cash Conversion Cycle (DIO+DSO-DPO), Burn Rate, Runway', color: '#f59e0b' },
+              { icon: Package, title: 'Inventory Intelligence', desc: 'Turnover, Sell-Through Rate, Stockout Rate, Dead Stock %, Days of Inventory', color: '#ef4444' },
+              { icon: PieChart, title: 'Marketing & Ads', desc: 'ROAS, Blended ROAS/MER, CPA, Ad Spend %, Channel-level attribution', color: '#ec4899' },
+              { icon: Store, title: 'Platform-Specific', desc: 'Amazon: ACoS, TACoS, BSR, Buy Box %, IPI. Shopify: Cart Abandonment. Etsy: Star Seller', color: '#8b5cf6' },
+              { icon: Globe, title: 'Operations', desc: 'Fulfillment Cost/Order, Shipping %, Return Rate, Order Accuracy, Delivery Time', color: '#10b981' },
+              { icon: BarChart3, title: 'AI CFO Advisor', desc: 'Ask questions in plain English. Get specific, actionable advice backed by industry benchmarks.', color: '#06b6d4' },
+            ].map((feat, i) => (
+              <div
+                key={i}
+                className="group p-6 bg-[#12121a] border border-[#1e1e2e] rounded-xl hover:border-opacity-50 transition-all"
+                style={{ '--hover-color': feat.color } as React.CSSProperties}
+              >
+                <div
+                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-colors"
+                  style={{ backgroundColor: `${feat.color}15` }}
+                >
+                  <feat.icon size={22} style={{ color: feat.color }} />
+                </div>
+                <h3 className="text-lg font-semibold text-[#e8e8f0] mb-2">{feat.title}</h3>
+                <p className="text-sm text-[#94a3b8] leading-relaxed">{feat.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── HOW IT WORKS ─── */}
+      <section id="how-it-works" className="py-20 sm:py-28">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">Live in Under 2 Hours</h2>
+            <p className="text-lg text-[#94a3b8]">White-glove setup included with every plan</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { step: '01', title: 'Connect Your Channels', desc: 'OAuth connect Shopify, Amazon, Etsy, WooCommerce, Walmart, TikTok Shop — plus QuickBooks Online. Click, authorize, done.', icon: Zap },
+              { step: '02', title: 'We Map Your Data', desc: "Our team maps your chart of accounts, configures KPIs for your business model, and verifies data accuracy. You don't lift a finger.", icon: ShieldCheck },
+              { step: '03', title: 'Real-Time Visibility', desc: 'Your dashboard populates with true P&L, cash flow forecasts, inventory intelligence, and AI-powered insights. Updated in real time.', icon: BarChart3 },
+            ].map((s, i) => (
+              <div key={i} className="relative">
+                <div className="text-6xl font-bold text-[#8b5cf6]/10 mb-4">{s.step}</div>
+                <div className="w-12 h-12 rounded-xl bg-[#8b5cf6]/10 flex items-center justify-center mb-4">
+                  <s.icon size={22} className="text-[#8b5cf6]" />
+                </div>
+                <h3 className="text-xl font-semibold text-[#e8e8f0] mb-2">{s.title}</h3>
+                <p className="text-[#94a3b8] leading-relaxed">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── COMPARISON TABLE ─── */}
+      <section className="py-20 sm:py-28 bg-[#0f0f18]">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">Why Brands Switch to SellerCFO</h2>
+            <p className="text-lg text-[#94a3b8]">More than a profit tracker — a complete CFO toolkit</p>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-[#1e1e2e]">
+                  <th className="text-left py-4 px-4 text-sm font-semibold text-[#94a3b8]">Feature</th>
+                  <th className="text-center py-4 px-4 text-sm font-semibold text-[#8b5cf6]">SellerCFO</th>
+                  <th className="text-center py-4 px-4 text-sm font-semibold text-[#94a3b8]">Spreadsheets</th>
+                  <th className="text-center py-4 px-4 text-sm font-semibold text-[#94a3b8]">BeProfit</th>
+                  <th className="text-center py-4 px-4 text-sm font-semibold text-[#94a3b8]">Lifetimely</th>
+                </tr>
+              </thead>
+              <tbody>
+                {COMPARISON.map((row, i) => (
+                  <tr key={i} className="border-b border-[#1e1e2e]/50">
+                    <td className="py-4 px-4 text-sm text-[#e8e8f0]">{row.feature}</td>
+                    <td className="py-4 px-4 text-center">
+                      {row.us ? <Check size={18} className="inline text-[#10b981]" /> : <span className="text-[#64748b]">—</span>}
+                    </td>
+                    <td className="py-4 px-4 text-center">
+                      {row.spreadsheets ? <Check size={18} className="inline text-[#64748b]" /> : <span className="text-[#64748b]">—</span>}
+                    </td>
+                    <td className="py-4 px-4 text-center">
+                      {row.beprofit ? <Check size={18} className="inline text-[#64748b]" /> : <span className="text-[#64748b]">—</span>}
+                    </td>
+                    <td className="py-4 px-4 text-center">
+                      {row.lifetimely ? <Check size={18} className="inline text-[#64748b]" /> : <span className="text-[#64748b]">—</span>}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── TESTIMONIALS ─── */}
+      <section className="py-20 sm:py-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">Brands That Stopped Guessing</h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {TESTIMONIALS.map((t, i) => (
+              <div key={i} className="bg-[#12121a] border border-[#1e1e2e] rounded-xl p-6 flex flex-col">
+                <div className="flex gap-1 mb-4">
+                  {[...Array(5)].map((_, j) => (
+                    <Star key={j} size={14} className="text-[#fbbf24] fill-[#fbbf24]" />
+                  ))}
+                </div>
+                <p className="text-[#cbd5e1] leading-relaxed flex-1 mb-4">"{t.quote}"</p>
+                <div className="flex items-center justify-between pt-4 border-t border-[#1e1e2e]">
+                  <div>
+                    <div className="font-semibold text-[#e8e8f0] text-sm">{t.name}</div>
+                    <div className="text-xs text-[#64748b]">{t.title}</div>
+                  </div>
+                  <div className="text-sm font-semibold text-[#10b981]">{t.metric}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── PRICING ─── */}
+      <section id="pricing" className="py-20 sm:py-28 bg-gradient-to-b from-[#0a0a0f] via-[#0f0f18] to-[#0a0a0f]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">Simple, Transparent Pricing</h2>
+            <p className="text-lg text-[#94a3b8]">
+              Every plan includes a 14-day free trial. No credit card required to start.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {/* Essential */}
+            <div className="bg-[#12121a] border border-[#1e1e2e] rounded-2xl p-8 flex flex-col">
+              <h3 className="text-xl font-bold text-[#e8e8f0] mb-1">Essential</h3>
+              <p className="text-sm text-[#64748b] mb-4">Solo sellers & small brands</p>
+              <div className="mb-6">
+                <span className="text-4xl font-bold text-[#e8e8f0]">$199</span>
+                <span className="text-[#64748b]">/mo</span>
+              </div>
+              <ul className="space-y-3 mb-8 flex-1">
+                {[
+                  'Core KPI Dashboard (50+ metrics)',
+                  'Shopify + Amazon Integration',
+                  'QuickBooks Online Sync',
+                  'Unit Economics Tracking',
+                  'Cash Flow Forecasting',
+                  'AI CFO Advisor',
+                  '30-Day Data History',
+                  'Email Support',
+                ].map((f, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm text-[#94a3b8]">
+                    <Check size={16} className="text-[#8b5cf6] mt-0.5 flex-shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/signup?plan=basic"
+                className="block text-center px-6 py-3 border border-[#8b5cf6] text-[#8b5cf6] hover:bg-[#8b5cf6] hover:text-white font-semibold rounded-xl transition-all"
+              >
+                Start Free Trial
+              </Link>
+            </div>
+
+            {/* Professional */}
+            <div className="relative bg-[#12121a] border-2 border-[#8b5cf6] rounded-2xl p-8 flex flex-col shadow-xl shadow-[#8b5cf6]/10">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#8b5cf6] text-white text-xs font-bold px-4 py-1 rounded-full">
+                MOST POPULAR
+              </div>
+              <h3 className="text-xl font-bold text-[#e8e8f0] mb-1">Professional</h3>
+              <p className="text-sm text-[#64748b] mb-4">Growing multi-channel brands</p>
+              <div className="mb-6">
+                <span className="text-4xl font-bold text-[#e8e8f0]">$399</span>
+                <span className="text-[#64748b]">/mo</span>
+              </div>
+              <ul className="space-y-3 mb-8 flex-1">
+                {[
+                  'Everything in Essential',
+                  'Etsy + WooCommerce + TikTok Shop',
+                  'Inventory Forecasting & Alerts',
+                  'Contribution Margin Waterfall',
+                  'Custom Reports & KPI Builder',
+                  'Channel Profitability Analysis',
+                  'API Access',
+                  'Unlimited Data History',
+                  'Priority Support',
+                ].map((f, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm text-[#94a3b8]">
+                    <Check size={16} className="text-[#8b5cf6] mt-0.5 flex-shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/signup?plan=pro"
+                className="block text-center px-6 py-3 bg-[#8b5cf6] hover:bg-[#7c3aed] text-white font-semibold rounded-xl transition-all shadow-lg shadow-[#8b5cf6]/25"
+              >
+                Start Free Trial
+              </Link>
+            </div>
+
+            {/* Enterprise */}
+            <div className="bg-[#12121a] border border-[#1e1e2e] rounded-2xl p-8 flex flex-col">
+              <h3 className="text-xl font-bold text-[#e8e8f0] mb-1">Enterprise</h3>
+              <p className="text-sm text-[#64748b] mb-4">Scaling brands & agencies</p>
+              <div className="mb-6">
+                <span className="text-4xl font-bold text-[#e8e8f0]">$799</span>
+                <span className="text-[#64748b]">/mo</span>
+              </div>
+              <ul className="space-y-3 mb-8 flex-1">
+                {[
+                  'Everything in Professional',
+                  'Walmart + All Sales Channels',
+                  'Multi-Store Support',
+                  'Custom Integrations via API',
+                  'Dedicated Account Manager',
+                  'Advanced AI Insights',
+                  'Quarterly Strategy Call',
+                  'White-Label Reports',
+                  'SSO & Team Permissions',
+                ].map((f, i) => (
+                  <li key={i} className="flex items-start gap-3 text-sm text-[#94a3b8]">
+                    <Check size={16} className="text-[#8b5cf6] mt-0.5 flex-shrink-0" />
+                    {f}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                href="/signup?plan=enterprise"
+                className="block text-center px-6 py-3 border border-[#8b5cf6] text-[#8b5cf6] hover:bg-[#8b5cf6] hover:text-white font-semibold rounded-xl transition-all"
+              >
+                Start Free Trial
+              </Link>
+            </div>
+          </div>
+
+          {/* Guarantee */}
+          <div className="max-w-2xl mx-auto mt-12 text-center">
+            <div className="inline-flex items-center gap-3 bg-[#10b981]/5 border border-[#10b981]/20 rounded-2xl px-6 py-4">
+              <Award size={24} className="text-[#10b981]" />
+              <div className="text-left">
+                <div className="font-semibold text-[#e8e8f0]">30-Day Money-Back Guarantee</div>
+                <div className="text-sm text-[#94a3b8]">If SellerCFO doesn't improve your financial visibility, we'll refund every penny.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── FAQ ─── */}
+      <section id="faq" className="py-20 sm:py-28">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">Frequently Asked Questions</h2>
+          </div>
+          <div className="space-y-3">
+            {FAQ_ITEMS.map((faq, i) => (
+              <FAQItem key={i} q={faq.q} a={faq.a} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── FINAL CTA ─── */}
+      <section className="py-20 sm:py-28">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-gradient-to-br from-[#8b5cf6]/10 via-[#12121a] to-[#8b5cf6]/5 border border-[#8b5cf6]/20 rounded-3xl p-10 sm:p-16 text-center">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+              See Your Numbers in Real Time,<br />Not 30 Days Late
+            </h2>
+            <p className="text-lg text-[#94a3b8] max-w-2xl mx-auto mb-8">
+              Join 500+ e-commerce brands who stopped guessing and started growing with real financial intelligence.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link
+                href="/signup"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-[#8b5cf6] hover:bg-[#7c3aed] text-white font-semibold rounded-xl transition-all shadow-xl shadow-[#8b5cf6]/25 hover:shadow-[#8b5cf6]/40 text-lg"
+              >
+                Start Your Free Trial
+                <ArrowRight size={20} />
+              </Link>
+              <a
+                href="#pricing"
+                className="inline-flex items-center gap-2 text-[#94a3b8] hover:text-[#e8e8f0] font-medium transition-colors"
+              >
+                View pricing <ArrowUpRight size={16} />
+              </a>
+            </div>
+            <p className="text-sm text-[#64748b] mt-4">14-day free trial · No credit card · White-glove setup</p>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── FOOTER ─── */}
+      <footer className="border-t border-[#1e1e2e] py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-1.5 text-lg font-bold">
+              <ShoppingCart size={20} className="text-[#8b5cf6]" />
+              <span className="text-[#8b5cf6]">Seller</span>
+              <span className="text-[#e8e8f0]">CFO</span>
+            </div>
+            <div className="flex items-center gap-6 text-sm text-[#64748b]">
+              <Link href="/terms" className="hover:text-[#94a3b8] transition-colors">Terms</Link>
+              <Link href="/privacy" className="hover:text-[#94a3b8] transition-colors">Privacy</Link>
+              <a href="mailto:support@sellercfo.com" className="hover:text-[#94a3b8] transition-colors">Contact</a>
+            </div>
+            <div className="text-sm text-[#64748b]">
+              &copy; {new Date().getFullYear()} SellerCFO. All rights reserved.
+            </div>
+          </div>
+        </div>
+      </footer>
+
+      {/* ─── CHAT BUBBLE ─── */}
+      <SupportChat />
+
+      {/* ─── VIDEO MODAL ─── */}
+      {showVideo && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={() => setShowVideo(false)}
+        >
+          <div
+            className="relative w-full max-w-4xl aspect-video bg-[#12121a] rounded-2xl border border-[#1e1e2e] flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="text-center p-8">
+              <Play size={48} className="text-[#8b5cf6] mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-[#e8e8f0] mb-2">Demo Video Coming Soon</h3>
+              <p className="text-[#94a3b8]">Book a live demo instead — we'll walk through YOUR numbers.</p>
+              <button
+                onClick={() => setShowVideo(false)}
+                className="mt-4 px-6 py-2 bg-[#8b5cf6] hover:bg-[#7c3aed] text-white font-semibold rounded-lg transition-all"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

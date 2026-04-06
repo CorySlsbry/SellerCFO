@@ -58,12 +58,12 @@ export default function PrivacyPolicyPage() {
 
             <section>
               <h2 className="text-lg font-semibold text-[#e8e8f0] mb-2">7. Your Rights</h2>
-              <p>You have the right to access, correct, or delete your personal data. You may also request a copy of the data we hold about you. To exercise any of these rights, contact us at support@medicalcfo.com.</p>
+              <p>You have the right to access, correct, or delete your personal data. You may also request a copy of the data we hold about you. To exercise any of these rights, contact us at support@sellercfo.com.</p>
             </section>
 
             <section>
               <h2 className="text-lg font-semibold text-[#e8e8f0] mb-2">8. Contact</h2>
-              <p>If you have questions about this privacy policy, contact us at <a href="mailto:support@medicalcfo.com" className="text-[#06b6d4] hover:text-[#22d3ee] transition">support@medicalcfo.com</a>.</p>
+              <p>If you have questions about this privacy policy, contact us at <a href="mailto:support@sellercfo.com" className="text-[#06b6d4] hover:text-[#22d3ee] transition">support@sellercfo.com</a>.</p>
             </section>
 
             <section>
