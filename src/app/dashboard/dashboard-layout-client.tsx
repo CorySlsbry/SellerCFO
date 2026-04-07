@@ -22,6 +22,8 @@ import {
   Package,
   ShoppingCart,
   Sparkles,
+  SquareKanban,
+  Gauge,
 } from 'lucide-react';
 import LocationSelector from '@/components/location-selector';
 import SupportChat from '@/components/support-chat';
@@ -39,7 +41,7 @@ interface NavItem {
   icon: React.ComponentType<any>;
 }
 
-const navItems: NavItem[] = [
+const STATIC_NAV: NavItem[] = [
   { label: "Performance Hub", icon: LayoutDashboard, href: "/dashboard" },
   { label: "P&L Center", icon: DollarSign, href: "/dashboard/pnl" },
   { label: "Inventory HQ", icon: Package, href: "/dashboard/inventory" },
@@ -74,6 +76,10 @@ export default function DashboardLayoutClient({
   const [bugMessage, setBugMessage] = useState('');
   const [bugSubmitting, setBugSubmitting] = useState(false);
   const [bugSuccess, setBugSuccess] = useState(false);
+  const [customViewNames, setCustomViewNames] = useState<Record<string, string>>({
+    '1': 'Custom View 1',
+    '2': 'Custom View 2',
+  });
   const pathname = usePathname();
   const router = useRouter();
 
@@ -209,6 +215,31 @@ export default function DashboardLayoutClient({
     fetchLastSync();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Load custom view names & listen for renames
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const names: Record<string, string> = {};
+    for (const id of ['1', '2']) {
+      names[id] = localStorage.getItem(`sellercfo_custom_view_${id}_name`) || `Custom View ${id}`;
+    }
+    setCustomViewNames(names);
+
+    const handler = (e: Event) => {
+      const { viewId, name } = (e as CustomEvent).detail;
+      setCustomViewNames(prev => ({ ...prev, [viewId]: name }));
+    };
+    window.addEventListener('customViewRenamed', handler);
+    return () => window.removeEventListener('customViewRenamed', handler);
+  }, []);
+
+  // Build nav items with custom views inserted before Integrations
+  const navItems: NavItem[] = [
+    ...STATIC_NAV.slice(0, 6), // Performance Hub through AI Insights
+    { label: customViewNames['1'] || 'Custom View 1', icon: SquareKanban, href: '/dashboard/custom/1' },
+    { label: customViewNames['2'] || 'Custom View 2', icon: Gauge, href: '/dashboard/custom/2' },
+    ...STATIC_NAV.slice(6), // Integrations, Settings
+  ];
+
   // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
@@ -272,8 +303,8 @@ export default function DashboardLayoutClient({
               <div className="text-[10px] text-[#8888a0] font-normal">Financial Dashboard for E-commerce</div>
             </div>
           ) : (
-            <div className="w-10 h-10 rounded-lg bg-[#06b6d4] flex items-center justify-center font-bold text-sm">
-              MC
+            <div className="w-10 h-10 rounded-lg bg-[#8b5cf6] flex items-center justify-center font-bold text-sm">
+              SC
             </div>
           )}
         </div>

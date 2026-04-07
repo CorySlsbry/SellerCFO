@@ -41,3 +41,11 @@ export const PLAN_FEATURES = {
 } as const;
 
 export type PlanTier = keyof typeof PLAN_FEATURES;
+
+export function getPlanName(plan: PlanTier): string {
+  return PLAN_FEATURES[plan]?.name ?? 'Essential';
+}
+
+export function getPlanPrice(plan: PlanTier): number {
+  return PLAN_FEATURES[plan]?.price ?? 199;
+}

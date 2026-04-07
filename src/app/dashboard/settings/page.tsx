@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Plug, ArrowRight, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { createClient } from '@/lib/supabase/client';
+import { createBrowserClient } from '@/lib/supabase/client';
 
 interface UserData {
   email?: string;
@@ -35,7 +35,7 @@ export default function SettingsPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const supabase = createClient();
+        const supabase = createBrowserClient();
         const { data: { user } } = await supabase.auth.getUser();
 
         if (user) {
