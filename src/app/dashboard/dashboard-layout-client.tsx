@@ -18,6 +18,10 @@ import {
   Brain,
   MapPin,
   Bug,
+  DollarSign,
+  Package,
+  ShoppingCart,
+  Sparkles,
 } from 'lucide-react';
 import LocationSelector from '@/components/location-selector';
 import SupportChat from '@/components/support-chat';
@@ -36,14 +40,14 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { label: "Performance Hub", icon: "LayoutDashboard", path: "/dashboard" },
-  { label: "P&L Center", icon: "DollarSign", path: "/dashboard/pnl" },
-  { label: "Inventory HQ", icon: "Package", path: "/dashboard/inventory" },
-  { label: "Channel Analytics", icon: "ShoppingCart", path: "/dashboard/channels" },
-  { label: "Cash Flow", icon: "TrendingUp", path: "/dashboard/cashflow" },
-  { label: "AI Insights", icon: "Sparkles", path: "/dashboard/insights" },
-  { label: "Integrations", icon: "Plug", path: "/dashboard/integrations" },
-  { label: "Settings", icon: "Settings", path: "/dashboard/settings" }
+  { label: "Performance Hub", icon: LayoutDashboard, href: "/dashboard" },
+  { label: "P&L Center", icon: DollarSign, href: "/dashboard/pnl" },
+  { label: "Inventory HQ", icon: Package, href: "/dashboard/inventory" },
+  { label: "Channel Analytics", icon: ShoppingCart, href: "/dashboard/channels" },
+  { label: "Cash Flow", icon: TrendingUp, href: "/dashboard/cashflow" },
+  { label: "AI Insights", icon: Sparkles, href: "/dashboard/insights" },
+  { label: "Integrations", icon: Plug, href: "/dashboard/integrations" },
+  { label: "Settings", icon: Settings, href: "/dashboard/settings" },
 ];
 
 export default function DashboardLayoutClient({
