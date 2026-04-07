@@ -583,8 +583,8 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
             )}
           </div>
           <div className="flex items-center gap-2">
-            {/* Combined / Individual toggle */}
-            {activeKPIs.length > 1 && (
+            {/* Combined / Individual toggle (custom views only) */}
+            {viewId !== 'main' && activeKPIs.length > 1 && (
               <button
                 onClick={toggleChartMode}
                 className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-400 hover:text-white bg-gray-800 rounded-lg transition"
@@ -594,14 +594,17 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
                 <span className="text-xs">{chartMode === 'combined' ? 'Combined' : 'Individual'}</span>
               </button>
             )}
-            <button
-              onClick={() => setSidebarOpen(!sidebarOpen)}
-              className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-400 hover:text-white bg-gray-800 rounded-lg transition"
-              title="Toggle KPI selector"
-            >
-              {sidebarOpen ? <PanelLeftClose className="w-4 h-4" /> : <PanelLeftOpen className="w-4 h-4" />}
-              KPIs
-            </button>
+            {/* KPI selector (custom views only) */}
+            {viewId !== 'main' && (
+              <button
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-400 hover:text-white bg-gray-800 rounded-lg transition"
+                title="Toggle KPI selector"
+              >
+                {sidebarOpen ? <PanelLeftClose className="w-4 h-4" /> : <PanelLeftOpen className="w-4 h-4" />}
+                KPIs
+              </button>
+            )}
             <button
               onClick={handleSync}
               disabled={syncing}
@@ -709,19 +712,14 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
         </div>
 
         {/* ============================================================ */}
-        {/* KPI Cards Grid */}
+        {/* Fixed Hero KPI Cards (main view only) */}
         {/* ============================================================ */}
-        {activeKPIs.length > 0 ? (
-          <div className={`grid gap-4 ${
-            activeKPIs.length <= 2 ? 'grid-cols-1 md:grid-cols-2' :
-            activeKPIs.length === 3 ? 'grid-cols-1 md:grid-cols-3' :
-            'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
-          }`}>
-            {activeKPIs.map((kpi) => {
+        {viewId === 'main' && (
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+            {ALL_KPIS.filter(k => ['gmv', 'net_revenue', 'gross_margin', 'cac', 'blended_roas', 'inventory_turnover', 'aov', 'total_orders'].includes(k.id)).map((kpi) => {
               const Icon = kpi.icon
               const isPositive = (kpi.trend === 'up' && !inverseKPIs.includes(kpi.id)) ||
                 (kpi.trend === 'down' && inverseKPIs.includes(kpi.id))
-
               return (
                 <div key={kpi.id} className="bg-gray-900 rounded-lg p-5 border border-gray-800">
                   <div className="flex items-center justify-between mb-2">
@@ -738,19 +736,53 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
               )
             })}
           </div>
-        ) : (
-          <div className="bg-gray-900 rounded-lg p-8 border border-gray-800 text-center">
-            <Eye className="w-8 h-8 text-gray-600 mx-auto mb-3" />
-            <p className="text-gray-400 text-sm">
-              No KPIs selected. {viewId !== 'main' ? 'Use the Quick Add buttons above or open the KPI panel.' : 'Open the KPI panel to choose which metrics to display.'}
-            </p>
-          </div>
         )}
 
         {/* ============================================================ */}
-        {/* Smart KPI Charts */}
+        {/* Customizable KPI Cards Grid (custom views only) */}
         {/* ============================================================ */}
-        {chartPanels.length > 0 && (
+        {viewId !== 'main' && (
+          activeKPIs.length > 0 ? (
+            <div className={`grid gap-4 ${
+              activeKPIs.length <= 2 ? 'grid-cols-1 md:grid-cols-2' :
+              activeKPIs.length === 3 ? 'grid-cols-1 md:grid-cols-3' :
+              'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
+            }`}>
+              {activeKPIs.map((kpi) => {
+                const Icon = kpi.icon
+                const isPositive = (kpi.trend === 'up' && !inverseKPIs.includes(kpi.id)) ||
+                  (kpi.trend === 'down' && inverseKPIs.includes(kpi.id))
+
+                return (
+                  <div key={kpi.id} className="bg-gray-900 rounded-lg p-5 border border-gray-800">
+                    <div className="flex items-center justify-between mb-2">
+                      <Icon className="w-5 h-5 text-violet-400" />
+                      <span className={`flex items-center gap-1 text-sm ${isPositive ? 'text-green-400' : 'text-red-400'}`}>
+                        {kpi.trend === 'up' ? <TrendingUp className="w-3.5 h-3.5" /> : <TrendingDown className="w-3.5 h-3.5" />}
+                        {kpi.change}
+                      </span>
+                    </div>
+                    <h3 className="text-gray-400 text-xs font-medium">{kpi.title}</h3>
+                    <p className="text-2xl font-bold text-white mt-1">{kpi.value}</p>
+                    <p className="text-[10px] text-gray-600 mt-1" title={kpi.description}>{kpi.source}</p>
+                  </div>
+                )
+              })}
+            </div>
+          ) : (
+            <div className="bg-gray-900 rounded-lg p-8 border border-gray-800 text-center">
+              <Eye className="w-8 h-8 text-gray-600 mx-auto mb-3" />
+              <p className="text-gray-400 text-sm">
+                No KPIs selected. Use the Quick Add buttons above or open the KPI panel.
+              </p>
+            </div>
+          )
+        )}
+
+        {/* ============================================================ */}
+        {/* Smart KPI Charts (custom views only) */}
+        {/* ============================================================ */}
+        {viewId !== 'main' && chartPanels.length > 0 && (
           <div className={`grid gap-4 ${
             chartPanels.length === 1 ? 'grid-cols-1' :
             chartMode === 'individual' && chartPanels.length > 2 ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' :
@@ -836,9 +868,9 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
       </div>
 
       {/* ============================================================ */}
-      {/* KPI Toggle Sidebar */}
+      {/* KPI Toggle Sidebar (custom views only) */}
       {/* ============================================================ */}
-      {sidebarOpen && (
+      {viewId !== 'main' && sidebarOpen && (
         <div className="w-64 shrink-0 ml-4 bg-gray-900 border border-gray-800 rounded-lg p-4 h-fit sticky top-4 max-h-[calc(100vh-120px)] overflow-y-auto">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-sm font-semibold text-white">Toggle KPIs</h3>
