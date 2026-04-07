@@ -199,8 +199,8 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            <Link href="/login" className="hidden sm:inline-flex text-sm text-[#94a3b8] hover:text-[#e8e8f0] transition-colors">
-              Sign In
+            <Link href="/login" className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-[#e8e8f0] border border-[#2e2e3e] hover:border-[#8b5cf6]/50 hover:text-[#8b5cf6] rounded-lg transition-all">
+              Login
             </Link>
             <Link
               href="/signup"

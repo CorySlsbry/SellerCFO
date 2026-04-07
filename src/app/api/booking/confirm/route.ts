@@ -12,6 +12,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { Resend } from 'resend';
 
 export const dynamic = 'force-dynamic';
 
@@ -186,11 +187,10 @@ async function createCalendarEvent(accessToken: string, payload: BookingPayload)
         timeZone: TIMEZONE,
       },
       // ONLY external attendees — NOT the calendar owner.
-      // Adding the calendar owner as attendee causes responseStatus=needsAction
-      // which makes the event invisible to free/busy checks.
+      // Adding the calendar owner as attendee to their own calendar causes
+      // responseStatus=needsAction which breaks free/busy checks.
       attendees: [
-        { email: OWNER_EMAIL },            // cory.salisbury@gmail.com (owner — gets invite)
-        { email: payload.email, displayName: payload.name }, // prospect
+        { email: payload.email, displayName: payload.name }, // prospect only
       ],
       conferenceData: {
         createRequest: {
@@ -305,6 +305,77 @@ async function pushToGHL(payload: BookingPayload): Promise<{ success: boolean; e
   }
 }
 
+/**
+ * Send a confirmation email to the person who booked the call via Resend.
+ */
+async function sendConfirmationEmail(payload: BookingPayload, meetLink?: string): Promise<{ success: boolean; error?: string }> {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    console.warn('[booking/confirm] RESEND_API_KEY not set — skipping confirmation email');
+    return { success: false, error: 'Resend not configured' };
+  }
+
+  try {
+    const resend = new Resend(apiKey);
+    const startDate = new Date(payload.start);
+    const dateStr = startDate.toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      timeZone: TIMEZONE,
+    });
+    const timeStr = startDate.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      timeZone: TIMEZONE,
+      timeZoneName: 'short',
+    });
+
+    const meetSection = meetLink
+      ? `<p style="margin:16px 0"><a href="${meetLink}" style="display:inline-block;padding:12px 24px;background:#8b5cf6;color:#fff;text-decoration:none;border-radius:8px;font-weight:600">Join Google Meet</a></p>`
+      : '';
+
+    const { data, error } = await resend.emails.send({
+      from: process.env.RESEND_FROM_EMAIL || 'SellerCFO <onboarding@resend.dev>',
+      to: [payload.email],
+      replyTo: OWNER_EMAIL,
+      subject: `You're confirmed — SellerCFO Scope Call on ${dateStr}`,
+      html: `
+        <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:560px;margin:0 auto;color:#1a1a2e">
+          <div style="padding:32px 24px;background:linear-gradient(135deg,#0a0a1a,#1a1a2e);border-radius:12px 12px 0 0">
+            <h1 style="margin:0;color:#8b5cf6;font-size:24px">SellerCFO</h1>
+          </div>
+          <div style="padding:24px;background:#fff;border:1px solid #e2e8f0;border-top:none;border-radius:0 0 12px 12px">
+            <h2 style="margin:0 0 16px;font-size:20px;color:#1a1a2e">You're all set, ${payload.name.split(' ')[0]}!</h2>
+            <p style="margin:0 0 16px;color:#475569;line-height:1.6">Your 30-minute scope call is confirmed:</p>
+            <div style="padding:16px;background:#f8fafc;border-radius:8px;margin:0 0 16px">
+              <p style="margin:0 0 8px"><strong>Date:</strong> ${dateStr}</p>
+              <p style="margin:0 0 8px"><strong>Time:</strong> ${timeStr}</p>
+              <p style="margin:0"><strong>Duration:</strong> 30 minutes</p>
+            </div>
+            ${meetSection}
+            <p style="margin:16px 0 0;color:#475569;line-height:1.6">We'll review your sales channels and show you exactly where you're leaving money on the table. Come prepared with any questions about your e-commerce profitability.</p>
+            <p style="margin:16px 0 0;color:#475569;line-height:1.6">Need to reschedule? Just reply to this email.</p>
+            <p style="margin:24px 0 0;color:#475569">— Cory Salisbury<br/>SellerCFO</p>
+          </div>
+        </div>
+      `,
+    });
+
+    if (error) {
+      console.error('[booking/confirm] Resend email failed:', error);
+      return { success: false, error: error.message };
+    }
+
+    console.log('[booking/confirm] Confirmation email sent:', data?.id);
+    return { success: true };
+  } catch (err) {
+    console.error('[booking/confirm] Confirmation email threw:', err);
+    return { success: false, error: 'Email send error' };
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const body: BookingPayload = await request.json();
@@ -344,9 +415,13 @@ export async function POST(request: NextRequest) {
       pushToGHL(body),
     ]);
 
+    // Send confirmation email to the requester (includes Meet link if available)
+    const emailResult = await sendConfirmationEmail(body, calResult.meetLink);
+
     console.log('[booking/confirm] Results:', {
       calendar: calResult.success ? 'OK' : calResult.error,
       ghl: ghlResult.success ? 'OK' : ghlResult.error,
+      email: emailResult.success ? 'OK' : emailResult.error,
     });
 
     return NextResponse.json({
@@ -355,6 +430,7 @@ export async function POST(request: NextRequest) {
       calendarError: calResult.success ? undefined : calResult.error,
       meetLink: calResult.meetLink,
       ghlContact: ghlResult.success,
+      confirmationEmail: emailResult.success,
     });
   } catch (err) {
     console.error('[booking/confirm] Error:', err);
