@@ -352,50 +352,187 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
         )}
 
         {/* ============================================================ */}
-        {/* KPI Trend Mini-Charts — one per selected KPI */}
+        {/* Smart KPI Charts — groups related KPIs on shared axes */}
         {/* ============================================================ */}
-        {activeKPIs.length > 0 && (
-          <div className={`grid gap-4 ${
-            activeKPIs.length === 1 ? 'grid-cols-1' :
-            activeKPIs.length === 2 ? 'grid-cols-1 md:grid-cols-2' :
-            'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
-          }`}>
-            {activeKPIs.map((kpi) => {
-              const trend = KPI_TRENDS[kpi.id]
-              if (!trend) return null
-              const isPositive = (kpi.trend === 'up' && !inverseKPIs.includes(kpi.id)) ||
-                (kpi.trend === 'down' && inverseKPIs.includes(kpi.id))
-              return (
-                <div key={`chart-${kpi.id}`} className="bg-gray-900 rounded-lg p-4 border border-gray-800">
-                  <div className="flex items-center justify-between mb-2">
-                    <h4 className="text-xs font-medium text-gray-400">{kpi.title}</h4>
-                    <span className={`text-[10px] font-mono ${isPositive ? 'text-green-400' : 'text-red-400'}`}>{kpi.change}</span>
+        {activeKPIs.length > 0 && (() => {
+          // Chart group definitions — KPIs that make sense overlapped
+          const CHART_GROUPS: { key: string; label: string; ids: string[] }[] = [
+            { key: 'revenue',       label: 'Revenue Trends',       ids: ['gmv', 'net_revenue', 'aov', 'total_orders'] },
+            { key: 'profitability', label: 'Profitability Trends', ids: ['contribution_margin', 'gross_margin', 'net_margin', 'blended_roas', 'mer'] },
+            { key: 'acquisition',   label: 'Acquisition Trends',   ids: ['cac', 'ltv_cac', 'repeat_rate', 'return_rate'] },
+            { key: 'inventory',     label: 'Inventory Trends',     ids: ['inventory_turnover', 'days_on_hand', 'dead_stock'] },
+            { key: 'efficiency',    label: 'Efficiency Trends',    ids: ['platform_fees', 'shipping_per_order', 'cash_conversion'] },
+          ]
+
+          // Build chart panels: group selected KPIs into their groups
+          const chartPanels: { key: string; label: string; kpis: KPIDef[] }[] = []
+          const assigned = new Set<string>()
+
+          CHART_GROUPS.forEach(group => {
+            const matched = activeKPIs.filter(k => group.ids.includes(k.id))
+            if (matched.length > 0) {
+              chartPanels.push({ key: group.key, label: group.label, kpis: matched })
+              matched.forEach(k => assigned.add(k.id))
+            }
+          })
+          // Catch any KPIs not in a group (shouldn't happen, but safe)
+          const orphans = activeKPIs.filter(k => !assigned.has(k.id))
+          orphans.forEach(k => chartPanels.push({ key: k.id, label: k.title, kpis: [k] }))
+
+          // Palette for multi-line charts
+          const LINE_COLORS = ['#8B5CF6', '#22C55E', '#06B6D4', '#F59E0B', '#EF4444']
+
+          return (
+            <div className={`grid gap-4 ${
+              chartPanels.length === 1 ? 'grid-cols-1' :
+              'grid-cols-1 lg:grid-cols-2'
+            }`}>
+              {chartPanels.map((panel) => {
+                const isSingle = panel.kpis.length === 1
+
+                if (isSingle) {
+                  // Single KPI → compact sparkline-style area chart
+                  const kpi = panel.kpis[0]
+                  const trend = KPI_TRENDS[kpi.id]
+                  if (!trend) return null
+                  const isPositive = (kpi.trend === 'up' && !inverseKPIs.includes(kpi.id)) ||
+                    (kpi.trend === 'down' && inverseKPIs.includes(kpi.id))
+                  return (
+                    <div key={`spark-${kpi.id}`} className="bg-gray-900 rounded-lg p-4 border border-gray-800">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-xs font-medium text-gray-400">{kpi.title}</h4>
+                        <span className={`text-[10px] font-mono ${isPositive ? 'text-green-400' : 'text-red-400'}`}>{kpi.change}</span>
+                      </div>
+                      <div className="h-28">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <AreaChart data={trend.data}>
+                            <defs>
+                              <linearGradient id={`grad-${kpi.id}`} x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stopColor={trend.color} stopOpacity={0.3} />
+                                <stop offset="100%" stopColor={trend.color} stopOpacity={0.02} />
+                              </linearGradient>
+                            </defs>
+                            <XAxis dataKey="month" stroke="#4B5563" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                            <YAxis hide domain={['auto', 'auto']} />
+                            <Tooltip
+                              contentStyle={{ backgroundColor: '#1F2937', border: 'none', borderRadius: '8px', fontSize: '11px' }}
+                              formatter={(value: number) => [trend.format(value), kpi.title]}
+                              labelStyle={{ color: '#9CA3AF' }}
+                            />
+                            <Area type="monotone" dataKey="value" stroke={trend.color} fill={`url(#grad-${kpi.id})`} strokeWidth={2} dot={{ r: 2, fill: trend.color }} />
+                          </AreaChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
+                  )
+                }
+
+                // Multi-KPI → overlapping line chart with shared or dual Y-axes
+                // Merge trend data into combined dataset
+                const months = KPI_TRENDS[panel.kpis[0].id]?.data.map(d => d.month) ?? []
+                const mergedData = months.map((month, idx) => {
+                  const row: Record<string, string | number> = { month }
+                  panel.kpis.forEach(kpi => {
+                    const trend = KPI_TRENDS[kpi.id]
+                    if (trend?.data[idx]) row[kpi.id] = trend.data[idx].value
+                  })
+                  return row
+                })
+
+                // Check if KPIs have very different scales (>10x range between max values)
+                const maxValues = panel.kpis.map(k => {
+                  const trend = KPI_TRENDS[k.id]
+                  return trend ? Math.max(...trend.data.map(d => d.value)) : 0
+                })
+                const scaleRatio = Math.max(...maxValues) / Math.max(Math.min(...maxValues), 0.01)
+                const needsDualAxis = scaleRatio > 8 && panel.kpis.length <= 4
+
+                // Split into left/right axis groups when dual axis needed
+                const sortedByScale = [...panel.kpis].sort((a, b) => {
+                  const aMax = Math.max(...(KPI_TRENDS[a.id]?.data.map(d => d.value) ?? [0]))
+                  const bMax = Math.max(...(KPI_TRENDS[b.id]?.data.map(d => d.value) ?? [0]))
+                  return bMax - aMax
+                })
+                const midpoint = Math.ceil(sortedByScale.length / 2)
+                const leftAxisKPIs = new Set(needsDualAxis ? sortedByScale.slice(0, midpoint).map(k => k.id) : panel.kpis.map(k => k.id))
+
+                return (
+                  <div key={`group-${panel.key}`} className="bg-gray-900 rounded-lg p-4 border border-gray-800">
+                    <div className="flex items-center justify-between mb-3">
+                      <h4 className="text-xs font-semibold text-gray-300 uppercase tracking-wider">{panel.label}</h4>
+                      <div className="flex items-center gap-3 flex-wrap justify-end">
+                        {panel.kpis.map((kpi, i) => (
+                          <span key={kpi.id} className="flex items-center gap-1">
+                            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: LINE_COLORS[i % LINE_COLORS.length] }} />
+                            <span className="text-[10px] text-gray-500">{kpi.title}</span>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="h-44">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={mergedData}>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#1F2937" />
+                          <XAxis dataKey="month" stroke="#4B5563" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+                          <YAxis
+                            yAxisId="left"
+                            stroke="#4B5563"
+                            tick={{ fontSize: 9 }}
+                            axisLine={false}
+                            tickLine={false}
+                            tickFormatter={(v: number) => {
+                              const firstLeft = panel.kpis.find(k => leftAxisKPIs.has(k.id))
+                              const fmt = firstLeft ? KPI_TRENDS[firstLeft.id]?.format : null
+                              return fmt ? fmt(v) : String(v)
+                            }}
+                          />
+                          {needsDualAxis && (
+                            <YAxis
+                              yAxisId="right"
+                              orientation="right"
+                              stroke="#4B5563"
+                              tick={{ fontSize: 9 }}
+                              axisLine={false}
+                              tickLine={false}
+                              tickFormatter={(v: number) => {
+                                const firstRight = panel.kpis.find(k => !leftAxisKPIs.has(k.id))
+                                const fmt = firstRight ? KPI_TRENDS[firstRight.id]?.format : null
+                                return fmt ? fmt(v) : String(v)
+                              }}
+                            />
+                          )}
+                          <Tooltip
+                            contentStyle={{ backgroundColor: '#1F2937', border: 'none', borderRadius: '8px', fontSize: '11px' }}
+                            labelStyle={{ color: '#9CA3AF' }}
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            formatter={((value: number, name: string) => {
+                              const kpi = panel.kpis.find(k => k.id === name)
+                              const trend = kpi ? KPI_TRENDS[kpi.id] : null
+                              return [trend ? trend.format(value) : value, kpi?.title ?? name]
+                            }) as any}
+                          />
+                          {panel.kpis.map((kpi, i) => (
+                            <Line
+                              key={kpi.id}
+                              yAxisId={leftAxisKPIs.has(kpi.id) ? 'left' : 'right'}
+                              type="monotone"
+                              dataKey={kpi.id}
+                              name={kpi.id}
+                              stroke={LINE_COLORS[i % LINE_COLORS.length]}
+                              strokeWidth={2}
+                              dot={{ r: 2.5, fill: LINE_COLORS[i % LINE_COLORS.length] }}
+                              activeDot={{ r: 4 }}
+                            />
+                          ))}
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
                   </div>
-                  <div className="h-28">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={trend.data}>
-                        <defs>
-                          <linearGradient id={`grad-${kpi.id}`} x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="0%" stopColor={trend.color} stopOpacity={0.3} />
-                            <stop offset="100%" stopColor={trend.color} stopOpacity={0.02} />
-                          </linearGradient>
-                        </defs>
-                        <XAxis dataKey="month" stroke="#4B5563" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
-                        <YAxis hide domain={['auto', 'auto']} />
-                        <Tooltip
-                          contentStyle={{ backgroundColor: '#1F2937', border: 'none', borderRadius: '8px', fontSize: '11px' }}
-                          formatter={(value: number) => [trend.format(value), kpi.title]}
-                          labelStyle={{ color: '#9CA3AF' }}
-                        />
-                        <Area type="monotone" dataKey="value" stroke={trend.color} fill={`url(#grad-${kpi.id})`} strokeWidth={2} dot={{ r: 2, fill: trend.color }} />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        )}
+                )
+              })}
+            </div>
+          )
+        })()}
 
         {/* ============================================================ */}
         {/* Main Charts (only on main view) */}
