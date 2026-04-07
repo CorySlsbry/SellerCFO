@@ -1,15 +1,17 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import {
   AreaChart, Area, BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid,
-  Tooltip, ResponsiveContainer, Legend,
+  Tooltip, ResponsiveContainer, Legend, ComposedChart,
 } from 'recharts'
 import {
   RefreshCw, TrendingUp, TrendingDown, DollarSign, ShoppingCart, Package,
   Users, CreditCard, AlertCircle, Clock, CheckCircle, XCircle,
   Eye, EyeOff, Percent, RotateCcw, Target, ArrowUpRight, ArrowDownRight,
   PanelLeftClose, PanelLeftOpen, Sparkles, ShieldAlert, Trophy, Lightbulb,
+  BarChart3, LineChart as LineChartIcon, AreaChart as AreaChartIcon,
+  Layers, Ungroup, Megaphone, Wallet, PackageSearch, Gauge, Zap,
 } from 'lucide-react'
 
 interface DashboardContentProps {
@@ -79,29 +81,79 @@ const AI_INSIGHTS: AIInsight[] = [
 ]
 
 // ============================================================
-// KPI trend data for mini graphs
+// KPI trend data for graphs
 // ============================================================
-const KPI_TRENDS: Record<string, { data: { month: string; value: number }[]; format: (v: number) => string; color: string }> = {
-  gmv:                { data: [{ month:'J', value:285000 },{ month:'F', value:312000 },{ month:'M', value:298000 },{ month:'A', value:325000 },{ month:'M2', value:342000 },{ month:'J2', value:358000 }], format: v => `$${(v/1000).toFixed(0)}K`, color: '#8B5CF6' },
-  net_revenue:        { data: [{ month:'J', value:265050 },{ month:'F', value:290160 },{ month:'M', value:277140 },{ month:'A', value:302250 },{ month:'M2', value:318060 },{ month:'J2', value:332940 }], format: v => `$${(v/1000).toFixed(0)}K`, color: '#22C55E' },
-  aov:                { data: [{ month:'J', value:48.20 },{ month:'F', value:49.10 },{ month:'M', value:49.80 },{ month:'A', value:50.50 },{ month:'M2', value:51.60 },{ month:'J2', value:52.75 }], format: v => `$${v.toFixed(2)}`, color: '#06B6D4' },
-  total_orders:       { data: [{ month:'J', value:5910 },{ month:'F', value:6353 },{ month:'M', value:5984 },{ month:'A', value:6435 },{ month:'M2', value:6627 },{ month:'J2', value:6785 }], format: v => v.toLocaleString(), color: '#F59E0B' },
-  contribution_margin:{ data: [{ month:'J', value:18.40 },{ month:'F', value:19.20 },{ month:'M', value:19.80 },{ month:'A', value:20.50 },{ month:'M2', value:21.40 },{ month:'J2', value:22.50 }], format: v => `$${v.toFixed(2)}`, color: '#8B5CF6' },
-  gross_margin:       { data: [{ month:'J', value:48.2 },{ month:'F', value:49.1 },{ month:'M', value:50.0 },{ month:'A', value:51.0 },{ month:'M2', value:52.1 },{ month:'J2', value:52.9 }], format: v => `${v.toFixed(1)}%`, color: '#22C55E' },
-  net_margin:         { data: [{ month:'J', value:20.1 },{ month:'F', value:21.5 },{ month:'M', value:22.4 },{ month:'A', value:23.8 },{ month:'M2', value:25.0 },{ month:'J2', value:26.1 }], format: v => `${v.toFixed(1)}%`, color: '#06B6D4' },
-  blended_roas:       { data: [{ month:'J', value:2.4 },{ month:'F', value:2.6 },{ month:'M', value:2.7 },{ month:'A', value:2.9 },{ month:'M2', value:3.0 },{ month:'J2', value:3.2 }], format: v => `${v.toFixed(1)}x`, color: '#F59E0B' },
-  mer:                { data: [{ month:'J', value:3.1 },{ month:'F', value:3.2 },{ month:'M', value:3.3 },{ month:'A', value:3.5 },{ month:'M2', value:3.6 },{ month:'J2', value:3.8 }], format: v => `${v.toFixed(1)}x`, color: '#8B5CF6' },
-  cac:                { data: [{ month:'J', value:52 },{ month:'F', value:48 },{ month:'M', value:46 },{ month:'A', value:43 },{ month:'M2', value:41 },{ month:'J2', value:38 }], format: v => `$${v}`, color: '#EF4444' },
-  ltv_cac:            { data: [{ month:'J', value:2.8 },{ month:'F', value:3.1 },{ month:'M', value:3.4 },{ month:'A', value:3.6 },{ month:'M2', value:3.9 },{ month:'J2', value:4.2 }], format: v => `${v.toFixed(1)}:1`, color: '#22C55E' },
-  repeat_rate:        { data: [{ month:'J', value:22.1 },{ month:'F', value:23.5 },{ month:'M', value:24.8 },{ month:'A', value:26.0 },{ month:'M2', value:27.2 },{ month:'J2', value:28.5 }], format: v => `${v.toFixed(1)}%`, color: '#06B6D4' },
-  return_rate:        { data: [{ month:'J', value:5.8 },{ month:'F', value:6.1 },{ month:'M', value:6.3 },{ month:'A', value:6.5 },{ month:'M2', value:6.9 },{ month:'J2', value:7.2 }], format: v => `${v.toFixed(1)}%`, color: '#EF4444' },
-  inventory_turnover: { data: [{ month:'J', value:4.2 },{ month:'F', value:4.5 },{ month:'M', value:4.1 },{ month:'A', value:4.8 },{ month:'M2', value:5.1 },{ month:'J2', value:5.3 }], format: v => `${v.toFixed(1)}x`, color: '#8B5CF6' },
-  days_on_hand:       { data: [{ month:'J', value:87 },{ month:'F', value:81 },{ month:'M', value:89 },{ month:'A', value:76 },{ month:'M2', value:72 },{ month:'J2', value:69 }], format: v => `${v}d`, color: '#F59E0B' },
-  dead_stock:         { data: [{ month:'J', value:35000 },{ month:'F', value:36500 },{ month:'M', value:37200 },{ month:'A', value:38800 },{ month:'M2', value:40100 },{ month:'J2', value:42000 }], format: v => `$${(v/1000).toFixed(0)}K`, color: '#EF4444' },
-  platform_fees:      { data: [{ month:'J', value:31200 },{ month:'F', value:33500 },{ month:'M', value:32800 },{ month:'A', value:34900 },{ month:'M2', value:35700 },{ month:'J2', value:36500 }], format: v => `$${(v/1000).toFixed(1)}K`, color: '#F59E0B' },
-  shipping_per_order: { data: [{ month:'J', value:7.80 },{ month:'F', value:7.50 },{ month:'M', value:7.30 },{ month:'A', value:7.10 },{ month:'M2', value:6.95 },{ month:'J2', value:6.80 }], format: v => `$${v.toFixed(2)}`, color: '#06B6D4' },
-  cash_conversion:    { data: [{ month:'J', value:54 },{ month:'F', value:51 },{ month:'M', value:49 },{ month:'A', value:47 },{ month:'M2', value:44 },{ month:'J2', value:42 }], format: v => `${v}d`, color: '#8B5CF6' },
+const KPI_TRENDS: Record<string, { data: { month: string; value: number }[]; format: (v: number) => string; color: string; unit: string }> = {
+  gmv:                { data: [{ month:'Jan', value:285000 },{ month:'Feb', value:312000 },{ month:'Mar', value:298000 },{ month:'Apr', value:325000 },{ month:'May', value:342000 },{ month:'Jun', value:358000 }], format: v => `$${(v/1000).toFixed(0)}K`, color: '#8B5CF6', unit: '$' },
+  net_revenue:        { data: [{ month:'Jan', value:265050 },{ month:'Feb', value:290160 },{ month:'Mar', value:277140 },{ month:'Apr', value:302250 },{ month:'May', value:318060 },{ month:'Jun', value:332940 }], format: v => `$${(v/1000).toFixed(0)}K`, color: '#22C55E', unit: '$' },
+  aov:                { data: [{ month:'Jan', value:48.20 },{ month:'Feb', value:49.10 },{ month:'Mar', value:49.80 },{ month:'Apr', value:50.50 },{ month:'May', value:51.60 },{ month:'Jun', value:52.75 }], format: v => `$${v.toFixed(2)}`, color: '#06B6D4', unit: '$' },
+  total_orders:       { data: [{ month:'Jan', value:5910 },{ month:'Feb', value:6353 },{ month:'Mar', value:5984 },{ month:'Apr', value:6435 },{ month:'May', value:6627 },{ month:'Jun', value:6785 }], format: v => v.toLocaleString(), color: '#F59E0B', unit: '#' },
+  contribution_margin:{ data: [{ month:'Jan', value:18.40 },{ month:'Feb', value:19.20 },{ month:'Mar', value:19.80 },{ month:'Apr', value:20.50 },{ month:'May', value:21.40 },{ month:'Jun', value:22.50 }], format: v => `$${v.toFixed(2)}`, color: '#8B5CF6', unit: '$' },
+  gross_margin:       { data: [{ month:'Jan', value:48.2 },{ month:'Feb', value:49.1 },{ month:'Mar', value:50.0 },{ month:'Apr', value:51.0 },{ month:'May', value:52.1 },{ month:'Jun', value:52.9 }], format: v => `${v.toFixed(1)}%`, color: '#22C55E', unit: '%' },
+  net_margin:         { data: [{ month:'Jan', value:20.1 },{ month:'Feb', value:21.5 },{ month:'Mar', value:22.4 },{ month:'Apr', value:23.8 },{ month:'May', value:25.0 },{ month:'Jun', value:26.1 }], format: v => `${v.toFixed(1)}%`, color: '#06B6D4', unit: '%' },
+  blended_roas:       { data: [{ month:'Jan', value:2.4 },{ month:'Feb', value:2.6 },{ month:'Mar', value:2.7 },{ month:'Apr', value:2.9 },{ month:'May', value:3.0 },{ month:'Jun', value:3.2 }], format: v => `${v.toFixed(1)}x`, color: '#F59E0B', unit: 'x' },
+  mer:                { data: [{ month:'Jan', value:3.1 },{ month:'Feb', value:3.2 },{ month:'Mar', value:3.3 },{ month:'Apr', value:3.5 },{ month:'May', value:3.6 },{ month:'Jun', value:3.8 }], format: v => `${v.toFixed(1)}x`, color: '#8B5CF6', unit: 'x' },
+  cac:                { data: [{ month:'Jan', value:52 },{ month:'Feb', value:48 },{ month:'Mar', value:46 },{ month:'Apr', value:43 },{ month:'May', value:41 },{ month:'Jun', value:38 }], format: v => `$${v}`, color: '#EF4444', unit: '$' },
+  ltv_cac:            { data: [{ month:'Jan', value:2.8 },{ month:'Feb', value:3.1 },{ month:'Mar', value:3.4 },{ month:'Apr', value:3.6 },{ month:'May', value:3.9 },{ month:'Jun', value:4.2 }], format: v => `${v.toFixed(1)}:1`, color: '#22C55E', unit: 'x' },
+  repeat_rate:        { data: [{ month:'Jan', value:22.1 },{ month:'Feb', value:23.5 },{ month:'Mar', value:24.8 },{ month:'Apr', value:26.0 },{ month:'May', value:27.2 },{ month:'Jun', value:28.5 }], format: v => `${v.toFixed(1)}%`, color: '#06B6D4', unit: '%' },
+  return_rate:        { data: [{ month:'Jan', value:5.8 },{ month:'Feb', value:6.1 },{ month:'Mar', value:6.3 },{ month:'Apr', value:6.5 },{ month:'May', value:6.9 },{ month:'Jun', value:7.2 }], format: v => `${v.toFixed(1)}%`, color: '#EF4444', unit: '%' },
+  inventory_turnover: { data: [{ month:'Jan', value:4.2 },{ month:'Feb', value:4.5 },{ month:'Mar', value:4.1 },{ month:'Apr', value:4.8 },{ month:'May', value:5.1 },{ month:'Jun', value:5.3 }], format: v => `${v.toFixed(1)}x`, color: '#8B5CF6', unit: 'x' },
+  days_on_hand:       { data: [{ month:'Jan', value:87 },{ month:'Feb', value:81 },{ month:'Mar', value:89 },{ month:'Apr', value:76 },{ month:'May', value:72 },{ month:'Jun', value:69 }], format: v => `${v}d`, color: '#F59E0B', unit: 'd' },
+  dead_stock:         { data: [{ month:'Jan', value:35000 },{ month:'Feb', value:36500 },{ month:'Mar', value:37200 },{ month:'Apr', value:38800 },{ month:'May', value:40100 },{ month:'Jun', value:42000 }], format: v => `$${(v/1000).toFixed(0)}K`, color: '#EF4444', unit: '$' },
+  platform_fees:      { data: [{ month:'Jan', value:31200 },{ month:'Feb', value:33500 },{ month:'Mar', value:32800 },{ month:'Apr', value:34900 },{ month:'May', value:35700 },{ month:'Jun', value:36500 }], format: v => `$${(v/1000).toFixed(1)}K`, color: '#F59E0B', unit: '$' },
+  shipping_per_order: { data: [{ month:'Jan', value:7.80 },{ month:'Feb', value:7.50 },{ month:'Mar', value:7.30 },{ month:'Apr', value:7.10 },{ month:'May', value:6.95 },{ month:'Jun', value:6.80 }], format: v => `$${v.toFixed(2)}`, color: '#06B6D4', unit: '$' },
+  cash_conversion:    { data: [{ month:'Jan', value:54 },{ month:'Feb', value:51 },{ month:'Mar', value:49 },{ month:'Apr', value:47 },{ month:'May', value:44 },{ month:'Jun', value:42 }], format: v => `${v}d`, color: '#8B5CF6', unit: 'd' },
 }
+
+// ============================================================
+// Chart Groups — smart groupings with recommended chart types
+// Based on Klipfolio PowerMetrics + e-commerce best practices:
+//   Revenue: Area chart (shows volume/accumulation over time)
+//   Profitability: Line chart (compare rate trends side by side)
+//   Acquisition: Bar chart (compare discrete costs & ratios)
+//   Inventory: Composed (bar for values + line for rates)
+//   Efficiency: Line chart (track cost trends downward)
+// ============================================================
+type ChartType = 'line' | 'area' | 'bar'
+
+interface ChartGroup {
+  key: string
+  label: string
+  icon: any
+  ids: string[]
+  defaultChart: ChartType
+  description: string
+}
+
+const CHART_GROUPS: ChartGroup[] = [
+  { key: 'revenue',       label: 'Revenue',       icon: DollarSign,    ids: ['gmv', 'net_revenue', 'aov', 'total_orders'],                                     defaultChart: 'area',  description: 'Sales volume & order trends' },
+  { key: 'profitability', label: 'Profitability',  icon: TrendingUp,    ids: ['contribution_margin', 'gross_margin', 'net_margin', 'blended_roas', 'mer'],       defaultChart: 'line',  description: 'Margins, ROAS & efficiency ratios' },
+  { key: 'marketing',     label: 'Marketing',      icon: Megaphone,     ids: ['cac', 'blended_roas', 'mer', 'ltv_cac'],                                         defaultChart: 'bar',   description: 'Ad spend efficiency & LTV' },
+  { key: 'acquisition',   label: 'Customers',      icon: Users,         ids: ['cac', 'ltv_cac', 'repeat_rate', 'return_rate'],                                  defaultChart: 'line',  description: 'Acquisition costs & retention' },
+  { key: 'inventory',     label: 'Inventory',      icon: PackageSearch, ids: ['inventory_turnover', 'days_on_hand', 'dead_stock'],                               defaultChart: 'bar',   description: 'Stock health & turnover' },
+  { key: 'efficiency',    label: 'Efficiency',     icon: Zap,           ids: ['platform_fees', 'shipping_per_order', 'cash_conversion'],                         defaultChart: 'line',  description: 'Fees, shipping & cash cycle' },
+]
+
+// ============================================================
+// Preset Sections for custom dashboards (one-click add entire group)
+// ============================================================
+interface PresetSection {
+  key: string
+  label: string
+  icon: any
+  kpiIds: string[]
+  color: string
+  description: string
+}
+
+const PRESET_SECTIONS: PresetSection[] = [
+  { key: 'marketing',      label: 'Marketing',          icon: Megaphone,     kpiIds: ['cac', 'blended_roas', 'mer', 'ltv_cac', 'repeat_rate'],                              color: 'violet',  description: 'Ad spend, ROAS, CAC, LTV & retention' },
+  { key: 'revenue',        label: 'Revenue & Sales',    icon: DollarSign,    kpiIds: ['gmv', 'net_revenue', 'aov', 'total_orders'],                                         color: 'emerald', description: 'GMV, net revenue, AOV & orders' },
+  { key: 'profitability',  label: 'Profitability',      icon: TrendingUp,    kpiIds: ['contribution_margin', 'gross_margin', 'net_margin'],                                  color: 'cyan',    description: 'Margins & contribution per order' },
+  { key: 'inventory',      label: 'Inventory Health',   icon: PackageSearch, kpiIds: ['inventory_turnover', 'days_on_hand', 'dead_stock'],                                   color: 'amber',   description: 'Turnover, days on hand & dead stock' },
+  { key: 'efficiency',     label: 'Cost Efficiency',    icon: Zap,           kpiIds: ['platform_fees', 'shipping_per_order', 'cash_conversion'],                              color: 'rose',    description: 'Fees, shipping costs & cash cycle' },
+  { key: 'full_picture',   label: 'Full Picture',       icon: Gauge,         kpiIds: ['gmv', 'net_revenue', 'gross_margin', 'cac', 'blended_roas', 'inventory_turnover'],     color: 'purple',  description: 'Top KPI from each category' },
+]
 
 // Default visible KPIs
 const DEFAULT_VISIBLE = ['gmv', 'contribution_margin', 'cac', 'ltv_cac']
@@ -109,6 +161,13 @@ const DEFAULT_VISIBLE = ['gmv', 'contribution_margin', 'cac', 'ltv_cac']
 // Storage helpers for custom views
 const storageKey = (viewId: string) => viewId === 'main' ? 'sellercfo_visible_kpis' : `sellercfo_custom_view_${viewId}_kpis`
 const nameKey = (viewId: string) => `sellercfo_custom_view_${viewId}_name`
+const chartModeKey = (viewId: string) => `sellercfo_chart_mode_${viewId}`
+const chartTypeOverrideKey = (viewId: string, groupKey: string) => `sellercfo_chart_type_${viewId}_${groupKey}`
+
+// ============================================================
+// Color palette for multi-line charts
+// ============================================================
+const LINE_COLORS = ['#8B5CF6', '#22C55E', '#06B6D4', '#F59E0B', '#EF4444', '#EC4899', '#14B8A6']
 
 export default function DashboardContent({ dashboardData, isLoading, onSync, viewId = 'main' }: DashboardContentProps) {
   const [syncing, setSyncing] = useState(false)
@@ -116,6 +175,8 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [viewName, setViewName] = useState('')
   const [editingName, setEditingName] = useState(false)
+  const [chartMode, setChartMode] = useState<'combined' | 'individual'>('combined')
+  const [chartTypeOverrides, setChartTypeOverrides] = useState<Record<string, ChartType>>({})
 
   // Load saved preferences
   useEffect(() => {
@@ -129,6 +190,16 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
     if (viewId !== 'main') {
       setViewName(localStorage.getItem(nameKey(viewId)) || `Custom View ${viewId}`)
     }
+    // Load chart mode
+    const savedMode = localStorage.getItem(chartModeKey(viewId))
+    if (savedMode === 'combined' || savedMode === 'individual') setChartMode(savedMode)
+    // Load chart type overrides
+    const overrides: Record<string, ChartType> = {}
+    CHART_GROUPS.forEach(g => {
+      const val = localStorage.getItem(chartTypeOverrideKey(viewId, g.key))
+      if (val === 'line' || val === 'area' || val === 'bar') overrides[g.key] = val
+    })
+    if (Object.keys(overrides).length) setChartTypeOverrides(overrides)
   }, [viewId])
 
   const toggleKPI = (id: string) => {
@@ -139,14 +210,40 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
     })
   }
 
+  const addPresetSection = (preset: PresetSection) => {
+    setVisibleKPIs(prev => {
+      const merged = Array.from(new Set([...prev, ...preset.kpiIds]))
+      if (typeof window !== 'undefined') localStorage.setItem(storageKey(viewId), JSON.stringify(merged))
+      return merged
+    })
+  }
+
+  const setOnlyPreset = (preset: PresetSection) => {
+    setVisibleKPIs(preset.kpiIds)
+    if (typeof window !== 'undefined') localStorage.setItem(storageKey(viewId), JSON.stringify(preset.kpiIds))
+  }
+
   const saveViewName = (name: string) => {
     setViewName(name)
     if (typeof window !== 'undefined') {
       localStorage.setItem(nameKey(viewId), name)
-      // Dispatch event so sidebar can update the label
       window.dispatchEvent(new CustomEvent('customViewRenamed', { detail: { viewId, name } }))
     }
     setEditingName(false)
+  }
+
+  const toggleChartMode = () => {
+    const next = chartMode === 'combined' ? 'individual' : 'combined'
+    setChartMode(next)
+    if (typeof window !== 'undefined') localStorage.setItem(chartModeKey(viewId), next)
+  }
+
+  const setGroupChartType = (groupKey: string, type: ChartType) => {
+    setChartTypeOverrides(prev => {
+      const next = { ...prev, [groupKey]: type }
+      if (typeof window !== 'undefined') localStorage.setItem(chartTypeOverrideKey(viewId, groupKey), type)
+      return next
+    })
   }
 
   const handleSync = async () => {
@@ -195,6 +292,44 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
   // Determine which KPIs are "inverse" (lower = better)
   const inverseKPIs = ['return_rate', 'dead_stock', 'platform_fees', 'shipping_per_order', 'cac', 'cash_conversion', 'days_on_hand']
 
+  // ============================================================
+  // Build chart panels from active KPIs
+  // ============================================================
+  const chartPanels = useMemo(() => {
+    if (chartMode === 'individual') {
+      // One chart per KPI
+      return activeKPIs.map(kpi => ({
+        key: kpi.id,
+        label: kpi.title,
+        kpis: [kpi],
+        chartType: (chartTypeOverrides[kpi.category] || 'area') as ChartType,
+        groupKey: kpi.category,
+      }))
+    }
+    // Combined mode: group by CHART_GROUPS
+    const panels: { key: string; label: string; kpis: KPIDef[]; chartType: ChartType; groupKey: string }[] = []
+    const assigned = new Set<string>()
+
+    CHART_GROUPS.forEach(group => {
+      const matched = activeKPIs.filter(k => group.ids.includes(k.id) && !assigned.has(k.id))
+      if (matched.length > 0) {
+        panels.push({
+          key: group.key,
+          label: group.label,
+          kpis: matched,
+          chartType: chartTypeOverrides[group.key] || group.defaultChart,
+          groupKey: group.key,
+        })
+        matched.forEach(k => assigned.add(k.id))
+      }
+    })
+    // Orphans
+    activeKPIs.filter(k => !assigned.has(k.id)).forEach(k => {
+      panels.push({ key: k.id, label: k.title, kpis: [k], chartType: 'area', groupKey: k.category })
+    })
+    return panels
+  }, [activeKPIs, chartMode, chartTypeOverrides])
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-96">
@@ -208,6 +343,216 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
 
   const wins = AI_INSIGHTS.filter(i => i.type === 'win')
   const watchouts = AI_INSIGHTS.filter(i => i.type === 'watchout')
+
+  // ============================================================
+  // Chart Type Selector (mini toolbar per chart panel)
+  // ============================================================
+  const ChartTypeSelector = ({ groupKey, current }: { groupKey: string; current: ChartType }) => (
+    <div className="flex items-center gap-0.5 bg-gray-800 rounded-md p-0.5">
+      {([
+        { type: 'line' as ChartType, icon: LineChartIcon, tip: 'Line' },
+        { type: 'area' as ChartType, icon: AreaChartIcon, tip: 'Area' },
+        { type: 'bar' as ChartType, icon: BarChart3, tip: 'Bar' },
+      ]).map(({ type, icon: Icon, tip }) => (
+        <button
+          key={type}
+          onClick={() => setGroupChartType(groupKey, type)}
+          className={`p-1 rounded transition ${current === type ? 'bg-violet-600 text-white' : 'text-gray-500 hover:text-gray-300'}`}
+          title={tip}
+        >
+          <Icon className="w-3 h-3" />
+        </button>
+      ))}
+    </div>
+  )
+
+  // ============================================================
+  // Render a single chart panel (handles all chart types)
+  // ============================================================
+  const renderChartPanel = (panel: { key: string; label: string; kpis: KPIDef[]; chartType: ChartType; groupKey: string }) => {
+    const isSingle = panel.kpis.length === 1
+    const months = KPI_TRENDS[panel.kpis[0]?.id]?.data.map(d => d.month) ?? []
+
+    // Merge trend data
+    const mergedData = months.map((month, idx) => {
+      const row: Record<string, string | number> = { month }
+      panel.kpis.forEach(kpi => {
+        const trend = KPI_TRENDS[kpi.id]
+        if (trend?.data[idx]) row[kpi.id] = trend.data[idx].value
+      })
+      return row
+    })
+
+    // Check if dual Y-axis is needed
+    const maxValues = panel.kpis.map(k => Math.max(...(KPI_TRENDS[k.id]?.data.map(d => d.value) ?? [0])))
+    const scaleRatio = maxValues.length > 1 ? Math.max(...maxValues) / Math.max(Math.min(...maxValues), 0.01) : 1
+    const needsDualAxis = scaleRatio > 8 && panel.kpis.length >= 2
+
+    // Split into left/right axis groups
+    const sortedByScale = [...panel.kpis].sort((a, b) => {
+      const aMax = Math.max(...(KPI_TRENDS[a.id]?.data.map(d => d.value) ?? [0]))
+      const bMax = Math.max(...(KPI_TRENDS[b.id]?.data.map(d => d.value) ?? [0]))
+      return bMax - aMax
+    })
+    const midpoint = Math.ceil(sortedByScale.length / 2)
+    const leftAxisKPIs = new Set(needsDualAxis ? sortedByScale.slice(0, midpoint).map(k => k.id) : panel.kpis.map(k => k.id))
+
+    const tooltipStyle = { backgroundColor: '#1F2937', border: 'none', borderRadius: '8px', fontSize: '11px' }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const tooltipFormatter = ((value: number, name: string) => {
+      const kpi = panel.kpis.find(k => k.id === name)
+      const trend = kpi ? KPI_TRENDS[kpi.id] : null
+      return [trend ? trend.format(value) : value, kpi?.title ?? name]
+    }) as any
+
+    // Render chart content based on type
+    const renderChartContent = () => {
+      const chartType = panel.chartType
+
+      if (chartType === 'area') {
+        return (
+          <AreaChart data={mergedData}>
+            <defs>
+              {panel.kpis.map((kpi, i) => (
+                <linearGradient key={kpi.id} id={`grad-${panel.key}-${kpi.id}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={LINE_COLORS[i % LINE_COLORS.length]} stopOpacity={0.3} />
+                  <stop offset="100%" stopColor={LINE_COLORS[i % LINE_COLORS.length]} stopOpacity={0.02} />
+                </linearGradient>
+              ))}
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke="#1F2937" />
+            <XAxis dataKey="month" stroke="#4B5563" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+            <YAxis
+              yAxisId="left" stroke="#4B5563" tick={{ fontSize: 9 }} axisLine={false} tickLine={false}
+              tickFormatter={(v: number) => { const k = panel.kpis.find(k2 => leftAxisKPIs.has(k2.id)); return k ? KPI_TRENDS[k.id]?.format(v) ?? String(v) : String(v) }}
+            />
+            {needsDualAxis && (
+              <YAxis
+                yAxisId="right" orientation="right" stroke="#4B5563" tick={{ fontSize: 9 }} axisLine={false} tickLine={false}
+                tickFormatter={(v: number) => { const k = panel.kpis.find(k2 => !leftAxisKPIs.has(k2.id)); return k ? KPI_TRENDS[k.id]?.format(v) ?? String(v) : String(v) }}
+              />
+            )}
+            <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: '#9CA3AF' }} formatter={tooltipFormatter} />
+            {panel.kpis.map((kpi, i) => (
+              <Area
+                key={kpi.id}
+                yAxisId={leftAxisKPIs.has(kpi.id) ? 'left' : 'right'}
+                type="monotone"
+                dataKey={kpi.id}
+                name={kpi.id}
+                stroke={LINE_COLORS[i % LINE_COLORS.length]}
+                fill={`url(#grad-${panel.key}-${kpi.id})`}
+                strokeWidth={2}
+                dot={{ r: 2, fill: LINE_COLORS[i % LINE_COLORS.length] }}
+              />
+            ))}
+          </AreaChart>
+        )
+      }
+
+      if (chartType === 'bar') {
+        return (
+          <BarChart data={mergedData}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#1F2937" />
+            <XAxis dataKey="month" stroke="#4B5563" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+            <YAxis
+              yAxisId="left" stroke="#4B5563" tick={{ fontSize: 9 }} axisLine={false} tickLine={false}
+              tickFormatter={(v: number) => { const k = panel.kpis.find(k2 => leftAxisKPIs.has(k2.id)); return k ? KPI_TRENDS[k.id]?.format(v) ?? String(v) : String(v) }}
+            />
+            {needsDualAxis && (
+              <YAxis
+                yAxisId="right" orientation="right" stroke="#4B5563" tick={{ fontSize: 9 }} axisLine={false} tickLine={false}
+                tickFormatter={(v: number) => { const k = panel.kpis.find(k2 => !leftAxisKPIs.has(k2.id)); return k ? KPI_TRENDS[k.id]?.format(v) ?? String(v) : String(v) }}
+              />
+            )}
+            <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: '#9CA3AF' }} formatter={tooltipFormatter} />
+            {panel.kpis.map((kpi, i) => (
+              <Bar
+                key={kpi.id}
+                yAxisId={leftAxisKPIs.has(kpi.id) ? 'left' : 'right'}
+                dataKey={kpi.id}
+                name={kpi.id}
+                fill={LINE_COLORS[i % LINE_COLORS.length]}
+                radius={[4, 4, 0, 0]}
+                fillOpacity={0.85}
+              />
+            ))}
+          </BarChart>
+        )
+      }
+
+      // Default: line
+      return (
+        <LineChart data={mergedData}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#1F2937" />
+          <XAxis dataKey="month" stroke="#4B5563" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
+          <YAxis
+            yAxisId="left" stroke="#4B5563" tick={{ fontSize: 9 }} axisLine={false} tickLine={false}
+            tickFormatter={(v: number) => { const k = panel.kpis.find(k2 => leftAxisKPIs.has(k2.id)); return k ? KPI_TRENDS[k.id]?.format(v) ?? String(v) : String(v) }}
+          />
+          {needsDualAxis && (
+            <YAxis
+              yAxisId="right" orientation="right" stroke="#4B5563" tick={{ fontSize: 9 }} axisLine={false} tickLine={false}
+              tickFormatter={(v: number) => { const k = panel.kpis.find(k2 => !leftAxisKPIs.has(k2.id)); return k ? KPI_TRENDS[k.id]?.format(v) ?? String(v) : String(v) }}
+            />
+          )}
+          <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: '#9CA3AF' }} formatter={tooltipFormatter} />
+          {panel.kpis.map((kpi, i) => (
+            <Line
+              key={kpi.id}
+              yAxisId={leftAxisKPIs.has(kpi.id) ? 'left' : 'right'}
+              type="monotone"
+              dataKey={kpi.id}
+              name={kpi.id}
+              stroke={LINE_COLORS[i % LINE_COLORS.length]}
+              strokeWidth={2}
+              dot={{ r: 2.5, fill: LINE_COLORS[i % LINE_COLORS.length] }}
+              activeDot={{ r: 4 }}
+            />
+          ))}
+        </LineChart>
+      )
+    }
+
+    return (
+      <div key={`chart-${panel.key}`} className={`bg-gray-900 rounded-lg p-4 border border-gray-800 ${isSingle && chartMode === 'individual' ? '' : ''}`}>
+        {/* Chart header */}
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <h4 className="text-xs font-semibold text-gray-300 uppercase tracking-wider">{panel.label}</h4>
+            {isSingle && (
+              <span className={`text-[10px] font-mono ${
+                (panel.kpis[0].trend === 'up' && !inverseKPIs.includes(panel.kpis[0].id)) ||
+                (panel.kpis[0].trend === 'down' && inverseKPIs.includes(panel.kpis[0].id))
+                  ? 'text-green-400' : 'text-red-400'
+              }`}>{panel.kpis[0].change}</span>
+            )}
+          </div>
+          <div className="flex items-center gap-3">
+            {/* Legend for multi-KPI charts */}
+            {!isSingle && (
+              <div className="flex items-center gap-2.5 flex-wrap justify-end">
+                {panel.kpis.map((kpi, i) => (
+                  <span key={kpi.id} className="flex items-center gap-1">
+                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: LINE_COLORS[i % LINE_COLORS.length] }} />
+                    <span className="text-[10px] text-gray-500">{kpi.title}</span>
+                  </span>
+                ))}
+              </div>
+            )}
+            {/* Chart type switcher */}
+            <ChartTypeSelector groupKey={panel.groupKey} current={panel.chartType} />
+          </div>
+        </div>
+        {/* Chart */}
+        <div className={isSingle && chartMode === 'individual' ? 'h-28' : 'h-44'}>
+          <ResponsiveContainer width="100%" height="100%">
+            {renderChartContent()}
+          </ResponsiveContainer>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex gap-0">
@@ -238,6 +583,17 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
             )}
           </div>
           <div className="flex items-center gap-2">
+            {/* Combined / Individual toggle */}
+            {activeKPIs.length > 1 && (
+              <button
+                onClick={toggleChartMode}
+                className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-400 hover:text-white bg-gray-800 rounded-lg transition"
+                title={chartMode === 'combined' ? 'Switch to individual charts' : 'Switch to combined charts'}
+              >
+                {chartMode === 'combined' ? <Layers className="w-4 h-4" /> : <Ungroup className="w-4 h-4" />}
+                <span className="text-xs">{chartMode === 'combined' ? 'Combined' : 'Individual'}</span>
+              </button>
+            )}
             <button
               onClick={() => setSidebarOpen(!sidebarOpen)}
               className="flex items-center gap-1.5 px-3 py-2 text-sm text-gray-400 hover:text-white bg-gray-800 rounded-lg transition"
@@ -256,6 +612,44 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
             </button>
           </div>
         </div>
+
+        {/* ============================================================ */}
+        {/* Preset Section Buttons (custom views only) */}
+        {/* ============================================================ */}
+        {viewId !== 'main' && (
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] uppercase tracking-wider text-gray-500 font-semibold">Quick Add Sections</span>
+              <span className="text-[10px] text-gray-700">Click to add • Hold shift to replace all</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {PRESET_SECTIONS.map((preset) => {
+                const Icon = preset.icon
+                const isFullyActive = preset.kpiIds.every(id => visibleKPIs.includes(id))
+                const colorMap: Record<string, string> = {
+                  violet: isFullyActive ? 'bg-violet-600 text-white border-violet-500' : 'bg-gray-800 text-gray-300 border-gray-700 hover:border-violet-500 hover:text-violet-300',
+                  emerald: isFullyActive ? 'bg-emerald-600 text-white border-emerald-500' : 'bg-gray-800 text-gray-300 border-gray-700 hover:border-emerald-500 hover:text-emerald-300',
+                  cyan: isFullyActive ? 'bg-cyan-600 text-white border-cyan-500' : 'bg-gray-800 text-gray-300 border-gray-700 hover:border-cyan-500 hover:text-cyan-300',
+                  amber: isFullyActive ? 'bg-amber-600 text-white border-amber-500' : 'bg-gray-800 text-gray-300 border-gray-700 hover:border-amber-500 hover:text-amber-300',
+                  rose: isFullyActive ? 'bg-rose-600 text-white border-rose-500' : 'bg-gray-800 text-gray-300 border-gray-700 hover:border-rose-500 hover:text-rose-300',
+                  purple: isFullyActive ? 'bg-purple-600 text-white border-purple-500' : 'bg-gray-800 text-gray-300 border-gray-700 hover:border-purple-500 hover:text-purple-300',
+                }
+                return (
+                  <button
+                    key={preset.key}
+                    onClick={(e) => e.shiftKey ? setOnlyPreset(preset) : addPresetSection(preset)}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition ${colorMap[preset.color] ?? colorMap.violet}`}
+                    title={preset.description}
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    {preset.label}
+                    {isFullyActive && <CheckCircle className="w-3 h-3 opacity-70" />}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        )}
 
         {/* ============================================================ */}
         {/* AI Wins & Watchouts */}
@@ -347,192 +741,24 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
         ) : (
           <div className="bg-gray-900 rounded-lg p-8 border border-gray-800 text-center">
             <Eye className="w-8 h-8 text-gray-600 mx-auto mb-3" />
-            <p className="text-gray-400 text-sm">No KPIs selected. Open the KPI panel to choose which metrics to display.</p>
+            <p className="text-gray-400 text-sm">
+              No KPIs selected. {viewId !== 'main' ? 'Use the Quick Add buttons above or open the KPI panel.' : 'Open the KPI panel to choose which metrics to display.'}
+            </p>
           </div>
         )}
 
         {/* ============================================================ */}
-        {/* Smart KPI Charts — groups related KPIs on shared axes */}
+        {/* Smart KPI Charts */}
         {/* ============================================================ */}
-        {activeKPIs.length > 0 && (() => {
-          // Chart group definitions — KPIs that make sense overlapped
-          const CHART_GROUPS: { key: string; label: string; ids: string[] }[] = [
-            { key: 'revenue',       label: 'Revenue Trends',       ids: ['gmv', 'net_revenue', 'aov', 'total_orders'] },
-            { key: 'profitability', label: 'Profitability Trends', ids: ['contribution_margin', 'gross_margin', 'net_margin', 'blended_roas', 'mer'] },
-            { key: 'acquisition',   label: 'Acquisition Trends',   ids: ['cac', 'ltv_cac', 'repeat_rate', 'return_rate'] },
-            { key: 'inventory',     label: 'Inventory Trends',     ids: ['inventory_turnover', 'days_on_hand', 'dead_stock'] },
-            { key: 'efficiency',    label: 'Efficiency Trends',    ids: ['platform_fees', 'shipping_per_order', 'cash_conversion'] },
-          ]
-
-          // Build chart panels: group selected KPIs into their groups
-          const chartPanels: { key: string; label: string; kpis: KPIDef[] }[] = []
-          const assigned = new Set<string>()
-
-          CHART_GROUPS.forEach(group => {
-            const matched = activeKPIs.filter(k => group.ids.includes(k.id))
-            if (matched.length > 0) {
-              chartPanels.push({ key: group.key, label: group.label, kpis: matched })
-              matched.forEach(k => assigned.add(k.id))
-            }
-          })
-          // Catch any KPIs not in a group (shouldn't happen, but safe)
-          const orphans = activeKPIs.filter(k => !assigned.has(k.id))
-          orphans.forEach(k => chartPanels.push({ key: k.id, label: k.title, kpis: [k] }))
-
-          // Palette for multi-line charts
-          const LINE_COLORS = ['#8B5CF6', '#22C55E', '#06B6D4', '#F59E0B', '#EF4444']
-
-          return (
-            <div className={`grid gap-4 ${
-              chartPanels.length === 1 ? 'grid-cols-1' :
-              'grid-cols-1 lg:grid-cols-2'
-            }`}>
-              {chartPanels.map((panel) => {
-                const isSingle = panel.kpis.length === 1
-
-                if (isSingle) {
-                  // Single KPI → compact sparkline-style area chart
-                  const kpi = panel.kpis[0]
-                  const trend = KPI_TRENDS[kpi.id]
-                  if (!trend) return null
-                  const isPositive = (kpi.trend === 'up' && !inverseKPIs.includes(kpi.id)) ||
-                    (kpi.trend === 'down' && inverseKPIs.includes(kpi.id))
-                  return (
-                    <div key={`spark-${kpi.id}`} className="bg-gray-900 rounded-lg p-4 border border-gray-800">
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="text-xs font-medium text-gray-400">{kpi.title}</h4>
-                        <span className={`text-[10px] font-mono ${isPositive ? 'text-green-400' : 'text-red-400'}`}>{kpi.change}</span>
-                      </div>
-                      <div className="h-28">
-                        <ResponsiveContainer width="100%" height="100%">
-                          <AreaChart data={trend.data}>
-                            <defs>
-                              <linearGradient id={`grad-${kpi.id}`} x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stopColor={trend.color} stopOpacity={0.3} />
-                                <stop offset="100%" stopColor={trend.color} stopOpacity={0.02} />
-                              </linearGradient>
-                            </defs>
-                            <XAxis dataKey="month" stroke="#4B5563" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
-                            <YAxis hide domain={['auto', 'auto']} />
-                            <Tooltip
-                              contentStyle={{ backgroundColor: '#1F2937', border: 'none', borderRadius: '8px', fontSize: '11px' }}
-                              formatter={(value: number) => [trend.format(value), kpi.title]}
-                              labelStyle={{ color: '#9CA3AF' }}
-                            />
-                            <Area type="monotone" dataKey="value" stroke={trend.color} fill={`url(#grad-${kpi.id})`} strokeWidth={2} dot={{ r: 2, fill: trend.color }} />
-                          </AreaChart>
-                        </ResponsiveContainer>
-                      </div>
-                    </div>
-                  )
-                }
-
-                // Multi-KPI → overlapping line chart with shared or dual Y-axes
-                // Merge trend data into combined dataset
-                const months = KPI_TRENDS[panel.kpis[0].id]?.data.map(d => d.month) ?? []
-                const mergedData = months.map((month, idx) => {
-                  const row: Record<string, string | number> = { month }
-                  panel.kpis.forEach(kpi => {
-                    const trend = KPI_TRENDS[kpi.id]
-                    if (trend?.data[idx]) row[kpi.id] = trend.data[idx].value
-                  })
-                  return row
-                })
-
-                // Check if KPIs have very different scales (>10x range between max values)
-                const maxValues = panel.kpis.map(k => {
-                  const trend = KPI_TRENDS[k.id]
-                  return trend ? Math.max(...trend.data.map(d => d.value)) : 0
-                })
-                const scaleRatio = Math.max(...maxValues) / Math.max(Math.min(...maxValues), 0.01)
-                const needsDualAxis = scaleRatio > 8 && panel.kpis.length <= 4
-
-                // Split into left/right axis groups when dual axis needed
-                const sortedByScale = [...panel.kpis].sort((a, b) => {
-                  const aMax = Math.max(...(KPI_TRENDS[a.id]?.data.map(d => d.value) ?? [0]))
-                  const bMax = Math.max(...(KPI_TRENDS[b.id]?.data.map(d => d.value) ?? [0]))
-                  return bMax - aMax
-                })
-                const midpoint = Math.ceil(sortedByScale.length / 2)
-                const leftAxisKPIs = new Set(needsDualAxis ? sortedByScale.slice(0, midpoint).map(k => k.id) : panel.kpis.map(k => k.id))
-
-                return (
-                  <div key={`group-${panel.key}`} className="bg-gray-900 rounded-lg p-4 border border-gray-800">
-                    <div className="flex items-center justify-between mb-3">
-                      <h4 className="text-xs font-semibold text-gray-300 uppercase tracking-wider">{panel.label}</h4>
-                      <div className="flex items-center gap-3 flex-wrap justify-end">
-                        {panel.kpis.map((kpi, i) => (
-                          <span key={kpi.id} className="flex items-center gap-1">
-                            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: LINE_COLORS[i % LINE_COLORS.length] }} />
-                            <span className="text-[10px] text-gray-500">{kpi.title}</span>
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="h-44">
-                      <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={mergedData}>
-                          <CartesianGrid strokeDasharray="3 3" stroke="#1F2937" />
-                          <XAxis dataKey="month" stroke="#4B5563" tick={{ fontSize: 10 }} axisLine={false} tickLine={false} />
-                          <YAxis
-                            yAxisId="left"
-                            stroke="#4B5563"
-                            tick={{ fontSize: 9 }}
-                            axisLine={false}
-                            tickLine={false}
-                            tickFormatter={(v: number) => {
-                              const firstLeft = panel.kpis.find(k => leftAxisKPIs.has(k.id))
-                              const fmt = firstLeft ? KPI_TRENDS[firstLeft.id]?.format : null
-                              return fmt ? fmt(v) : String(v)
-                            }}
-                          />
-                          {needsDualAxis && (
-                            <YAxis
-                              yAxisId="right"
-                              orientation="right"
-                              stroke="#4B5563"
-                              tick={{ fontSize: 9 }}
-                              axisLine={false}
-                              tickLine={false}
-                              tickFormatter={(v: number) => {
-                                const firstRight = panel.kpis.find(k => !leftAxisKPIs.has(k.id))
-                                const fmt = firstRight ? KPI_TRENDS[firstRight.id]?.format : null
-                                return fmt ? fmt(v) : String(v)
-                              }}
-                            />
-                          )}
-                          <Tooltip
-                            contentStyle={{ backgroundColor: '#1F2937', border: 'none', borderRadius: '8px', fontSize: '11px' }}
-                            labelStyle={{ color: '#9CA3AF' }}
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            formatter={((value: number, name: string) => {
-                              const kpi = panel.kpis.find(k => k.id === name)
-                              const trend = kpi ? KPI_TRENDS[kpi.id] : null
-                              return [trend ? trend.format(value) : value, kpi?.title ?? name]
-                            }) as any}
-                          />
-                          {panel.kpis.map((kpi, i) => (
-                            <Line
-                              key={kpi.id}
-                              yAxisId={leftAxisKPIs.has(kpi.id) ? 'left' : 'right'}
-                              type="monotone"
-                              dataKey={kpi.id}
-                              name={kpi.id}
-                              stroke={LINE_COLORS[i % LINE_COLORS.length]}
-                              strokeWidth={2}
-                              dot={{ r: 2.5, fill: LINE_COLORS[i % LINE_COLORS.length] }}
-                              activeDot={{ r: 4 }}
-                            />
-                          ))}
-                        </LineChart>
-                      </ResponsiveContainer>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-          )
-        })()}
+        {chartPanels.length > 0 && (
+          <div className={`grid gap-4 ${
+            chartPanels.length === 1 ? 'grid-cols-1' :
+            chartMode === 'individual' && chartPanels.length > 2 ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' :
+            'grid-cols-1 lg:grid-cols-2'
+          }`}>
+            {chartPanels.map(panel => renderChartPanel(panel))}
+          </div>
+        )}
 
         {/* ============================================================ */}
         {/* Main Charts (only on main view) */}
@@ -551,7 +777,8 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
                       <YAxis stroke="#9CA3AF" tick={{ fontSize: 11 }} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}K`} />
                       <Tooltip
                         contentStyle={{ backgroundColor: '#1F2937', border: 'none', borderRadius: '8px', fontSize: '12px' }}
-                        formatter={(value: number, name: string) => [`$${(value / 1000).toFixed(1)}K`, name === 'revenue' ? 'Revenue' : 'COGS']}
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        formatter={((value: number, name: string) => [`$${(value / 1000).toFixed(1)}K`, name === 'revenue' ? 'Revenue' : 'COGS']) as any}
                       />
                       <Legend wrapperStyle={{ fontSize: '12px' }} />
                       <Area type="monotone" dataKey="revenue" name="Revenue" stroke="#8B5CF6" fill="#8B5CF6" fillOpacity={0.2} strokeWidth={2} />
@@ -572,7 +799,8 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
                       <YAxis stroke="#9CA3AF" tick={{ fontSize: 11 }} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}K`} />
                       <Tooltip
                         contentStyle={{ backgroundColor: '#1F2937', border: 'none', borderRadius: '8px', fontSize: '12px' }}
-                        formatter={(value: number) => [`$${(value / 1000).toFixed(0)}K`, undefined]}
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        formatter={((value: number) => [`$${(value / 1000).toFixed(0)}K`, undefined]) as any}
                       />
                       <Legend wrapperStyle={{ fontSize: '12px' }} />
                       <Bar dataKey="Amazon" stackId="a" fill="#FF9900" radius={[0, 0, 0, 0]} />
@@ -619,9 +847,30 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
 
           {categories.map((cat) => {
             const kpis = ALL_KPIS.filter(k => k.category === cat.key)
+            const allActive = kpis.every(k => visibleKPIs.includes(k.id))
             return (
               <div key={cat.key} className="mb-4">
-                <p className="text-[10px] uppercase tracking-wider text-gray-500 mb-2 font-semibold">{cat.label}</p>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-[10px] uppercase tracking-wider text-gray-500 font-semibold">{cat.label}</p>
+                  <button
+                    onClick={() => {
+                      if (allActive) {
+                        // Remove all in category
+                        const next = visibleKPIs.filter(id => !kpis.find(k => k.id === id))
+                        setVisibleKPIs(next)
+                        if (typeof window !== 'undefined') localStorage.setItem(storageKey(viewId), JSON.stringify(next))
+                      } else {
+                        // Add all in category
+                        const next = Array.from(new Set([...visibleKPIs, ...kpis.map(k => k.id)]))
+                        setVisibleKPIs(next)
+                        if (typeof window !== 'undefined') localStorage.setItem(storageKey(viewId), JSON.stringify(next))
+                      }
+                    }}
+                    className="text-[10px] text-violet-500 hover:text-violet-300 transition"
+                  >
+                    {allActive ? 'remove all' : 'add all'}
+                  </button>
+                </div>
                 <div className="space-y-1">
                   {kpis.map((kpi) => (
                     <label key={kpi.id} className="flex items-center gap-2 py-1.5 px-2 rounded hover:bg-gray-800 cursor-pointer transition">
