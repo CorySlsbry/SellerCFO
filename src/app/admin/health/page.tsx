@@ -136,11 +136,13 @@ export default function SystemHealthPage() {
         <div className="space-y-3">
           {[
             { name: 'QuickBooks Online', status: 'healthy' },
-            { name: 'athenahealth', status: 'healthy' },
-            { name: 'Kareo', status: 'healthy' },
-            { name: 'Open Dental', status: 'warning' },
-            { name: 'Salesforce', status: 'healthy' },
-            { name: 'HubSpot', status: 'healthy' },
+            { name: 'Xero', status: 'healthy' },
+            { name: 'Shopify', status: 'healthy' },
+            { name: 'Amazon SP-API', status: 'healthy' },
+            { name: 'Etsy', status: 'healthy' },
+            { name: 'WooCommerce', status: 'healthy' },
+            { name: 'Walmart', status: 'warning' },
+            { name: 'TikTok Shop', status: 'healthy' },
           ].map((service, index) => (
             <div
               key={index}

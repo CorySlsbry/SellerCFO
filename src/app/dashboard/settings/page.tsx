@@ -258,8 +258,8 @@ export default function SettingsPage() {
           </div>
           <div className="flex items-center justify-between p-4 bg-[#1a1a26] rounded-lg">
             <div>
-              <p className="text-sm font-medium text-[#e8e8f0]">athenahealth, NextGen, Open Dental</p>
-              <p className="text-xs text-[#8888a0]">EHR & Practice Management</p>
+              <p className="text-sm font-medium text-[#e8e8f0]">Shopify, Amazon, Etsy, WooCommerce, Walmart, TikTok Shop</p>
+              <p className="text-xs text-[#8888a0]">Sales Channels</p>
             </div>
             <Link href="/dashboard/integrations">
               <span className="text-xs text-cyan-400 hover:text-cyan-300 cursor-pointer">Connect &rarr;</span>
@@ -267,8 +267,8 @@ export default function SettingsPage() {
           </div>
           <div className="flex items-center justify-between p-4 bg-[#1a1a26] rounded-lg">
             <div>
-              <p className="text-sm font-medium text-[#e8e8f0]">Salesforce, HubSpot, Kareo</p>
-              <p className="text-xs text-[#8888a0]">CRM & Sales</p>
+              <p className="text-sm font-medium text-[#e8e8f0]">Xero</p>
+              <p className="text-xs text-[#8888a0]">Accounting</p>
             </div>
             <Link href="/dashboard/integrations">
               <span className="text-xs text-cyan-400 hover:text-cyan-300 cursor-pointer">Connect &rarr;</span>
@@ -290,7 +290,7 @@ export default function SettingsPage() {
           </label>
           <label className="flex items-center gap-3 p-3 hover:bg-[#1a1a26] rounded-lg cursor-pointer transition-colors">
             <input type="checkbox" defaultChecked className="w-4 h-4 rounded" />
-            <span className="text-sm text-[#e8e8f0]">Budget alerts for jobs over 80%</span>
+            <span className="text-sm text-[#e8e8f0]">Inventory reorder alerts</span>
           </label>
           <label className="flex items-center gap-3 p-3 hover:bg-[#1a1a26] rounded-lg cursor-pointer transition-colors">
             <input type="checkbox" defaultChecked className="w-4 h-4 rounded" />

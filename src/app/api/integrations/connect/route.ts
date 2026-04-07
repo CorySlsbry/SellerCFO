@@ -1,6 +1,6 @@
 /**
  * Generic Integration Connect Endpoint
- * GET /api/integrations/connect?provider=nextgen
+ * GET /api/integrations/connect?provider=shopify
  * Initiates OAuth flow for any supported provider
  */
 
@@ -11,7 +11,7 @@ import { getAuthUrl } from '@/lib/integrations';
 import type { IntegrationProvider } from '@/types/integrations';
 import crypto from 'crypto';
 
-const OAUTH_PROVIDERS: IntegrationProvider[] = ['nextgen', 'salesforce', 'hubspot'];
+const OAUTH_PROVIDERS: IntegrationProvider[] = ['quickbooks', 'xero', 'shopify', 'amazon', 'etsy', 'tiktok_shop'];
 
 export async function GET(request: NextRequest) {
   try {

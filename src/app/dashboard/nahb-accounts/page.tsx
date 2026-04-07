@@ -489,7 +489,7 @@ export default function industryAccountsPage() {
           <Lock size={32} className="text-[#06b6d4]" />
         </div>
         <h1 className="text-2xl font-bold text-[#e8e8f0] mb-3">
-          Medical Chart of Accounts — Pro & Enterprise
+          E-Commerce Chart of Accounts — Pro & Enterprise
         </h1>
         <p className="text-[#8888a0] mb-8 max-w-md mx-auto">
           Access the complete industry Standard Chart of Accounts (2016 revision) with {totalAccountCount}+ accounts
@@ -514,7 +514,7 @@ export default function industryAccountsPage() {
         <div>
           <h1 className="text-2xl font-bold text-[#e8e8f0] flex items-center gap-2">
             <BookOpen size={24} className="text-[#06b6d4]" />
-            Medical Chart of Accounts
+            E-Commerce Chart of Accounts
           </h1>
           <p className="text-sm text-[#8888a0] mt-1">
             Industry-standard chart of accounts for e-commerce brands — {totalAccountCount} accounts across 9 categories

@@ -82,7 +82,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'What if I sell on channels beyond the big 6?',
-    a: 'Enterprise plans support custom integrations via API or CSV upload for any additional sales channels. We also support Salesforce and HubSpot CRM integrations for end-to-end customer lifecycle tracking.',
+    a: 'Enterprise plans support custom integrations via API or CSV upload for any additional sales channels. We can also build bespoke connectors for niche marketplaces or wholesale platforms.',
   },
   {
     q: 'Is my data secure?',

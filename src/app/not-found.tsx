@@ -5,7 +5,7 @@ export default function NotFound() {
     <div className="bg-[#0a0a0f] text-[#e8e8f0] min-h-screen flex items-center justify-center px-4">
       <div className="text-center max-w-md">
         <div className="font-bold text-3xl tracking-tight mb-6">
-          <span className="text-[#06b6d4]">Medical</span>
+          <span className="text-[#8b5cf6]">Seller</span>
           <span className="text-[#e8e8f0]">CFO</span>
         </div>
 

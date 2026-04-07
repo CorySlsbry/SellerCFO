@@ -1,7 +1,7 @@
 /**
  * API Key Integration Setup Endpoint
  * POST /api/integrations/setup
- * For providers that use API key auth (athenahealth, Kareo, Open Dental)
+ * For providers that use API key auth (WooCommerce, Walmart)
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -10,7 +10,7 @@ import { createClient } from '@/lib/supabase/server';
 import { getConnector, validateConnection } from '@/lib/integrations';
 import type { IntegrationProvider, IntegrationConnection } from '@/types/integrations';
 
-const API_KEY_PROVIDERS: IntegrationProvider[] = ['athenahealth', 'kareo', 'opendental'];
+const API_KEY_PROVIDERS: IntegrationProvider[] = ['woocommerce', 'walmart'];
 
 export async function POST(request: NextRequest) {
   try {
@@ -56,13 +56,13 @@ export async function POST(request: NextRequest) {
       organization_id: profile.organization_id,
       provider,
       status: 'pending',
-      access_token: provider === 'opendental' ? null : null,
+      access_token: null,
       refresh_token: null,
       token_expires_at: null,
       api_key,
       external_account_id: tenant_id || null,
       external_account_name: account_name || null,
-      config: { tenant_id },
+      config: { tenant_id, store_url: tenant_id },
       last_sync_at: null,
       last_sync_status: 'idle',
       last_sync_error: null,
@@ -70,18 +70,20 @@ export async function POST(request: NextRequest) {
       updated_at: new Date().toISOString(),
     };
 
-    // For Open Dental, we need to get an access token using client credentials
-    if (provider === 'opendental') {
+    // For Walmart, we need to get an access token using client credentials
+    if (provider === 'walmart') {
       try {
         const connector = getConnector(provider);
-        const tokenResult = await connector.getAccessToken();
-        tempConnection.access_token = tokenResult.access_token;
-        tempConnection.token_expires_at = new Date(
-          Date.now() + (tokenResult.expires_in || 900) * 1000
-        ).toISOString();
+        if (connector.getAccessToken) {
+          const tokenResult = await connector.getAccessToken();
+          tempConnection.access_token = tokenResult.access_token;
+          tempConnection.token_expires_at = new Date(
+            Date.now() + (tokenResult.expires_in || 900) * 1000
+          ).toISOString();
+        }
       } catch (error) {
         return NextResponse.json(
-          { error: 'Failed to authenticate with Open Dental. Check your client credentials.' },
+          { error: 'Failed to authenticate with Walmart. Check your client credentials.' },
           { status: 400 }
         );
       }
@@ -109,7 +111,7 @@ export async function POST(request: NextRequest) {
         api_key,
         external_account_id: tenant_id || null,
         external_account_name: account_name || null,
-        config: { tenant_id },
+        config: { tenant_id, store_url: tenant_id },
         last_sync_status: 'idle',
         updated_at: new Date().toISOString(),
       }, {

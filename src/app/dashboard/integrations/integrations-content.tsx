@@ -5,10 +5,10 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
-  BookOpen, Stethoscope, Building2, Wrench, Cloud, Zap, ClipboardList,
+  BookOpen, ShoppingBag, Package, Globe, Store, Video, Palette,
   RefreshCw, CheckCircle, XCircle, AlertCircle, Loader2, Link2, Unlink,
   Database, Users, TrendingUp, ArrowRight, Clock, Settings, ChevronDown,
-  ChevronUp, Key, Globe,
+  ChevronUp, Key,
 } from 'lucide-react';
 import { INTEGRATION_PROVIDERS, type IntegrationProviderConfig, type IntegrationProvider, type IntegrationConnection } from '@/types/integrations';
 
@@ -16,7 +16,7 @@ import { INTEGRATION_PROVIDERS, type IntegrationProviderConfig, type Integration
 // Icon mapping
 // ============================================================
 const iconMap: Record<string, any> = {
-  BookOpen, Stethoscope, Building2, Wrench, Cloud, Zap, ClipboardList,
+  BookOpen, ShoppingBag, Package, Globe, Store, Video, Palette,
 };
 
 // ============================================================
@@ -183,19 +183,26 @@ function IntegrationCard({
           <div className="space-y-3 max-w-md">
             <div>
               <label className="block text-xs font-medium text-[#8888a0] mb-1">
-                {config.id === 'opendental' ? 'Tenant ID' : 'API Key'}
+                {config.id === 'woocommerce' ? 'Store URL' : 'API Key / Client ID'}
               </label>
-              {config.id === 'opendental' ? (
+              {config.id === 'woocommerce' ? (
                 <>
                   <input
                     type="text"
-                    placeholder="Enter your Open Dental Tenant ID"
+                    placeholder="https://yourstore.com"
                     value={tenantId}
                     onChange={(e) => setTenantId(e.target.value)}
+                    className="w-full px-3 py-2 bg-[#1a1a26] border border-[#2a2a3a] rounded-lg text-sm text-[#e8e8f0] focus:outline-none focus:border-cyan-500 mb-2"
+                  />
+                  <input
+                    type="password"
+                    placeholder="Consumer Key / Consumer Secret"
+                    value={apiKey}
+                    onChange={(e) => setApiKey(e.target.value)}
                     className="w-full px-3 py-2 bg-[#1a1a26] border border-[#2a2a3a] rounded-lg text-sm text-[#e8e8f0] focus:outline-none focus:border-cyan-500"
                   />
                   <p className="text-[10px] text-[#666680] mt-1">
-                    Find this in Open Dental under Settings &gt; Integrations &gt; API
+                    Find your REST API keys in WooCommerce &gt; Settings &gt; Advanced &gt; REST API
                   </p>
                 </>
               ) : (
@@ -208,9 +215,9 @@ function IntegrationCard({
                     className="w-full px-3 py-2 bg-[#1a1a26] border border-[#2a2a3a] rounded-lg text-sm text-[#e8e8f0] focus:outline-none focus:border-cyan-500"
                   />
                   <p className="text-[10px] text-[#666680] mt-1">
-                    {config.id === 'athenahealth'
-                      ? 'Contact athenahealth support to request API access for your account'
-                      : 'Find this in Kareo under Settings > Integration > API'
+                    {config.id === 'walmart'
+                      ? 'Find your Client ID and Secret on the Walmart Developer Portal'
+                      : `Find your API key in ${config.name} settings`
                     }
                   </p>
                 </>
@@ -220,7 +227,7 @@ function IntegrationCard({
               variant="primary"
               size="sm"
               onClick={handleApiKeySetup}
-              disabled={settingUp || (!apiKey && config.id !== 'opendental') || (config.id === 'opendental' && !tenantId)}
+              disabled={settingUp || (!apiKey && config.id !== 'woocommerce') || (config.id === 'woocommerce' && (!tenantId || !apiKey))}
               className="text-xs"
             >
               {settingUp ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> : null}
@@ -341,8 +348,7 @@ export default function IntegrationsContent() {
 
   // Group providers by category
   const accountingProviders = INTEGRATION_PROVIDERS.filter(p => p.category === 'accounting');
-  const projectProviders = INTEGRATION_PROVIDERS.filter(p => p.category === 'project_management');
-  const crmProviders = INTEGRATION_PROVIDERS.filter(p => p.category === 'crm');
+  const salesChannelProviders = INTEGRATION_PROVIDERS.filter(p => p.category === 'sales_channel');
 
   return (
     <div className="space-y-8">
@@ -351,7 +357,7 @@ export default function IntegrationsContent() {
         <div>
           <h1 className="text-3xl font-bold text-[#e8e8f0] mb-1">Integrations</h1>
           <p className="text-[#8888a0]">
-            Connect your practice management tools to get a unified financial view
+            Connect your sales channels and accounting tools for a unified financial view
           </p>
         </div>
         {connectedCount > 0 && (
@@ -440,35 +446,14 @@ export default function IntegrationsContent() {
         </div>
       </div>
 
-      {/* Project Management Section */}
+      {/* Sales Channels Section */}
       <div>
         <div className="flex items-center gap-2 mb-4">
-          <Stethoscope className="w-5 h-5 text-[#8888a0]" />
-          <h2 className="text-lg font-semibold text-[#e8e8f0]">EHR & Practice Management</h2>
+          <ShoppingBag className="w-5 h-5 text-[#8888a0]" />
+          <h2 className="text-lg font-semibold text-[#e8e8f0]">Sales Channels</h2>
         </div>
         <div className="space-y-3">
-          {projectProviders.map((config) => (
-            <IntegrationCard
-              key={config.id}
-              config={config}
-              connection={getConnection(config.id)}
-              onConnect={handleConnect}
-              onDisconnect={handleDisconnect}
-              onSync={handleSync}
-              syncing={syncingProviders.has(config.id)}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* CRM Section */}
-      <div>
-        <div className="flex items-center gap-2 mb-4">
-          <Users className="w-5 h-5 text-[#8888a0]" />
-          <h2 className="text-lg font-semibold text-[#e8e8f0]">CRM & Sales</h2>
-        </div>
-        <div className="space-y-3">
-          {crmProviders.map((config) => (
+          {salesChannelProviders.map((config) => (
             <IntegrationCard
               key={config.id}
               config={config}
@@ -491,9 +476,9 @@ export default function IntegrationsContent() {
           <div>
             <h3 className="text-sm font-semibold text-[#e8e8f0] mb-1">Need help connecting?</h3>
             <p className="text-xs text-[#8888a0] leading-relaxed">
-              Some integrations require API keys or partner access. For athenahealth, contact their support
-              to request API access. For Open Dental, you&apos;ll need your Tenant ID from Settings &gt; Integrations.
-              For NextGen, Salesforce, and HubSpot, just click Connect and authorize through their login page.
+              Most integrations connect in seconds via OAuth — just click Connect and authorize.
+              For WooCommerce, you&apos;ll need your store URL and REST API key from WooCommerce &gt; Settings &gt; Advanced &gt; REST API.
+              For Walmart, enter your Client ID and Secret from the Walmart Developer Portal.
               Once connected, data syncs automatically every hour, or you can trigger a manual sync anytime.
             </p>
           </div>

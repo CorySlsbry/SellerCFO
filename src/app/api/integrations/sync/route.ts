@@ -338,33 +338,7 @@ export async function POST(request: NextRequest) {
           }
         }
 
-        // Extract locations from contacts (Salesforce — has Account.BillingCity/State)
-        if (result.contacts.length > 0 && source === 'salesforce') {
-          // Contacts carry _sfAccount data from the SOQL join
-          const contactRecords = result.contacts.map((c: any) => ({
-            city: c._billingCity,
-            state: c._billingState,
-            address: c._billingStreet,
-          }));
-          const locations = extractCityStateLocations('salesforce', contactRecords);
-          if (locations.length > 0) {
-            await syncDiscoveredLocations(supabase as any, profile.organization_id, locations);
-            console.log(`[integration-sync] Discovered ${locations.length} locations from Salesforce accounts`);
-          }
-        }
-
-        // Extract locations from contacts (HubSpot — has city/state properties)
-        if (result.contacts.length > 0 && source === 'hubspot') {
-          const contactRecords = result.contacts.map((c: any) => ({
-            city: c._city,
-            state: c._state,
-          }));
-          const locations = extractCityStateLocations('hubspot', contactRecords);
-          if (locations.length > 0) {
-            await syncDiscoveredLocations(supabase as any, profile.organization_id, locations);
-            console.log(`[integration-sync] Discovered ${locations.length} locations from HubSpot contacts`);
-          }
-        }
+        // Future: extract locations from e-commerce order shipping data
       }
     } catch (locErr: any) {
       // Non-fatal — don't block the sync response

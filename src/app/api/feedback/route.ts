@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
 <body style="margin:0;padding:0;background:#0a0a0f;font-family:Arial,sans-serif;">
   <div style="max-width:560px;margin:0 auto;padding:40px 20px;">
     <div style="text-align:center;margin-bottom:24px;">
-      <span style="color:#06b6d4;font-size:22px;font-weight:bold;">Medical</span><span style="color:#e8e8f0;font-size:22px;font-weight:bold;">CFO</span>
+      <span style="color:#8b5cf6;font-size:22px;font-weight:bold;">Seller</span><span style="color:#e8e8f0;font-size:22px;font-weight:bold;">CFO</span>
       <div style="color:#8888a0;font-size:12px;margin-top:4px;">Bug Report</div>
     </div>
     <div style="background:#12121a;border:1px solid #1e1e2e;border-radius:12px;padding:28px;">

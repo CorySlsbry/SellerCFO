@@ -9,16 +9,15 @@
 
 export type IntegrationProvider =
   | 'quickbooks'
+  | 'xero'
   | 'shopify'
   | 'amazon'
   | 'etsy'
   | 'woocommerce'
   | 'walmart'
-  | 'tiktok_shop'
-  | 'salesforce'
-  | 'hubspot';
+  | 'tiktok_shop';
 
-export type IntegrationCategory = 'accounting' | 'sales_channel' | 'crm';
+export type IntegrationCategory = 'accounting' | 'sales_channel';
 
 export type IntegrationAuthType = 'oauth2' | 'api_key' | 'oauth2_client_credentials';
 
@@ -326,6 +325,18 @@ export const INTEGRATION_PROVIDERS: IntegrationProviderConfig[] = [
     tier: 'essential',
   },
   {
+    id: 'xero',
+    name: 'Xero',
+    description: 'Sync financial data, invoices, bills, and bank transactions from Xero',
+    category: 'accounting',
+    authType: 'oauth2',
+    icon: 'BookOpen',
+    color: '#13B5EA',
+    features: ['P&L Reports', 'Balance Sheet', 'Invoices & Bills', 'Bank Reconciliation', 'Chart of Accounts'],
+    docsUrl: 'https://developer.xero.com',
+    tier: 'essential',
+  },
+  {
     id: 'shopify',
     name: 'Shopify',
     description: 'Sync orders, products, customers, and inventory from your Shopify store',
@@ -396,30 +407,6 @@ export const INTEGRATION_PROVIDERS: IntegrationProviderConfig[] = [
     features: ['Orders & Revenue', 'Product Performance', 'Shop Analytics', 'Fulfillment Data', 'Commission Tracking'],
     docsUrl: 'https://partner.tiktokshop.com',
     tier: 'pro',
-  },
-  {
-    id: 'salesforce',
-    name: 'Salesforce',
-    description: 'Sync leads, opportunities, accounts, and pipeline data from Salesforce CRM',
-    category: 'crm',
-    authType: 'oauth2',
-    icon: 'Cloud',
-    color: '#00A1E0',
-    features: ['Leads & Contacts', 'Opportunities', 'Pipeline', 'Activities', 'Reports'],
-    docsUrl: 'https://developer.salesforce.com',
-    tier: 'pro',
-  },
-  {
-    id: 'hubspot',
-    name: 'HubSpot',
-    description: 'Import contacts, deals, pipeline stages, and marketing data from HubSpot',
-    category: 'crm',
-    authType: 'oauth2',
-    icon: 'Zap',
-    color: '#FF7A59',
-    features: ['Contacts', 'Deals', 'Pipeline', 'Activities', 'Email Tracking'],
-    docsUrl: 'https://developers.hubspot.com',
-    tier: 'essential',
   },
 ];
 

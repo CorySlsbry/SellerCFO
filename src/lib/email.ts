@@ -28,7 +28,7 @@ function welcomeEmailHtml(name: string): string {
 <body style="margin:0;padding:0;background:#0a0a0f;font-family:Arial,sans-serif;">
   <div style="max-width:560px;margin:0 auto;padding:40px 20px;">
     <div style="text-align:center;margin-bottom:30px;">
-      <span style="color:#06b6d4;font-size:24px;font-weight:bold;">Medical</span><span style="color:#e8e8f0;font-size:24px;font-weight:bold;">CFO</span>
+      <span style="color:#8b5cf6;font-size:24px;font-weight:bold;">Seller</span><span style="color:#e8e8f0;font-size:24px;font-weight:bold;">CFO</span>
     </div>
     <div style="background:#12121a;border:1px solid #1e1e2e;border-radius:12px;padding:32px;">
       <h1 style="color:#e8e8f0;font-size:22px;margin:0 0 12px;">Your dashboard is ready, ${name}.</h1>
@@ -64,7 +64,7 @@ function nudgeQuickBooksHtml(name: string): string {
 <body style="margin:0;padding:0;background:#0a0a0f;font-family:Arial,sans-serif;">
   <div style="max-width:560px;margin:0 auto;padding:40px 20px;">
     <div style="text-align:center;margin-bottom:30px;">
-      <span style="color:#06b6d4;font-size:24px;font-weight:bold;">Medical</span><span style="color:#e8e8f0;font-size:24px;font-weight:bold;">CFO</span>
+      <span style="color:#8b5cf6;font-size:24px;font-weight:bold;">Seller</span><span style="color:#e8e8f0;font-size:24px;font-weight:bold;">CFO</span>
     </div>
     <div style="background:#12121a;border:1px solid #1e1e2e;border-radius:12px;padding:32px;">
       <h1 style="color:#e8e8f0;font-size:22px;margin:0 0 12px;">Your dashboard is waiting, ${name}.</h1>
@@ -99,20 +99,20 @@ function weekOneValueHtml(name: string): string {
 <body style="margin:0;padding:0;background:#0a0a0f;font-family:Arial,sans-serif;">
   <div style="max-width:560px;margin:0 auto;padding:40px 20px;">
     <div style="text-align:center;margin-bottom:30px;">
-      <span style="color:#06b6d4;font-size:24px;font-weight:bold;">Medical</span><span style="color:#e8e8f0;font-size:24px;font-weight:bold;">CFO</span>
+      <span style="color:#8b5cf6;font-size:24px;font-weight:bold;">Seller</span><span style="color:#e8e8f0;font-size:24px;font-weight:bold;">CFO</span>
     </div>
     <div style="background:#12121a;border:1px solid #1e1e2e;border-radius:12px;padding:32px;">
       <h1 style="color:#e8e8f0;font-size:22px;margin:0 0 12px;">Here's what SellerCFO catches in the first week.</h1>
       <p style="color:#b0b0c8;font-size:14px;line-height:1.6;margin:0 0 16px;">
-        Hey ${name}, here's what practices typically find in their first 7 days on SellerCFO:
+        Hey ${name}, here's what e-commerce brands typically discover in their first 7 days on SellerCFO:
       </p>
       <div style="background:#0a0a0f;border:1px solid #2a2a3d;border-radius:8px;padding:16px;margin:0 0 20px;">
-        <p style="color:#06b6d4;font-size:15px;font-weight:bold;margin:0 0 8px;">$140K in over-billing caught before job close</p>
-        <p style="color:#b0b0c8;font-size:13px;margin:0 0 12px;">Two jobs. Both would have been cash bombs at closeout.</p>
-        <p style="color:#06b6d4;font-size:15px;font-weight:bold;margin:0 0 8px;">$34K in forgotten patient balance recovered</p>
-        <p style="color:#b0b0c8;font-size:13px;margin:0 0 12px;">Money the GC owed but nobody was tracking.</p>
-        <p style="color:#06b6d4;font-size:15px;font-weight:bold;margin:0 0 8px;">$8K in unbilled claim adjustments found</p>
-        <p style="color:#b0b0c8;font-size:13px;margin:0;">Work done, scope added, but never invoiced.</p>
+        <p style="color:#8b5cf6;font-size:15px;font-weight:bold;margin:0 0 8px;">$42K in hidden platform fees identified</p>
+        <p style="color:#b0b0c8;font-size:13px;margin:0 0 12px;">Amazon FBA fees, referral fees, and storage fees that weren't in the P&L.</p>
+        <p style="color:#8b5cf6;font-size:15px;font-weight:bold;margin:0 0 8px;">15% ad spend waste eliminated</p>
+        <p style="color:#b0b0c8;font-size:13px;margin:0 0 12px;">Channels that looked profitable on ROAS but lost money on contribution margin.</p>
+        <p style="color:#8b5cf6;font-size:15px;font-weight:bold;margin:0 0 8px;">$18K in dead inventory flagged</p>
+        <p style="color:#b0b0c8;font-size:13px;margin:0;">Slow-moving SKUs tying up cash that could be redeployed.</p>
       </div>
       <div style="text-align:center;margin:24px 0;">
         <a href="${APP_URL}/dashboard" style="display:inline-block;background:#06b6d4;color:#ffffff;text-decoration:none;padding:14px 28px;border-radius:8px;font-weight:600;font-size:15px;">
@@ -137,7 +137,7 @@ function trialEndingHtml(name: string, daysLeft: number): string {
 <body style="margin:0;padding:0;background:#0a0a0f;font-family:Arial,sans-serif;">
   <div style="max-width:560px;margin:0 auto;padding:40px 20px;">
     <div style="text-align:center;margin-bottom:30px;">
-      <span style="color:#06b6d4;font-size:24px;font-weight:bold;">Medical</span><span style="color:#e8e8f0;font-size:24px;font-weight:bold;">CFO</span>
+      <span style="color:#8b5cf6;font-size:24px;font-weight:bold;">Seller</span><span style="color:#e8e8f0;font-size:24px;font-weight:bold;">CFO</span>
     </div>
     <div style="background:#12121a;border:1px solid #1e1e2e;border-radius:12px;padding:32px;">
       <h1 style="color:#e8e8f0;font-size:22px;margin:0 0 12px;">${urgency}</h1>

@@ -2,8 +2,7 @@
  * Location Auto-Discovery
  *
  * Shared utility that integrations call during sync to auto-create
- * locations from QBO Classes/Departments, NextGen project sites,
- * athenahealth job addresses, Salesforce accounts, and HubSpot companies.
+ * locations from QBO Classes/Departments and sales channel data.
  *
  * Manual locations (source IS NULL) are never touched.
  */
@@ -13,10 +12,12 @@ import { SupabaseClient } from '@supabase/supabase-js';
 export type LocationSource =
   | 'qbo_class'
   | 'qbo_department'
-  | 'nextgen'
-  | 'athenahealth'
-  | 'salesforce'
-  | 'hubspot';
+  | 'shopify'
+  | 'amazon'
+  | 'etsy'
+  | 'woocommerce'
+  | 'walmart'
+  | 'tiktok_shop';
 
 export interface DiscoveredLocation {
   source: LocationSource;
@@ -129,8 +130,8 @@ async function upsertLocation(
 
 /**
  * Extracts unique city+state locations from an array of records
- * that have address/city/state fields. Used by Shopify, Amazon,
- * Salesforce, and HubSpot to discover locations from project/contact data.
+ * that have address/city/state fields. Used by sales channel connectors
+ * to discover locations from order/customer data.
  */
 export function extractCityStateLocations(
   source: LocationSource,

@@ -4,13 +4,13 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Plug, ChevronRight, Check, ArrowRight, Loader2 } from 'lucide-react';
 
-const FIELD_TOOLS = [
-  { id: 'athenahealth', name: 'athenahealth', desc: 'EHR / Practice Management' },
-  { id: 'nextgen', name: 'NextGen Healthcare', desc: 'EHR / Practice Management' },
-  { id: 'opendental', name: 'Open Dental', desc: 'Dental Practice Management' },
-  { id: 'kareo', name: 'Kareo (Tebra)', desc: 'Practice Management / Billing' },
-  { id: 'hubspot', name: 'HubSpot', desc: 'CRM' },
-  { id: 'salesforce', name: 'Salesforce', desc: 'CRM' },
+const SALES_CHANNELS = [
+  { id: 'shopify', name: 'Shopify', desc: 'E-commerce Store' },
+  { id: 'amazon', name: 'Amazon Seller Central', desc: 'FBA & FBM Sales' },
+  { id: 'etsy', name: 'Etsy', desc: 'Handmade & Vintage' },
+  { id: 'woocommerce', name: 'WooCommerce', desc: 'WordPress Store' },
+  { id: 'walmart', name: 'Walmart Marketplace', desc: 'Marketplace Sales' },
+  { id: 'tiktok_shop', name: 'TikTok Shop', desc: 'Social Commerce' },
 ];
 
 interface OnboardingWizardProps {
@@ -43,7 +43,7 @@ export function OnboardingWizard({ orgName }: OnboardingWizardProps) {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="font-bold text-2xl tracking-tight mb-1">
-            <span className="text-[#06b6d4]">Medical</span>
+            <span className="text-[#8b5cf6]">Seller</span>
             <span className="text-[#e8e8f0]">CFO</span>
           </div>
           {orgName && (
@@ -105,14 +105,14 @@ export function OnboardingWizard({ orgName }: OnboardingWizardProps) {
         {step === 2 && (
           <div className="bg-[#12121a] border border-[#1e1e2e] rounded-xl p-8">
             <h2 className="text-xl font-bold text-[#e8e8f0] mb-2 text-center">
-              What Field Tools Do You Use?
+              Where Do You Sell?
             </h2>
             <p className="text-sm text-[#8888a0] mb-6 text-center">
-              Select any that apply. You can connect them later too.
+              Select your sales channels. You can always add more later.
             </p>
 
             <div className="grid grid-cols-2 gap-3 mb-6">
-              {FIELD_TOOLS.map((tool) => {
+              {SALES_CHANNELS.map((tool) => {
                 const selected = selectedTools.includes(tool.id);
                 return (
                   <button

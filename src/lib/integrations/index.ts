@@ -24,8 +24,6 @@ import { etsyConnector } from './etsy';
 import { woocommerceConnector } from './woocommerce';
 import { walmartConnector } from './walmart';
 import { tiktokShopConnector } from './tiktok-shop';
-import { salesforceConnector } from './salesforce';
-import { hubspotConnector } from './hubspot';
 
 // ============================================================
 // Connector Registry
@@ -38,8 +36,6 @@ const connectors: Record<string, any> = {
   woocommerce: woocommerceConnector,
   walmart: walmartConnector,
   tiktok_shop: tiktokShopConnector,
-  salesforce: salesforceConnector,
-  hubspot: hubspotConnector,
 };
 
 /**
@@ -283,5 +279,3 @@ export { etsyConnector } from './etsy';
 export { woocommerceConnector } from './woocommerce';
 export { walmartConnector } from './walmart';
 export { tiktokShopConnector } from './tiktok-shop';
-export { salesforceConnector } from './salesforce';
-export { hubspotConnector } from './hubspot';

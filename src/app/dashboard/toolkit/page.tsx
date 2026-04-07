@@ -15,7 +15,7 @@ import {
   FileText,
   Users,
   Briefcase,
-  Stethoscope,
+  ShoppingCart,
   ArrowRight,
   Shield,
   BarChart3,
@@ -109,7 +109,7 @@ Use this industry structure:
 
 For a [TRADE TYPE] company, customize the 3800-series COGS accounts to match their actual cost categories. For example, an HVAC practice needs accounts for refrigerant, ductwork, equipment units, etc.
 
-Also create sub-accounts that map cleanly to cost codes in [PM SOFTWARE — e.g., athenahealth, NextGen, CoConstruct]. The goal is zero manual reclassification when syncing between systems.
+Also create sub-accounts that map cleanly to cost codes in [PM SOFTWARE — e.g., Shopify, Amazon, CoConstruct]. The goal is zero manual reclassification when syncing between systems.
 
 Include QBO account types (Income, COGS, Expense, Other Current Asset, Other Current Liability, etc.) for each account so setup is copy-paste ready.`,
     category: 'bookkeeping',
@@ -212,7 +212,7 @@ SUBS:
 - Any check or payment > $[THRESHOLD] to a vendor tagged as subpractice → 3840 Trade Practices (with job assignment required)
 
 SOFTWARE:
-- athenahealth/NextGen/CoConstruct → 8335 Software Licensing and Subscription Fees
+- Shopify/Amazon/CoConstruct → 8335 Software Licensing and Subscription Fees
 - QuickBooks → 8335
 
 For each rule, specify: Vendor match pattern | GL Account | Class/Job assignment needed (Y/N) | Confidence level (High/Medium/Low).
@@ -708,7 +708,7 @@ STEP-BY-STEP PROCESS:
    - Joint check payments — the full amount goes on the sub's 1099, not split
 
 3. EXEMPTION IDENTIFICATION — these do NOT get 1099s:
-   - Corporations (S-corps and C-corps) — unless for legal/medical services
+   - Corporations (S-corps and C-corps) — unless for legal or professional services
    - Payments made via credit card or PayPal (those platforms issue 1099-K)
    - Payments for materials/goods only (no labor component)
    - Employee reimbursements
@@ -870,9 +870,9 @@ Create a template spreadsheet structure I can use monthly.`,
   // ── PM Software ──
   {
     id: 'pm-1',
-    title: 'athenahealth ↔ QuickBooks Mapping & Reconciliation',
+    title: 'Shopify ↔ QuickBooks Mapping & Reconciliation',
     description: 'Map BT cost codes to QBO accounts and build a monthly reconciliation process.',
-    prompt: `Create a complete mapping and reconciliation process between athenahealth and QuickBooks Online for my [TRADE TYPE] e-commerce company.
+    prompt: `Create a complete mapping and reconciliation process between Shopify and QuickBooks Online for my [TRADE TYPE] e-commerce company.
 
 MY ATHENAHEALTH SETUP:
 Cost code structure: [DESCRIBE — e.g., CSI divisions, custom categories, etc.]
@@ -914,24 +914,24 @@ Walk me through reconciling BT to QBO monthly:
 5. Reconcile BT's "Budget vs. Actual" report to QBO P&L by job
 
 PART 4: COMMON PROBLEMS & FIXES
-Document the top 10 sync issues athenahealth + QBO users encounter:
+Document the top 10 sync issues Shopify + QBO users encounter:
 - Duplicate transactions from auto-feed + sync
 - Cost codes mapping to wrong QBO accounts
 - Patient Balance not tracking correctly in both systems
 - Change orders not reflecting in QBO budget
 - Class/location tracking discrepancies`,
     category: 'pm-software',
-    icon: Stethoscope,
-    tags: ['athenahealth', 'QuickBooks', 'mapping', 'reconciliation'],
+    icon: ShoppingCart,
+    tags: ['Shopify', 'QuickBooks', 'mapping', 'reconciliation'],
   },
   {
     id: 'pm-2',
-    title: 'NextGen ↔ QuickBooks Integration Setup',
-    description: 'Configure NextGen to QBO sync via connector with proper cost code and vendor mapping.',
-    prompt: `Set up and optimize the NextGen ↔ QuickBooks integration for my e-commerce company. NextGen doesn't have native QBO sync — it requires a connector (Smoothlink, Ryvit, or similar).
+    title: 'Amazon ↔ QuickBooks Integration Setup',
+    description: 'Configure Amazon to QBO sync via connector with proper cost code and vendor mapping.',
+    prompt: `Set up and optimize the Amazon ↔ QuickBooks integration for my e-commerce company. Amazon doesn't have native QBO sync — it requires a connector (Smoothlink, Ryvit, or similar).
 
 CURRENT SETUP:
-- NextGen tier: [TIER]
+- Amazon tier: [TIER]
 - QBO version: [ONLINE/DESKTOP]
 - Connector being used: [SMOOTHLINK/RYVIT/OTHER/NONE YET]
 - Number of active projects: [NUMBER]
@@ -944,37 +944,37 @@ Compare the available connectors:
 
 PART 2: DATA MAPPING
 Create the mapping for:
-1. NextGen CPT Codes → QBO Items/Accounts
+1. Amazon CPT Codes → QBO Items/Accounts
    - Standard CSI divisions to QBO COGS accounts
    - Custom cost codes to sub-accounts
-2. NextGen Cost Types → QBO transaction types
+2. Amazon Cost Types → QBO transaction types
    - Committed costs → Bills/POs in QBO
    - Direct costs → Expenses in QBO
    - Change order costs → Adjustments
-3. NextGen Vendors → QBO Vendors (1:1 mapping)
-4. NextGen Projects → QBO Classes or Jobs
+3. Amazon Vendors → QBO Vendors (1:1 mapping)
+4. Amazon Projects → QBO Classes or Jobs
 
 PART 3: KNOWN LIMITATIONS & WORKAROUNDS
-NextGen's integration is known for several pain points. Address each:
+Amazon's integration is known for several pain points. Address each:
 - Cost codes appearing in multiple budget locations but syncing to only one QBO line item
 - Real-time sync delays (some connectors batch, not real-time)
-- Patient Balance tracking: NextGen tracks it, but connectors often don't sync patient balance properly to QBO
-- Budget modifications in NextGen not reflecting in QBO
-- Handling NextGen's commitment workflow (PCO → CO → commitment) in QBO
+- Patient Balance tracking: Amazon tracks it, but connectors often don't sync patient balance properly to QBO
+- Budget modifications in Amazon not reflecting in QBO
+- Handling Amazon's commitment workflow (PCO → CO → commitment) in QBO
 
 PART 4: RECONCILIATION PROCESS
-Monthly reconciliation steps specific to NextGen ↔ QBO:
-1. NextGen Budget → QBO Job Cost: compare committed costs, direct costs, and forecasted costs
-2. NextGen Payment Applications → QBO AP aging
-3. NextGen Prime Contract Billings → QBO AR/Revenue`,
+Monthly reconciliation steps specific to Amazon ↔ QBO:
+1. Amazon Budget → QBO Job Cost: compare committed costs, direct costs, and forecasted costs
+2. Amazon Payment Applications → QBO AP aging
+3. Amazon Prime Contract Billings → QBO AR/Revenue`,
     category: 'pm-software',
-    icon: Stethoscope,
-    tags: ['NextGen', 'QuickBooks', 'Smoothlink', 'integration'],
+    icon: ShoppingCart,
+    tags: ['Amazon', 'QuickBooks', 'Smoothlink', 'integration'],
   },
   {
     id: 'pm-3',
     title: 'PM Software Selection Scorecard',
-    description: 'Compare athenahealth, NextGen, CoConstruct, Kareo, and Open Dental for your trade.',
+    description: 'Compare Shopify, Amazon, CoConstruct, Etsy, and WooCommerce for your trade.',
     prompt: `Help me evaluate healthcare project management software. I need an objective, data-driven comparison — not marketing fluff.
 
 MY COMPANY:
@@ -988,16 +988,16 @@ MY COMPANY:
 - Top pain point: [DESCRIBE — e.g., "no order tracking visibility", "scheduling chaos", "missed claim adjustments"]
 
 COMPARE THESE PLATFORMS:
-1. athenahealth — best for e-commerce brands
-2. NextGen — best for commercial GCs and large specialty
+1. Shopify — best for e-commerce brands
+2. Amazon — best for commercial GCs and large specialty
 3. CoConstruct — best for custom e-commerce businesses
-4. Kareo — best for roofing and restoration
-5. Open Dental — best for HVAC/plumbing/electrical service
+4. Etsy — best for roofing and restoration
+5. WooCommerce — best for HVAC/plumbing/electrical service
 6. Knowify — best for specialty subs
 7. Jobber — best for small service practices
 
 SCORING MATRIX (1-5 each):
-| Feature | BT | NextGen | CoCon | JN | ST | Knowify | Jobber |
+| Feature | BT | Amazon | CoCon | JN | ST | Knowify | Jobber |
 - Price (value for my company size)
 - Accounting integration quality (specifically with [MY ACCOUNTING SOFTWARE])
 - Mobile app (field usability)
@@ -1017,8 +1017,8 @@ Weight the scores based on my stated priorities. Give me a clear #1, #2, #3 reco
 
 Also note: hidden costs (implementation, training, per-user fees, API/integration fees), typical contract terms, and what happens to my data if I switch platforms later.`,
     category: 'pm-software',
-    icon: Stethoscope,
-    tags: ['software comparison', 'evaluation', 'athenahealth', 'NextGen'],
+    icon: ShoppingCart,
+    tags: ['software comparison', 'evaluation', 'Shopify', 'Amazon'],
   },
 
   // ── Client Comms ──
