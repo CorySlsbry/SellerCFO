@@ -81,6 +81,33 @@ const AI_INSIGHTS: AIInsight[] = [
 ]
 
 // ============================================================
+// Section-specific AI insights for Performance Hub
+// ============================================================
+interface SectionInsight {
+  type: 'win' | 'watchout'
+  text: string
+}
+
+const SECTION_INSIGHTS: Record<string, SectionInsight[]> = {
+  ad_spend: [
+    { type: 'win', text: 'Blended ROAS improved to 3.2x — you generated $3.20 for every $1 spent on ads this month.' },
+    { type: 'watchout', text: 'TikTok ad spend up 28% but ROAS dropped to 1.8x. Reallocate budget to Meta which is running 4.1x.' },
+  ],
+  revenue: [
+    { type: 'win', text: 'Revenue up 4.7% MoM and 18.5% YoY — strong upward trajectory across all channels.' },
+    { type: 'watchout', text: 'COGS growing slightly faster than revenue (2.8% vs 4.7%). Watch supplier pricing.' },
+  ],
+  channels: [
+    { type: 'win', text: 'Shopify direct growing fastest at 5.9% MoM — higher margins than marketplace channels.' },
+    { type: 'watchout', text: 'Amazon dependency still at 51.7% of total revenue. Diversify to reduce platform risk.' },
+  ],
+  inventory: [
+    { type: 'win', text: 'Turnover rate improved to 5.3x — best in 6 months. Days on hand down to 69.' },
+    { type: 'watchout', text: 'Dead stock at 12% of total inventory ($42K). 23 SKUs need liquidation or removal.' },
+  ],
+}
+
+// ============================================================
 // KPI trend data for graphs
 // ============================================================
 const KPI_TRENDS: Record<string, { data: { month: string; value: number }[]; format: (v: number) => string; color: string; unit: string }> = {
@@ -252,6 +279,16 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
     setSyncing(false)
   }
 
+  // Ad Spend vs Revenue (Performance Hub hero chart)
+  const adSpendVsRevenue = [
+    { month: 'Jan', adSpend: 89100, revenue: 285000, roas: 3.2 },
+    { month: 'Feb', adSpend: 96000, revenue: 312000, roas: 3.3 },
+    { month: 'Mar', adSpend: 99300, revenue: 298000, roas: 3.0 },
+    { month: 'Apr', adSpend: 100000, revenue: 325000, roas: 3.3 },
+    { month: 'May', adSpend: 107500, revenue: 342000, roas: 3.2 },
+    { month: 'Jun', adSpend: 111900, revenue: 358000, roas: 3.2 },
+  ]
+
   const monthlyRevenue = [
     { month: 'Jan', revenue: 285000, orders: 3420, cogs: 142500 },
     { month: 'Feb', revenue: 312000, orders: 3740, cogs: 153000 },
@@ -343,6 +380,29 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
 
   const wins = AI_INSIGHTS.filter(i => i.type === 'win')
   const watchouts = AI_INSIGHTS.filter(i => i.type === 'watchout')
+
+  // Reusable section insight bar
+  const SectionInsightBar = ({ sectionKey }: { sectionKey: string }) => {
+    const insights = SECTION_INSIGHTS[sectionKey]
+    if (!insights) return null
+    return (
+      <div className="flex gap-3 mt-3">
+        {insights.map((ins, i) => (
+          <div key={i} className={`flex items-start gap-2 flex-1 rounded-md px-3 py-2 text-xs ${
+            ins.type === 'win'
+              ? 'bg-emerald-950/30 border border-emerald-800/20 text-emerald-300'
+              : 'bg-amber-950/30 border border-amber-800/20 text-amber-300'
+          }`}>
+            {ins.type === 'win'
+              ? <Trophy className="w-3 h-3 mt-0.5 shrink-0" />
+              : <ShieldAlert className="w-3 h-3 mt-0.5 shrink-0" />
+            }
+            <span className="leading-relaxed">{ins.text}</span>
+          </div>
+        ))}
+      </div>
+    )
+  }
 
   // ============================================================
   // Chart Type Selector (mini toolbar per chart panel)
@@ -623,7 +683,19 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <span className="text-[10px] uppercase tracking-wider text-gray-500 font-semibold">Quick Add Sections</span>
-              <span className="text-[10px] text-gray-700">Click to add • Hold shift to replace all</span>
+              <span className="text-[10px] text-gray-700">Click to add • Shift-click to replace</span>
+              {visibleKPIs.length > 0 && (
+                <button
+                  onClick={() => {
+                    setVisibleKPIs([])
+                    if (typeof window !== 'undefined') localStorage.setItem(storageKey(viewId), JSON.stringify([]))
+                  }}
+                  className="ml-auto text-[10px] text-red-400/70 hover:text-red-400 transition flex items-center gap-1"
+                >
+                  <RotateCcw className="w-3 h-3" />
+                  Reset
+                </button>
+              )}
             </div>
             <div className="flex flex-wrap gap-2">
               {PRESET_SECTIONS.map((preset) => {
@@ -793,10 +865,51 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
         )}
 
         {/* ============================================================ */}
-        {/* Main Charts (only on main view) */}
+        {/* Main Charts (only on main view) — sectioned with AI insights */}
         {/* ============================================================ */}
         {viewId === 'main' && (
           <>
+            {/* ── Ad Spend vs Revenue (hero chart, first thing shown) ── */}
+            <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
+              <div className="flex items-center justify-between mb-1">
+                <h3 className="text-lg font-medium text-white">Ad Spend vs Revenue</h3>
+                <div className="flex items-center gap-4 text-xs text-gray-500">
+                  <span>June total ad spend: <span className="text-white font-medium">$111.9K</span></span>
+                  <span>ROAS: <span className="text-emerald-400 font-medium">3.2x</span></span>
+                </div>
+              </div>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <ComposedChart data={adSpendVsRevenue}>
+                    <defs>
+                      <linearGradient id="grad-revenue-hero" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#8B5CF6" stopOpacity={0.25} />
+                        <stop offset="100%" stopColor="#8B5CF6" stopOpacity={0.02} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                    <XAxis dataKey="month" stroke="#9CA3AF" tick={{ fontSize: 12 }} />
+                    <YAxis yAxisId="left" stroke="#9CA3AF" tick={{ fontSize: 11 }} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}K`} />
+                    <YAxis yAxisId="right" orientation="right" stroke="#22C55E" tick={{ fontSize: 11 }} tickFormatter={(v) => `${v}x`} domain={[0, 5]} />
+                    <Tooltip
+                      contentStyle={{ backgroundColor: '#1F2937', border: 'none', borderRadius: '8px', fontSize: '12px' }}
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      formatter={((value: number, name: string) => {
+                        if (name === 'roas') return [`${value.toFixed(1)}x`, 'ROAS']
+                        return [`$${(value / 1000).toFixed(1)}K`, name === 'adSpend' ? 'Ad Spend' : 'Revenue']
+                      }) as any}
+                    />
+                    <Legend wrapperStyle={{ fontSize: '12px' }} />
+                    <Area yAxisId="left" type="monotone" dataKey="revenue" name="Revenue" stroke="#8B5CF6" fill="url(#grad-revenue-hero)" strokeWidth={2} />
+                    <Bar yAxisId="left" dataKey="adSpend" name="Ad Spend" fill="#EF4444" fillOpacity={0.8} radius={[4, 4, 0, 0]} barSize={32} />
+                    <Line yAxisId="right" type="monotone" dataKey="roas" name="ROAS" stroke="#22C55E" strokeWidth={2.5} dot={{ r: 4, fill: '#22C55E' }} strokeDasharray="0" />
+                  </ComposedChart>
+                </ResponsiveContainer>
+              </div>
+              <SectionInsightBar sectionKey="ad_spend" />
+            </div>
+
+            {/* ── Revenue & P&L Section ── */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Revenue & COGS Trend */}
               <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
@@ -818,6 +931,7 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
                     </AreaChart>
                   </ResponsiveContainer>
                 </div>
+                <SectionInsightBar sectionKey="revenue" />
               </div>
 
               {/* Channel Mix */}
@@ -841,10 +955,11 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
+                <SectionInsightBar sectionKey="channels" />
               </div>
             </div>
 
-            {/* Inventory Health */}
+            {/* ── Inventory Health Section ── */}
             <div className="bg-gray-900 rounded-lg p-6 border border-gray-800">
               <h3 className="text-lg font-medium text-white mb-4">Inventory Health</h3>
               <div className="h-56">
@@ -862,6 +977,7 @@ export default function DashboardContent({ dashboardData, isLoading, onSync, vie
                   </LineChart>
                 </ResponsiveContainer>
               </div>
+              <SectionInsightBar sectionKey="inventory" />
             </div>
           </>
         )}
