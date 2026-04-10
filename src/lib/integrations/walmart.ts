@@ -1,7 +1,19 @@
 /**
  * Walmart Marketplace Integration Connector
- * OAuth 2.0 (Client Credentials)
+ * Auth: OAuth 2.0 Client Credentials — BYO (per-seller credentials)
  * API: Walmart Marketplace API
+ *
+ * Credential model:
+ *   Walmart Marketplace API does not support a Partner/Solution-Provider
+ *   OAuth-redirect flow by default. Each seller generates their own
+ *   Client ID + Client Secret in Walmart Seller Center
+ *   (Settings → API Key Management → Add Key) and pastes them into the
+ *   SellerCFO Integrations page. Those credentials are stored encrypted
+ *   per-organization in `integration_connections.config` and used to
+ *   mint short-lived access tokens on demand.
+ *
+ *   → There are NO platform-level WALMART_CLIENT_ID / WALMART_CLIENT_SECRET
+ *     env vars. All creds are per-tenant.
  *
  * Syncs: Orders, Items, Inventory, Returns
  */
@@ -17,24 +29,32 @@ import type {
 const WALMART_TOKEN_URL = 'https://marketplace.walmartapis.com/v3/token';
 const WALMART_API_BASE = 'https://marketplace.walmartapis.com/v3';
 
+interface WalmartConfig {
+  client_id?: string;
+  client_secret?: string;
+  seller_id?: string;
+}
+
 export class WalmartConnector extends BaseConnector {
   provider: IntegrationProvider = 'walmart';
-  private clientId: string;
-  private clientSecret: string;
 
   constructor() {
     super();
-    this.clientId = process.env.WALMART_CLIENT_ID || '';
-    this.clientSecret = process.env.WALMART_CLIENT_SECRET || '';
     // Walmart: 20 requests/second
     this.rateLimitConfig = { maxRequests: 20, windowMs: 1000 };
   }
 
   /**
-   * Exchange credentials for access token (client credentials flow)
+   * Mint an access token using explicit BYO credentials.
+   * Called during setup (before the connection is persisted) and
+   * during token refresh (using creds pulled from connection.config).
    */
-  async exchangeCode(): Promise<TokenResult> {
-    const auth = Buffer.from(`${this.clientId}:${this.clientSecret}`).toString('base64');
+  async getAccessToken(clientId: string, clientSecret: string): Promise<TokenResult> {
+    if (!clientId || !clientSecret) {
+      throw new Error('Walmart credentials missing: client_id and client_secret are required.');
+    }
+
+    const auth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
 
     const response = await fetch(WALMART_TOKEN_URL, {
       method: 'POST',
@@ -62,14 +82,45 @@ export class WalmartConnector extends BaseConnector {
   }
 
   /**
+   * Ensure the connection has a non-expired access token. If expired or
+   * missing, mint a fresh one using the BYO credentials stored in config.
+   * Returns the (possibly refreshed) access token string.
+   */
+  private async ensureFreshToken(connection: IntegrationConnection): Promise<string> {
+    const config = (connection.config || {}) as WalmartConfig;
+    const { client_id, client_secret } = config;
+
+    if (!client_id || !client_secret) {
+      throw new Error('Walmart connection missing BYO credentials in config.');
+    }
+
+    const expiresAt = connection.token_expires_at
+      ? new Date(connection.token_expires_at).getTime()
+      : 0;
+    const isExpired = !connection.access_token || Date.now() >= expiresAt - 60_000; // 60s buffer
+
+    if (!isExpired && connection.access_token) {
+      return connection.access_token;
+    }
+
+    const token = await this.getAccessToken(client_id, client_secret);
+    // Caller is responsible for persisting the refreshed token back to DB.
+    connection.access_token = token.access_token;
+    connection.token_expires_at = new Date(
+      Date.now() + (token.expires_in || 900) * 1000
+    ).toISOString();
+    return token.access_token;
+  }
+
+  /**
    * Validate connection
    */
   async validateConnection(connection: IntegrationConnection): Promise<boolean> {
     try {
-      if (!connection.access_token) return false;
+      const accessToken = await this.ensureFreshToken(connection);
       await this.makeRequest(
         `${WALMART_API_BASE}/items?limit=1`,
-        connection.access_token,
+        accessToken,
         {
           headers: {
             'WM_SVC.NAME': 'SellerCFO',
@@ -87,14 +138,13 @@ export class WalmartConnector extends BaseConnector {
    * Sync orders as deals
    */
   async syncDeals(connection: IntegrationConnection): Promise<NormalizedDeal[]> {
-    if (!connection.access_token) return [];
-
     try {
+      const accessToken = await this.ensureFreshToken(connection);
       const createdStartDate = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString();
 
       const response = await this.makeRequest<any>(
         `${WALMART_API_BASE}/orders`,
-        connection.access_token,
+        accessToken,
         {
           headers: {
             'WM_SVC.NAME': 'SellerCFO',

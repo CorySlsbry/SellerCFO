@@ -40,6 +40,10 @@ function IntegrationCard({
   const [expanded, setExpanded] = useState(false);
   const [apiKey, setApiKey] = useState('');
   const [tenantId, setTenantId] = useState('');
+  // Walmart-specific BYO fields (per-seller Client ID/Secret from Seller Center)
+  const [walmartClientId, setWalmartClientId] = useState('');
+  const [walmartClientSecret, setWalmartClientSecret] = useState('');
+  const [walmartSellerId, setWalmartSellerId] = useState('');
   const [settingUp, setSettingUp] = useState(false);
 
   const IconComponent = iconMap[config.icon] || Globe;
@@ -50,15 +54,28 @@ function IntegrationCard({
   const handleApiKeySetup = async () => {
     setSettingUp(true);
     try {
+      // Walmart uses BYO per-seller credentials (client_id + client_secret + optional seller_id)
+      // — not a single api_key. Everything else sends the legacy api_key/tenant_id shape.
+      const payload: Record<string, any> =
+        config.id === 'walmart'
+          ? {
+              provider: config.id,
+              client_id: walmartClientId,
+              client_secret: walmartClientSecret,
+              seller_id: walmartSellerId || undefined,
+              account_name: config.name,
+            }
+          : {
+              provider: config.id,
+              api_key: apiKey,
+              tenant_id: tenantId || undefined,
+              account_name: config.name,
+            };
+
       const response = await fetch('/api/integrations/setup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          provider: config.id,
-          api_key: apiKey,
-          tenant_id: tenantId || undefined,
-          account_name: config.name,
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (response.ok) {
@@ -181,53 +198,99 @@ function IntegrationCard({
       {expanded && !isConnected && (
         <div className="border-t border-[#2a2a3a] p-5 bg-[#0e0e18]">
           <div className="space-y-3 max-w-md">
-            <div>
-              <label className="block text-xs font-medium text-[#8888a0] mb-1">
-                {config.id === 'woocommerce' ? 'Store URL' : 'API Key / Client ID'}
-              </label>
-              {config.id === 'woocommerce' ? (
-                <>
+            {config.id === 'woocommerce' ? (
+              <div>
+                <label className="block text-xs font-medium text-[#8888a0] mb-1">
+                  Store URL
+                </label>
+                <input
+                  type="text"
+                  placeholder="https://yourstore.com"
+                  value={tenantId}
+                  onChange={(e) => setTenantId(e.target.value)}
+                  className="w-full px-3 py-2 bg-[#1a1a26] border border-[#2a2a3a] rounded-lg text-sm text-[#e8e8f0] focus:outline-none focus:border-cyan-500 mb-2"
+                />
+                <input
+                  type="password"
+                  placeholder="Consumer Key / Consumer Secret"
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  className="w-full px-3 py-2 bg-[#1a1a26] border border-[#2a2a3a] rounded-lg text-sm text-[#e8e8f0] focus:outline-none focus:border-cyan-500"
+                />
+                <p className="text-[10px] text-[#666680] mt-1">
+                  Find your REST API keys in WooCommerce &gt; Settings &gt; Advanced &gt; REST API
+                </p>
+              </div>
+            ) : config.id === 'walmart' ? (
+              <>
+                <div>
+                  <label className="block text-xs font-medium text-[#8888a0] mb-1">
+                    Walmart Client ID
+                  </label>
                   <input
                     type="text"
-                    placeholder="https://yourstore.com"
-                    value={tenantId}
-                    onChange={(e) => setTenantId(e.target.value)}
-                    className="w-full px-3 py-2 bg-[#1a1a26] border border-[#2a2a3a] rounded-lg text-sm text-[#e8e8f0] focus:outline-none focus:border-cyan-500 mb-2"
-                  />
-                  <input
-                    type="password"
-                    placeholder="Consumer Key / Consumer Secret"
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
+                    placeholder="e.g. a1b2c3d4-5678-..."
+                    value={walmartClientId}
+                    onChange={(e) => setWalmartClientId(e.target.value)}
                     className="w-full px-3 py-2 bg-[#1a1a26] border border-[#2a2a3a] rounded-lg text-sm text-[#e8e8f0] focus:outline-none focus:border-cyan-500"
                   />
-                  <p className="text-[10px] text-[#666680] mt-1">
-                    Find your REST API keys in WooCommerce &gt; Settings &gt; Advanced &gt; REST API
-                  </p>
-                </>
-              ) : (
-                <>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-[#8888a0] mb-1">
+                    Walmart Client Secret
+                  </label>
                   <input
                     type="password"
-                    placeholder={`Enter your ${config.name} API key`}
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
+                    placeholder="Paste secret (shown once in Seller Center)"
+                    value={walmartClientSecret}
+                    onChange={(e) => setWalmartClientSecret(e.target.value)}
                     className="w-full px-3 py-2 bg-[#1a1a26] border border-[#2a2a3a] rounded-lg text-sm text-[#e8e8f0] focus:outline-none focus:border-cyan-500"
                   />
-                  <p className="text-[10px] text-[#666680] mt-1">
-                    {config.id === 'walmart'
-                      ? 'Find your Client ID and Secret on the Walmart Developer Portal'
-                      : `Find your API key in ${config.name} settings`
-                    }
-                  </p>
-                </>
-              )}
-            </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-[#8888a0] mb-1">
+                    Walmart Seller ID <span className="text-[#555570]">(optional)</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Your Walmart Seller/Partner ID"
+                    value={walmartSellerId}
+                    onChange={(e) => setWalmartSellerId(e.target.value)}
+                    className="w-full px-3 py-2 bg-[#1a1a26] border border-[#2a2a3a] rounded-lg text-sm text-[#e8e8f0] focus:outline-none focus:border-cyan-500"
+                  />
+                </div>
+                <p className="text-[10px] text-[#666680] leading-relaxed">
+                  Generate these in Walmart Seller Center → Settings → <strong>API Key Management</strong> → Add Key.
+                  SellerCFO stores your credentials encrypted and uses them to mint short-lived access tokens on demand.
+                </p>
+              </>
+            ) : (
+              <div>
+                <label className="block text-xs font-medium text-[#8888a0] mb-1">
+                  API Key / Client ID
+                </label>
+                <input
+                  type="password"
+                  placeholder={`Enter your ${config.name} API key`}
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  className="w-full px-3 py-2 bg-[#1a1a26] border border-[#2a2a3a] rounded-lg text-sm text-[#e8e8f0] focus:outline-none focus:border-cyan-500"
+                />
+                <p className="text-[10px] text-[#666680] mt-1">
+                  Find your API key in {config.name} settings
+                </p>
+              </div>
+            )}
             <Button
               variant="primary"
               size="sm"
               onClick={handleApiKeySetup}
-              disabled={settingUp || (!apiKey && config.id !== 'woocommerce') || (config.id === 'woocommerce' && (!tenantId || !apiKey))}
+              disabled={
+                settingUp ||
+                (config.id === 'woocommerce' && (!tenantId || !apiKey)) ||
+                (config.id === 'walmart' && (!walmartClientId || !walmartClientSecret)) ||
+                (config.id !== 'woocommerce' && config.id !== 'walmart' && !apiKey)
+              }
               className="text-xs"
             >
               {settingUp ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> : null}
@@ -478,7 +541,7 @@ export default function IntegrationsContent() {
             <p className="text-xs text-[#8888a0] leading-relaxed">
               Most integrations connect in seconds via OAuth — just click Connect and authorize.
               For WooCommerce, you&apos;ll need your store URL and REST API key from WooCommerce &gt; Settings &gt; Advanced &gt; REST API.
-              For Walmart, enter your Client ID and Secret from the Walmart Developer Portal.
+              For Walmart, generate a Client ID and Client Secret in your Walmart Seller Center under Settings &gt; API Key Management and paste them here.
               Once connected, data syncs automatically every hour, or you can trigger a manual sync anytime.
             </p>
           </div>
